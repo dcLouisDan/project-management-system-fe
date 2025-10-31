@@ -1,3 +1,10 @@
+export interface User {
+  id: number
+  name: string
+  email: string
+  roles: string[]
+}
+
 export interface UserRegistration {
   name: string
   email: string

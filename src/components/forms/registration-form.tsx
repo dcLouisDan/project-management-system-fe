@@ -21,8 +21,7 @@ import { PasswordInput } from '../ui/password-input'
 import { useForm } from '@tanstack/react-form'
 import { DEFAULT_USER_REGISTRATION } from '@/lib/types/user'
 import z from 'zod'
-import { useEffect } from 'react'
-import { initCSRF } from '@/lib/api/request'
+import { registerUser } from '@/lib/api/user'
 
 export function RegistrationForm({
   className,
@@ -31,13 +30,14 @@ export function RegistrationForm({
   const form = useForm({
     defaultValues: DEFAULT_USER_REGISTRATION,
     onSubmit: async ({ value }) => {
-      console.log('Form submitted with values:', value)
+      try {
+        const data = await registerUser(value)
+        console.log('User registered successfully:', data)
+      } catch (error) {
+        console.error('Error during registration:', error)
+      }
     },
   })
-
-  useEffect(() => {
-    // initCSRF()
-  }, [])
 
   return (
     <div className={cn('flex flex-col gap-6', className)} {...props}>
