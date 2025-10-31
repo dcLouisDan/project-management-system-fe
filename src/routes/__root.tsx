@@ -3,6 +3,7 @@ import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 
 import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
+import { FormDevtoolsPlugin } from '@tanstack/react-form-devtools'
 
 import type { QueryClient } from '@tanstack/react-query'
 
@@ -24,6 +25,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
             render: <TanStackRouterDevtoolsPanel />,
           },
           TanStackQueryDevtools,
+          FormDevtoolsPlugin(),
         ]}
       />
     </>
