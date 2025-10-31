@@ -135,4 +135,23 @@ code {
   body {
     @apply bg-background text-foreground;
   }
+
+  h1 {
+    @apply text-4xl font-bold tracking-tight text-gray-900;
+  }
+  h2 {
+    @apply text-3xl font-semibold text-gray-800;
+  }
+  h3 {
+    @apply text-2xl font-semibold text-gray-800;
+  }
+  h4 {
+    @apply text-xl font-medium text-gray-700;
+  }
+  h5 {
+    @apply text-lg font-medium text-gray-700;
+  }
+  h6 {
+    @apply text-base font-semibold text-gray-600 uppercase;
+  }
 }
