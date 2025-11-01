@@ -31,8 +31,10 @@ export function RegistrationForm({
     defaultValues: DEFAULT_USER_REGISTRATION,
     onSubmit: async ({ value }) => {
       try {
-        const data = await registerUser(value)
-        console.log('User registered successfully:', data)
+        const response = await registerUser(value)
+        if (response.status === 201) {
+          console.log('User registered successfully:', response.data)
+        }
       } catch (error) {
         console.error('Error during registration:', error)
       }
@@ -72,6 +74,7 @@ export function RegistrationForm({
                         type="text"
                         placeholder="John Doe"
                         required
+                        value={field.state.value}
                         onChange={(e) => field.handleChange(e.target.value)}
                       />
                       <FieldError errors={field.state.meta.errors} />
@@ -93,6 +96,7 @@ export function RegistrationForm({
                       type="email"
                       placeholder="m@example.com"
                       required
+                      value={field.state.value}
                       onChange={(e) => field.handleChange(e.target.value)}
                     />
                     <FieldError errors={field.state.meta.errors} />
@@ -116,6 +120,7 @@ export function RegistrationForm({
                       id={field.name}
                       type="password"
                       required
+                      value={field.state.value}
                       onChange={(e) => field.handleChange(e.target.value)}
                     />
                     <FieldDescription className="ml-auto">
@@ -153,6 +158,7 @@ export function RegistrationForm({
                     <PasswordInput
                       id={field.name}
                       required
+                      value={field.state.value}
                       onChange={(e) => field.handleChange(e.target.value)}
                     />
                     <FieldError errors={field.state.meta.errors} />

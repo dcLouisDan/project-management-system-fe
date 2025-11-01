@@ -18,3 +18,13 @@ export const DEFAULT_USER_REGISTRATION: UserRegistration = {
   password: '',
   password_confirmation: '',
 }
+
+export interface UserLogin {
+  email: string
+  password: string
+}
+
+export const DEFAULT_USER_LOGIN: UserLogin = {
+  email: '',
+  password: '',
+}
