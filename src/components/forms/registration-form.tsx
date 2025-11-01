@@ -21,22 +21,26 @@ import { PasswordInput } from '../ui/password-input'
 import { useForm } from '@tanstack/react-form'
 import { DEFAULT_USER_REGISTRATION } from '@/lib/types/user'
 import z from 'zod'
-import { registerUser } from '@/lib/api/user'
+import useAppStore from '@/integrations/zustand/app-store'
+import { useNavigate } from '@tanstack/react-router'
 
 export function RegistrationForm({
   className,
   ...props
 }: React.ComponentProps<'div'>) {
+  const registerUser = useAppStore((state) => state.register)
+  const error = useAppStore((state) => state.error)
+  const navigate = useNavigate()
+
   const form = useForm({
     defaultValues: DEFAULT_USER_REGISTRATION,
     onSubmit: async ({ value }) => {
       try {
-        const response = await registerUser(value)
-        if (response.status === 201) {
-          console.log('User registered successfully:', response.data)
-        }
+        await registerUser(value)
+        navigate({ to: '/dashboard' })
       } catch (error) {
         console.error('Error during registration:', error)
+        console.error('Store error message:', error)
       }
     },
   })

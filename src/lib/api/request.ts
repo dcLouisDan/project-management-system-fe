@@ -4,6 +4,7 @@ import { BACKEND_URL } from '@/lib/constants'
 const api = axios.create({
   baseURL: BACKEND_URL,
   headers: {
+    'X-Requested-With': 'XMLHttpRequest',
     'Content-Type': 'application/json',
     Accept: 'application/json',
   },

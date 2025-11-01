@@ -1,3 +1,5 @@
+import { Button } from '@/components/ui/button'
+import { logoutUser } from '@/lib/api/user'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_main/dashboard')({
@@ -5,5 +7,9 @@ export const Route = createFileRoute('/_main/dashboard')({
 })
 
 function RouteComponent() {
-  return <div>Hello "/_main/dashboard"!</div>
+  return (
+    <div>
+      <Button onClick={async () => logoutUser()}>Logout</Button>
+    </div>
+  )
 }

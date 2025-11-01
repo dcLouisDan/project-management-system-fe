@@ -20,22 +20,26 @@ import { useForm } from '@tanstack/react-form'
 import { DEFAULT_USER_LOGIN } from '@/lib/types/user'
 import { PasswordInput } from '../ui/password-input'
 import z from 'zod'
-import { loginUser } from '@/lib/api/user'
+import useAppStore from '@/integrations/zustand/app-store'
+import { useNavigate } from '@tanstack/react-router'
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<'div'>) {
+  const login = useAppStore((state) => state.login)
+  const error = useAppStore((state) => state.error)
+  const navigate = useNavigate()
+
   const form = useForm({
     defaultValues: DEFAULT_USER_LOGIN,
     onSubmit: async ({ value }) => {
       try {
-        const response = await loginUser(value.email, value.password)
-        if (response.status === 200) {
-          console.log('User logged in successfully:', response.data)
-        }
-      } catch (error) {
-        console.error('Error during login:', error)
+        await login(value.email, value.password)
+        navigate({ to: '/dashboard' })
+      } catch (err: any) {
+        console.log('Login error:', err)
+        console.log('Store error message:', error)
       }
     },
   })

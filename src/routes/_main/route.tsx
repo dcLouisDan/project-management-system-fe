@@ -14,12 +14,33 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from '@/components/ui/sidebar'
+import useAppStore from '@/integrations/zustand/app-store'
+import { useEffect, useState } from 'react'
+import { fetchCurrentUser } from '@/lib/api/user'
 
 export const Route = createFileRoute('/_main')({
   component: RouteComponent,
+  beforeLoad: async () => {
+    const isAuthenticated = useAppStore.getState().isAuthenticated
+    const user = useAppStore.getState().user
+    if (!isAuthenticated || !user) {
+      return { redirect: '/login' }
+    }
+  },
 })
 
 function RouteComponent() {
+  const [user, setUser] = useState<any>()
+
+  useEffect(() => {
+    async function fetchData() {
+      const userResponse = await fetchCurrentUser()
+
+      console.log(userResponse)
+    }
+
+    fetchData()
+  }, [])
   return (
     <SidebarProvider>
       <AppSidebar />
