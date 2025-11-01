@@ -1,4 +1,3 @@
-import { BACKEND_API_ROOT } from '../constants'
 import { handleApiError } from '../handle-api-error'
 import type { UserRegistration } from '../types/user'
 import api from './request'
@@ -10,7 +9,7 @@ export async function registerUser(data: UserRegistration) {
 
     const xsrfToken = Cookies.get('XSRF-TOKEN')
 
-    const response = await api.post(`${BACKEND_API_ROOT}/auth/register`, data, {
+    const response = await api.post(`/auth/register`, data, {
       headers: {
         'X-XSRF-TOKEN': xsrfToken || '',
       },
@@ -26,12 +25,8 @@ export async function registerUser(data: UserRegistration) {
 
 export async function fetchCurrentUser() {
   try {
-    const xsrfToken = Cookies.get('XSRF-TOKEN')
-    const response = await api.get(`${BACKEND_API_ROOT}/user`, {
-      headers: {
-        'X-XSRF-TOKEN': xsrfToken || '',
-      },
-    })
+    // const xsrfToken = Cookies.get('XSRF-TOKEN')
+    const response = await api.get(`/user`)
     return response.data
   } catch (error) {
     throw handleApiError(error)
@@ -44,7 +39,7 @@ export async function loginUser(email: string, password: string) {
 
     const xsrfToken = Cookies.get('XSRF-TOKEN')
     const response = await api.post(
-      `${BACKEND_API_ROOT}/auth/login`,
+      `/auth/login`,
       { email, password },
       {
         headers: {
@@ -67,7 +62,7 @@ export async function logoutUser() {
   try {
     const xsrfToken = Cookies.get('XSRF-TOKEN')
     return await api.post(
-      `${BACKEND_API_ROOT}/auth/logout`,
+      `/auth/logout`,
       {},
       {
         headers: {

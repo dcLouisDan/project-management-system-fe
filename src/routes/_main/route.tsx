@@ -23,8 +23,8 @@ export const Route = createFileRoute('/_main')({
   beforeLoad: async () => {
     const isAuthenticated = useAppStore.getState().isAuthenticated
     const user = useAppStore.getState().user
-    if (!isAuthenticated || !user) {
-      return { redirect: '/login' }
+    if (!isAuthenticated) {
+      return { redirect: '/auth/login' }
     }
   },
 })
