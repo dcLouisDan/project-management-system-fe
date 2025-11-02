@@ -25,6 +25,8 @@ import {
 } from '@/components/ui/sidebar'
 import type { User } from '@/lib/types/user'
 import useAuth from '@/hooks/use-auth'
+import { getAvatarFallback } from '@/lib/string-utils'
+import AppearanceToggleTab from './appearance-tabs'
 
 export function NavUser({ user }: { user: User }) {
   const { isMobile } = useSidebar()
@@ -40,7 +42,9 @@ export function NavUser({ user }: { user: User }) {
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage src={undefined} alt={user.name} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                <AvatarFallback className="rounded-lg">
+                  {getAvatarFallback(user.name)}
+                </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">{user.name}</span>
@@ -69,10 +73,7 @@ export function NavUser({ user }: { user: User }) {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <Sparkles />
-                Upgrade to Pro
-              </DropdownMenuItem>
+              <AppearanceToggleTab iconOnly className="w-full" />
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>

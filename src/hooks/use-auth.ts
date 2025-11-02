@@ -6,8 +6,9 @@ import type {
   UserRegistrationResponse,
 } from '@/lib/types/response'
 import { useState } from 'react'
-import { Navigate, useNavigate } from '@tanstack/react-router'
+import { useNavigate } from '@tanstack/react-router'
 import type { UserRegistration } from '@/lib/types/user'
+import { validateRoleString } from '@/lib/types/role'
 
 export default function useAuth() {
   const [validationErrors, setValidationErrors] = useState<Record<
@@ -24,6 +25,7 @@ export default function useAuth() {
     unsetUser,
     setLoading,
     loading: isLoading,
+    setUiMode,
   } = useAppStore((state) => state)
 
   async function login(email: string, password: string): Promise<void> {
@@ -34,14 +36,22 @@ export default function useAuth() {
       const response = await loginUser(email, password)
 
       const body = response.data as UserLoginResponse
+      const user = body.data.user
+      const mainRole: string | null =
+        user.roles.length > 0 ? user.roles[0] : null
 
-      setUser(body.data.user)
+      if (!mainRole || !validateRoleString(mainRole)) {
+        setUiMode('team member')
+      } else {
+        setUiMode(mainRole)
+      }
+
+      setUser(user)
       setLoading(false)
 
       navigate({ to: '/dashboard' })
     } catch (err) {
       setLoading(false)
-      console.log('Login error:', err)
       const error = err as ApiError
       setError(error.message || 'Login failed')
       if (error.errors) {
