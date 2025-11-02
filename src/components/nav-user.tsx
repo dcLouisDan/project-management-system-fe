@@ -23,12 +23,12 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar'
-import useAppStore from '@/integrations/zustand/app-store'
 import type { User } from '@/lib/types/user'
+import useAuth from '@/hooks/use-auth'
 
 export function NavUser({ user }: { user: User }) {
   const { isMobile } = useSidebar()
-  const logout = useAppStore((state) => state.logout)
+  const { logout } = useAuth()
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -92,11 +92,7 @@ export function NavUser({ user }: { user: User }) {
             <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={async () => {
-                try {
-                  await logout()
-                } catch (error) {
-                  console.error('Logout failed:', error)
-                }
+                await logout()
               }}
             >
               <LogOut />

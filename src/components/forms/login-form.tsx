@@ -20,27 +20,18 @@ import { useForm } from '@tanstack/react-form'
 import { DEFAULT_USER_LOGIN } from '@/lib/types/user'
 import { PasswordInput } from '../ui/password-input'
 import z from 'zod'
-import useAppStore from '@/integrations/zustand/app-store'
-import { useNavigate } from '@tanstack/react-router'
+import useAuth from '@/hooks/use-auth'
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<'div'>) {
-  const login = useAppStore((state) => state.login)
-  const error = useAppStore((state) => state.error)
-  const navigate = useNavigate()
+  const { login, validationErrors } = useAuth()
 
   const form = useForm({
     defaultValues: DEFAULT_USER_LOGIN,
     onSubmit: async ({ value }) => {
-      try {
-        await login(value.email, value.password)
-        navigate({ to: '/dashboard' })
-      } catch (err: any) {
-        console.log('Login error:', err)
-        console.log('Store error message:', error)
-      }
+      await login(value.email, value.password)
     },
   })
 
@@ -102,6 +93,13 @@ export function LoginForm({
                   </Field>
                 )}
               </form.Field>
+              {validationErrors && (
+                <div className="text-sm text-red-600">
+                  {Object.values(validationErrors).map((msg) => (
+                    <div key={msg}>{msg}</div>
+                  ))}
+                </div>
+              )}
               <form.Subscribe
                 selector={(state) => [state.canSubmit, state.isSubmitting]}
                 children={([canSubmit, isSubmitting]) => (

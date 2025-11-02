@@ -21,29 +21,20 @@ import { PasswordInput } from '../ui/password-input'
 import { useForm } from '@tanstack/react-form'
 import { DEFAULT_USER_REGISTRATION } from '@/lib/types/user'
 import z from 'zod'
-import useAppStore from '@/integrations/zustand/app-store'
-import { useNavigate } from '@tanstack/react-router'
+import useAuth from '@/hooks/use-auth'
 
 export function RegistrationForm({
   className,
   ...props
 }: React.ComponentProps<'div'>) {
-  const registerUser = useAppStore((state) => state.register)
-  const error = useAppStore((state) => state.error)
-  const navigate = useNavigate()
-
+  const { register, validationErrors, error } = useAuth()
   const form = useForm({
     defaultValues: DEFAULT_USER_REGISTRATION,
     onSubmit: async ({ value }) => {
-      try {
-        await registerUser(value)
-        navigate({ to: '/dashboard' })
-      } catch (error) {
-        console.error('Error during registration:', error)
-        console.error('Store error message:', error)
-      }
+      await register(value)
     },
   })
+  console.log('Error', validationErrors)
 
   return (
     <div className={cn('flex flex-col gap-6', className)} {...props}>
@@ -169,6 +160,16 @@ export function RegistrationForm({
                   </Field>
                 )}
               </form.Field>
+              {validationErrors && (
+                <div className="text-sm text-red-600">
+                  {Object.values(validationErrors).map((msg) => (
+                    <div key={msg}>{msg}</div>
+                  ))}
+                </div>
+              )}
+              {!validationErrors && error && (
+                <div className="text-sm text-red-600">{error}</div>
+              )}
               <form.Subscribe
                 selector={(state) => [state.canSubmit, state.isSubmitting]}
                 children={([canSubmit, isSubmitting]) => (
