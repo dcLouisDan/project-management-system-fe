@@ -31,18 +31,18 @@ export default function MainInsetLayout({
               {breadcrumbItems.map((item, index) => {
                 if (index < breadcrumbItems.length - 1) {
                   return (
-                    <>
+                    <div key={index}>
                       <BreadcrumbItem className="hidden md:block">
                         <BreadcrumbLink href={item.href}>
                           {item.label}
                         </BreadcrumbLink>
                       </BreadcrumbItem>
                       <BreadcrumbSeparator className="hidden md:block" />
-                    </>
+                    </div>
                   )
                 }
                 return (
-                  <BreadcrumbItem>
+                  <BreadcrumbItem key={index}>
                     <BreadcrumbPage>{item.label}</BreadcrumbPage>
                   </BreadcrumbItem>
                 )

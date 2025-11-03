@@ -23,7 +23,7 @@ function RouteComponent() {
           </Link>
         ))}
       </div>
-      <div>
+      <div className="w-full lg:px-4 mx-auto">
         <Outlet />
       </div>
     </MainInsetLayout>

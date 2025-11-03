@@ -28,3 +28,8 @@ export const DEFAULT_USER_LOGIN: UserLogin = {
   email: '',
   password: '',
 }
+
+export interface UserProfileUpdate {
+  name?: string
+  email?: string
+}
