@@ -1,8 +1,11 @@
 import useAppStore from '@/integrations/zustand/app-store'
-import { updateUserProfile } from '@/lib/api/profile.settings'
+import {
+  updateUserPassword,
+  updateUserProfile,
+} from '@/lib/api/profile.settings'
 import type { ApiError } from '@/lib/handle-api-error'
 import { type RequestProgress } from '@/lib/types/response'
-import type { UserProfileUpdate } from '@/lib/types/user'
+import type { UserPasswordUpdate, UserProfileUpdate } from '@/lib/types/user'
 import { useState } from 'react'
 
 export default function useProfileSettings() {
@@ -45,8 +48,31 @@ export default function useProfileSettings() {
     }
   }
 
+  async function changePassword(data: UserPasswordUpdate): Promise<void> {
+    setRequestProgress('in-progress')
+    clearError()
+    setValidationErrors(null)
+    try {
+      // Call the API to update the user password
+      await updateUserPassword(data)
+      setRequestProgress('completed')
+    } catch (err) {
+      const error = err as ApiError
+      setError(error.message)
+      if (error.errors) {
+        const fieldErrors: Record<string, string> = {}
+        for (const key in error.errors) {
+          fieldErrors[key] = error.errors[key].join(' ')
+        }
+        setValidationErrors(fieldErrors)
+      }
+      setRequestProgress('failed')
+    }
+  }
+
   return {
     updateProfile,
+    changePassword,
     validationErrors,
     error,
     clearError,

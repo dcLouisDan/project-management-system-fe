@@ -33,3 +33,9 @@ export interface UserProfileUpdate {
   name?: string
   email?: string
 }
+
+export interface UserPasswordUpdate {
+  current_password: string
+  password: string
+  password_confirmation: string
+}

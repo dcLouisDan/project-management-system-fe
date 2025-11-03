@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import ProfileInformationForm from './-components/profile-information-form'
+import UpdatePasswordForm from './-components/update-password-form'
 
 export const Route = createFileRoute('/_main/settings/profile')({
   component: RouteComponent,
@@ -15,6 +16,7 @@ function RouteComponent() {
         </p>
       </div>
       <ProfileInformationForm />
+      <UpdatePasswordForm />
     </div>
   )
 }
