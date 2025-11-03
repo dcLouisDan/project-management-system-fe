@@ -26,6 +26,7 @@ import {
   SidebarRail,
 } from '@/components/ui/sidebar'
 import useAppStore from '@/integrations/zustand/app-store'
+import { NAV_MAIN_LINKS } from '@/lib/nav-main-links'
 
 // This is sample data.
 const data = {
@@ -53,24 +54,9 @@ const data = {
   ],
   navMain: [
     {
-      title: 'Playground',
-      url: '#',
+      title: 'Dashboard',
+      url: '/dashboard',
       icon: SquareTerminal,
-      isActive: true,
-      items: [
-        {
-          title: 'History',
-          url: '#',
-        },
-        {
-          title: 'Starred',
-          url: '#',
-        },
-        {
-          title: 'Settings',
-          url: '#',
-        },
-      ],
     },
     {
       title: 'Models',
@@ -120,8 +106,8 @@ const data = {
       icon: Settings2,
       items: [
         {
-          title: 'General',
-          url: '#',
+          title: 'Profile',
+          url: '/settings/profile',
         },
         {
           title: 'Team',
@@ -169,7 +155,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <TeamSwitcher />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain items={NAV_MAIN_LINKS} />
         <NavProjects projects={data.projects} />
       </SidebarContent>
       <SidebarFooter>

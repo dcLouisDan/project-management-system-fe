@@ -17,8 +17,11 @@ import { Route as DemoTableRouteImport } from './routes/demo/table'
 import { Route as AuthRegisterRouteImport } from './routes/auth/register'
 import { Route as AuthLoginRouteImport } from './routes/auth/login'
 import { Route as MainDashboardRouteImport } from './routes/_main/dashboard'
+import { Route as MainSettingsRouteRouteImport } from './routes/_main/settings/route'
 import { Route as DemoFormSimpleRouteImport } from './routes/demo/form.simple'
 import { Route as DemoFormAddressRouteImport } from './routes/demo/form.address'
+import { Route as MainSettingsTeamRouteImport } from './routes/_main/settings/team'
+import { Route as MainSettingsProfileRouteImport } from './routes/_main/settings/profile'
 
 const AuthRouteRoute = AuthRouteRouteImport.update({
   id: '/auth',
@@ -59,6 +62,11 @@ const MainDashboardRoute = MainDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => MainRouteRoute,
 } as any)
+const MainSettingsRouteRoute = MainSettingsRouteRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => MainRouteRoute,
+} as any)
 const DemoFormSimpleRoute = DemoFormSimpleRouteImport.update({
   id: '/demo/form/simple',
   path: '/demo/form/simple',
@@ -69,26 +77,42 @@ const DemoFormAddressRoute = DemoFormAddressRouteImport.update({
   path: '/demo/form/address',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MainSettingsTeamRoute = MainSettingsTeamRouteImport.update({
+  id: '/team',
+  path: '/team',
+  getParentRoute: () => MainSettingsRouteRoute,
+} as any)
+const MainSettingsProfileRoute = MainSettingsProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => MainSettingsRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteRouteWithChildren
+  '/settings': typeof MainSettingsRouteRouteWithChildren
   '/dashboard': typeof MainDashboardRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/demo/table': typeof DemoTableRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
+  '/settings/profile': typeof MainSettingsProfileRoute
+  '/settings/team': typeof MainSettingsTeamRoute
   '/demo/form/address': typeof DemoFormAddressRoute
   '/demo/form/simple': typeof DemoFormSimpleRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteRouteWithChildren
+  '/settings': typeof MainSettingsRouteRouteWithChildren
   '/dashboard': typeof MainDashboardRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/demo/table': typeof DemoTableRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
+  '/settings/profile': typeof MainSettingsProfileRoute
+  '/settings/team': typeof MainSettingsTeamRoute
   '/demo/form/address': typeof DemoFormAddressRoute
   '/demo/form/simple': typeof DemoFormSimpleRoute
 }
@@ -97,11 +121,14 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_main': typeof MainRouteRouteWithChildren
   '/auth': typeof AuthRouteRouteWithChildren
+  '/_main/settings': typeof MainSettingsRouteRouteWithChildren
   '/_main/dashboard': typeof MainDashboardRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/demo/table': typeof DemoTableRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
+  '/_main/settings/profile': typeof MainSettingsProfileRoute
+  '/_main/settings/team': typeof MainSettingsTeamRoute
   '/demo/form/address': typeof DemoFormAddressRoute
   '/demo/form/simple': typeof DemoFormSimpleRoute
 }
@@ -110,22 +137,28 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/settings'
     | '/dashboard'
     | '/auth/login'
     | '/auth/register'
     | '/demo/table'
     | '/demo/tanstack-query'
+    | '/settings/profile'
+    | '/settings/team'
     | '/demo/form/address'
     | '/demo/form/simple'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
+    | '/settings'
     | '/dashboard'
     | '/auth/login'
     | '/auth/register'
     | '/demo/table'
     | '/demo/tanstack-query'
+    | '/settings/profile'
+    | '/settings/team'
     | '/demo/form/address'
     | '/demo/form/simple'
   id:
@@ -133,11 +166,14 @@ export interface FileRouteTypes {
     | '/'
     | '/_main'
     | '/auth'
+    | '/_main/settings'
     | '/_main/dashboard'
     | '/auth/login'
     | '/auth/register'
     | '/demo/table'
     | '/demo/tanstack-query'
+    | '/_main/settings/profile'
+    | '/_main/settings/team'
     | '/demo/form/address'
     | '/demo/form/simple'
   fileRoutesById: FileRoutesById
@@ -210,6 +246,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainDashboardRouteImport
       parentRoute: typeof MainRouteRoute
     }
+    '/_main/settings': {
+      id: '/_main/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof MainSettingsRouteRouteImport
+      parentRoute: typeof MainRouteRoute
+    }
     '/demo/form/simple': {
       id: '/demo/form/simple'
       path: '/demo/form/simple'
@@ -224,14 +267,43 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DemoFormAddressRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_main/settings/team': {
+      id: '/_main/settings/team'
+      path: '/team'
+      fullPath: '/settings/team'
+      preLoaderRoute: typeof MainSettingsTeamRouteImport
+      parentRoute: typeof MainSettingsRouteRoute
+    }
+    '/_main/settings/profile': {
+      id: '/_main/settings/profile'
+      path: '/profile'
+      fullPath: '/settings/profile'
+      preLoaderRoute: typeof MainSettingsProfileRouteImport
+      parentRoute: typeof MainSettingsRouteRoute
+    }
   }
 }
 
+interface MainSettingsRouteRouteChildren {
+  MainSettingsProfileRoute: typeof MainSettingsProfileRoute
+  MainSettingsTeamRoute: typeof MainSettingsTeamRoute
+}
+
+const MainSettingsRouteRouteChildren: MainSettingsRouteRouteChildren = {
+  MainSettingsProfileRoute: MainSettingsProfileRoute,
+  MainSettingsTeamRoute: MainSettingsTeamRoute,
+}
+
+const MainSettingsRouteRouteWithChildren =
+  MainSettingsRouteRoute._addFileChildren(MainSettingsRouteRouteChildren)
+
 interface MainRouteRouteChildren {
+  MainSettingsRouteRoute: typeof MainSettingsRouteRouteWithChildren
   MainDashboardRoute: typeof MainDashboardRoute
 }
 
 const MainRouteRouteChildren: MainRouteRouteChildren = {
+  MainSettingsRouteRoute: MainSettingsRouteRouteWithChildren,
   MainDashboardRoute: MainDashboardRoute,
 }
 
