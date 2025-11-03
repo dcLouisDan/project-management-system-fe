@@ -15,7 +15,7 @@ function RouteComponent() {
         {SETTING_LINKS.map((link, index) => (
           <Link
             key={index}
-            className="px-4 py-2 rounded-md hover:bg-accent/50 text-sm flex-1 text-center"
+            className="px-2 py-1 rounded-md hover:bg-accent/50 text-sm flex-1 text-center"
             to={link.url}
             activeProps={{ className: 'bg-accent' }}
           >

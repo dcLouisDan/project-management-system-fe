@@ -12,14 +12,12 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthRouteRouteImport } from './routes/auth/route'
 import { Route as MainRouteRouteImport } from './routes/_main/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as DemoTanstackQueryRouteImport } from './routes/demo/tanstack-query'
-import { Route as DemoTableRouteImport } from './routes/demo/table'
 import { Route as AuthRegisterRouteImport } from './routes/auth/register'
 import { Route as AuthLoginRouteImport } from './routes/auth/login'
 import { Route as MainDashboardRouteImport } from './routes/_main/dashboard'
+import { Route as MainUsersRouteRouteImport } from './routes/_main/users/route'
+import { Route as MainTeamsRouteRouteImport } from './routes/_main/teams/route'
 import { Route as MainSettingsRouteRouteImport } from './routes/_main/settings/route'
-import { Route as DemoFormSimpleRouteImport } from './routes/demo/form.simple'
-import { Route as DemoFormAddressRouteImport } from './routes/demo/form.address'
 import { Route as MainSettingsTeamRouteImport } from './routes/_main/settings/team'
 import { Route as MainSettingsProfileRouteImport } from './routes/_main/settings/profile'
 
@@ -37,16 +35,6 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DemoTanstackQueryRoute = DemoTanstackQueryRouteImport.update({
-  id: '/demo/tanstack-query',
-  path: '/demo/tanstack-query',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DemoTableRoute = DemoTableRouteImport.update({
-  id: '/demo/table',
-  path: '/demo/table',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthRegisterRoute = AuthRegisterRouteImport.update({
   id: '/register',
   path: '/register',
@@ -62,20 +50,20 @@ const MainDashboardRoute = MainDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => MainRouteRoute,
 } as any)
+const MainUsersRouteRoute = MainUsersRouteRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => MainRouteRoute,
+} as any)
+const MainTeamsRouteRoute = MainTeamsRouteRouteImport.update({
+  id: '/teams',
+  path: '/teams',
+  getParentRoute: () => MainRouteRoute,
+} as any)
 const MainSettingsRouteRoute = MainSettingsRouteRouteImport.update({
   id: '/settings',
   path: '/settings',
   getParentRoute: () => MainRouteRoute,
-} as any)
-const DemoFormSimpleRoute = DemoFormSimpleRouteImport.update({
-  id: '/demo/form/simple',
-  path: '/demo/form/simple',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DemoFormAddressRoute = DemoFormAddressRouteImport.update({
-  id: '/demo/form/address',
-  path: '/demo/form/address',
-  getParentRoute: () => rootRouteImport,
 } as any)
 const MainSettingsTeamRoute = MainSettingsTeamRouteImport.update({
   id: '/team',
@@ -92,29 +80,25 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteRouteWithChildren
   '/settings': typeof MainSettingsRouteRouteWithChildren
+  '/teams': typeof MainTeamsRouteRoute
+  '/users': typeof MainUsersRouteRoute
   '/dashboard': typeof MainDashboardRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
-  '/demo/table': typeof DemoTableRoute
-  '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/settings/profile': typeof MainSettingsProfileRoute
   '/settings/team': typeof MainSettingsTeamRoute
-  '/demo/form/address': typeof DemoFormAddressRoute
-  '/demo/form/simple': typeof DemoFormSimpleRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteRouteWithChildren
   '/settings': typeof MainSettingsRouteRouteWithChildren
+  '/teams': typeof MainTeamsRouteRoute
+  '/users': typeof MainUsersRouteRoute
   '/dashboard': typeof MainDashboardRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
-  '/demo/table': typeof DemoTableRoute
-  '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/settings/profile': typeof MainSettingsProfileRoute
   '/settings/team': typeof MainSettingsTeamRoute
-  '/demo/form/address': typeof DemoFormAddressRoute
-  '/demo/form/simple': typeof DemoFormSimpleRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -122,15 +106,13 @@ export interface FileRoutesById {
   '/_main': typeof MainRouteRouteWithChildren
   '/auth': typeof AuthRouteRouteWithChildren
   '/_main/settings': typeof MainSettingsRouteRouteWithChildren
+  '/_main/teams': typeof MainTeamsRouteRoute
+  '/_main/users': typeof MainUsersRouteRoute
   '/_main/dashboard': typeof MainDashboardRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
-  '/demo/table': typeof DemoTableRoute
-  '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/_main/settings/profile': typeof MainSettingsProfileRoute
   '/_main/settings/team': typeof MainSettingsTeamRoute
-  '/demo/form/address': typeof DemoFormAddressRoute
-  '/demo/form/simple': typeof DemoFormSimpleRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -138,54 +120,44 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/settings'
+    | '/teams'
+    | '/users'
     | '/dashboard'
     | '/auth/login'
     | '/auth/register'
-    | '/demo/table'
-    | '/demo/tanstack-query'
     | '/settings/profile'
     | '/settings/team'
-    | '/demo/form/address'
-    | '/demo/form/simple'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
     | '/settings'
+    | '/teams'
+    | '/users'
     | '/dashboard'
     | '/auth/login'
     | '/auth/register'
-    | '/demo/table'
-    | '/demo/tanstack-query'
     | '/settings/profile'
     | '/settings/team'
-    | '/demo/form/address'
-    | '/demo/form/simple'
   id:
     | '__root__'
     | '/'
     | '/_main'
     | '/auth'
     | '/_main/settings'
+    | '/_main/teams'
+    | '/_main/users'
     | '/_main/dashboard'
     | '/auth/login'
     | '/auth/register'
-    | '/demo/table'
-    | '/demo/tanstack-query'
     | '/_main/settings/profile'
     | '/_main/settings/team'
-    | '/demo/form/address'
-    | '/demo/form/simple'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   MainRouteRoute: typeof MainRouteRouteWithChildren
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
-  DemoTableRoute: typeof DemoTableRoute
-  DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
-  DemoFormAddressRoute: typeof DemoFormAddressRoute
-  DemoFormSimpleRoute: typeof DemoFormSimpleRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -211,20 +183,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/demo/tanstack-query': {
-      id: '/demo/tanstack-query'
-      path: '/demo/tanstack-query'
-      fullPath: '/demo/tanstack-query'
-      preLoaderRoute: typeof DemoTanstackQueryRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/demo/table': {
-      id: '/demo/table'
-      path: '/demo/table'
-      fullPath: '/demo/table'
-      preLoaderRoute: typeof DemoTableRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/auth/register': {
       id: '/auth/register'
       path: '/register'
@@ -246,26 +204,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainDashboardRouteImport
       parentRoute: typeof MainRouteRoute
     }
+    '/_main/users': {
+      id: '/_main/users'
+      path: '/users'
+      fullPath: '/users'
+      preLoaderRoute: typeof MainUsersRouteRouteImport
+      parentRoute: typeof MainRouteRoute
+    }
+    '/_main/teams': {
+      id: '/_main/teams'
+      path: '/teams'
+      fullPath: '/teams'
+      preLoaderRoute: typeof MainTeamsRouteRouteImport
+      parentRoute: typeof MainRouteRoute
+    }
     '/_main/settings': {
       id: '/_main/settings'
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof MainSettingsRouteRouteImport
       parentRoute: typeof MainRouteRoute
-    }
-    '/demo/form/simple': {
-      id: '/demo/form/simple'
-      path: '/demo/form/simple'
-      fullPath: '/demo/form/simple'
-      preLoaderRoute: typeof DemoFormSimpleRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/demo/form/address': {
-      id: '/demo/form/address'
-      path: '/demo/form/address'
-      fullPath: '/demo/form/address'
-      preLoaderRoute: typeof DemoFormAddressRouteImport
-      parentRoute: typeof rootRouteImport
     }
     '/_main/settings/team': {
       id: '/_main/settings/team'
@@ -299,11 +257,15 @@ const MainSettingsRouteRouteWithChildren =
 
 interface MainRouteRouteChildren {
   MainSettingsRouteRoute: typeof MainSettingsRouteRouteWithChildren
+  MainTeamsRouteRoute: typeof MainTeamsRouteRoute
+  MainUsersRouteRoute: typeof MainUsersRouteRoute
   MainDashboardRoute: typeof MainDashboardRoute
 }
 
 const MainRouteRouteChildren: MainRouteRouteChildren = {
   MainSettingsRouteRoute: MainSettingsRouteRouteWithChildren,
+  MainTeamsRouteRoute: MainTeamsRouteRoute,
+  MainUsersRouteRoute: MainUsersRouteRoute,
   MainDashboardRoute: MainDashboardRoute,
 }
 
@@ -329,10 +291,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   MainRouteRoute: MainRouteRouteWithChildren,
   AuthRouteRoute: AuthRouteRouteWithChildren,
-  DemoTableRoute: DemoTableRoute,
-  DemoTanstackQueryRoute: DemoTanstackQueryRoute,
-  DemoFormAddressRoute: DemoFormAddressRoute,
-  DemoFormSimpleRoute: DemoFormSimpleRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -1,4 +1,4 @@
-import { BookOpen, Bot, Settings2, SquareTerminal } from 'lucide-react'
+import { BookOpen, Bot, Settings2, SquareTerminal, Users } from 'lucide-react'
 import type { SidebarNavItem, SidebarNavSubItem } from './types/ui'
 
 export const SETTING_LINKS: SidebarNavSubItem[] = [
@@ -46,25 +46,17 @@ export const NAV_MAIN_LINKS: SidebarNavItem[] = [
     ],
   },
   {
-    title: 'Documentation',
+    title: 'Users and Teams',
     url: '#',
-    icon: BookOpen,
+    icon: Users,
     items: [
       {
-        title: 'Introduction',
-        url: '#',
+        title: 'Users',
+        url: '/users',
       },
       {
-        title: 'Get Started',
-        url: '#',
-      },
-      {
-        title: 'Tutorials',
-        url: '#',
-      },
-      {
-        title: 'Changelog',
-        url: '#',
+        title: 'Teams',
+        url: '/teams',
       },
     ],
   },

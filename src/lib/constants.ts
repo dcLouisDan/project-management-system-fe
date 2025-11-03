@@ -4,3 +4,7 @@ export const BACKEND_URL =
 export const BACKEND_API_ROOT =
   import.meta.env.VITE_BACKEND_API_ROOT || '/api/v1'
 export const BACKEND_API_URL = `${BACKEND_URL}${BACKEND_API_ROOT}`
+
+export const QUERY_KEYS = {
+  USERS: 'users',
+}
