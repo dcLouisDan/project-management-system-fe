@@ -19,6 +19,8 @@ export const DEFAULT_USER_REGISTRATION: UserRegistration = {
   password_confirmation: '',
 }
 
+export const SORTABLE_USER_FIELDS: string[] = ['id', 'name', 'created_at']
+
 export interface UserLogin {
   email: string
   password: string

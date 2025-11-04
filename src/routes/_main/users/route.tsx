@@ -6,6 +6,7 @@ import { DataTable } from '@/components/data-table'
 import { columns } from './-table/columns'
 import PaginationBar from '@/components/pagination-bar'
 import UsersTableFilters from './-table/user-table-filters'
+import type { SortDirection } from '@/lib/types/ui'
 
 export const Route = createFileRoute('/_main/users')({
   component: RouteComponent,
@@ -16,11 +17,14 @@ export const Route = createFileRoute('/_main/users')({
       name?: string
       role?: string
       roles?: string[]
+      sort?: string
+      direction?: SortDirection
     },
 })
 
 function RouteComponent() {
-  const { page, per_page, name, role, roles } = Route.useSearch()
+  const { page, per_page, name, role, roles, sort, direction } =
+    Route.useSearch()
   const { data, isFetching } = useQuery(
     usersQueryOptions({
       page: page ?? 1,
@@ -28,6 +32,8 @@ function RouteComponent() {
       name: name ?? '',
       role: role ?? '',
       roles: roles ? roles.join(',') : '',
+      sort: sort,
+      direction: direction,
     }),
   )
 

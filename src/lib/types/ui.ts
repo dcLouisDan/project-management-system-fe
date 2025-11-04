@@ -1,3 +1,5 @@
+import { type BasicSelectItem } from '@/components/basic-select'
+
 export interface BreadcrumbLinkItem {
   href: string
   label: string
@@ -15,3 +17,16 @@ export interface SidebarNavSubItem {
   title: string
   url: string
 }
+
+export type SortDirection = 'asc' | 'desc'
+
+export const SortDirectionSelectItems: BasicSelectItem[] = [
+  {
+    value: 'asc',
+    label: 'Ascending',
+  },
+  {
+    value: 'desc',
+    label: 'Descending',
+  },
+]

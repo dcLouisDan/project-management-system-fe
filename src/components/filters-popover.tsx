@@ -10,6 +10,7 @@ import type { BasicSelectItem } from './basic-select'
 import { Filter } from 'lucide-react'
 import { useMemo } from 'react'
 import { Badge } from './ui/badge'
+import { Label } from './ui/label'
 
 interface FiltersPopoverProps {
   value?: Record<string, string[]>
@@ -42,6 +43,14 @@ export default function FiltersPopover({
     return count
   }, [filters, value])
 
+  const onResetFilter = (filterKey: string) => {
+    if (value) {
+      const newValue = { ...value }
+      newValue[filterKey] = []
+      onValueChange?.(newValue)
+    }
+  }
+
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -57,35 +66,33 @@ export default function FiltersPopover({
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="text-sm flex flex-col gap-2" align="end">
-        <div className="flex items-center justify-between">
-          <div className="flex gap-2 items-center">
-            <Filter />
-            <h5>Filters</h5>
-          </div>
-          <div className="flex gap-2 text-xs items-center justify-end">
-            <Button
-              className="py-1 h-7"
-              size="sm"
-              variant="outline"
-              onClick={() => onClear?.()}
-            >
-              Reset
-            </Button>
-            <Button
-              className="py-0.5 h-7"
-              size="sm"
+      <PopoverContent className="text-sm p-0" align="end">
+        <div className="flex gap-2 items-center p-2">
+          <Filter className="size-4" />
+          <p className="font-bold">Filters</p>
+          {filtersCount > 0 && (
+            <Badge
               variant="default"
-              onClick={() => onSubmit?.()}
+              className="h-5 min-w-5 rounded-full px-1 font-mono tabular-nums"
             >
-              Apply
-            </Button>
-          </div>
+              {filtersCount}
+            </Badge>
+          )}
         </div>
+
         <Separator />
         {filters.map((filter) => (
-          <div key={filter.key} className="flex flex-col gap-2">
-            <p className="font-bold">{filter.label}</p>
+          <div key={filter.key} className="flex flex-col gap-2 p-2">
+            <div className="flex items-center justify-between">
+              <Label className="text-muted-foreground">{filter.label}</Label>
+              <Button
+                variant="link"
+                size="sm"
+                onClick={() => onResetFilter(filter.key)}
+              >
+                Reset
+              </Button>
+            </div>
             <div>
               <FilterToggleGroup
                 items={filter.items}
@@ -97,6 +104,15 @@ export default function FiltersPopover({
             </div>
           </div>
         ))}
+        <Separator />
+        <div className="flex gap-2 text-xs items-center justify-between p-2">
+          <Button size="sm" variant="secondary" onClick={() => onClear?.()}>
+            Reset
+          </Button>
+          <Button size="sm" variant="default" onClick={() => onSubmit?.()}>
+            Apply
+          </Button>
+        </div>
       </PopoverContent>
     </Popover>
   )

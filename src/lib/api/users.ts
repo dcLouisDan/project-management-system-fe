@@ -1,6 +1,7 @@
 import api from './request'
 import { handleApiError } from '../handle-api-error'
 import Cookies from 'js-cookie'
+import type { SortDirection } from '../types/ui'
 
 export interface FetchUsersParams {
   page: number
@@ -8,6 +9,8 @@ export interface FetchUsersParams {
   name?: string
   role?: string
   roles?: string
+  sort?: string
+  direction?: SortDirection
 }
 
 export async function fetchUsers(params: FetchUsersParams) {
