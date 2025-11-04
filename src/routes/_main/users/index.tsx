@@ -8,18 +8,19 @@ import PaginationBar from '@/components/pagination-bar'
 import UsersTableFilters from './-table/user-table-filters'
 import type { SortDirection } from '@/lib/types/ui'
 
-export const Route = createFileRoute('/_main/users')({
+export interface UsersIndexSearchParams {
+  page?: number
+  per_page?: number
+  name?: string
+  role?: string
+  roles?: string[]
+  sort?: string
+  direction?: SortDirection
+}
+
+export const Route = createFileRoute('/_main/users/')({
   component: RouteComponent,
-  validateSearch: (search) =>
-    search as {
-      page?: number
-      per_page?: number
-      name?: string
-      role?: string
-      roles?: string[]
-      sort?: string
-      direction?: SortDirection
-    },
+  validateSearch: (search) => search as UsersIndexSearchParams,
 })
 
 function RouteComponent() {

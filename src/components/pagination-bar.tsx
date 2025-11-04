@@ -13,6 +13,7 @@ import {
 import { useMemo } from 'react'
 import { BasicSelect, type BasicSelectItem } from './basic-select'
 import { useNavigate } from '@tanstack/react-router'
+import { type UsersIndexSearchParams } from '@/routes/_main/users'
 
 export default function PaginationBar({
   pagination,
@@ -23,7 +24,7 @@ export default function PaginationBar({
   const handlePerPageValueChange = (value: string) => {
     navigate({
       to: '.',
-      search: (prev) => ({
+      search: (prev: UsersIndexSearchParams) => ({
         ...prev,
         per_page: Number(value),
         page: 1, // Reset to first page when per_page changes
@@ -50,7 +51,7 @@ export default function PaginationBar({
     label: num.toString(),
   }))
   return (
-    <div className="flex gap-2 items-center w-full justify-between">
+    <div className="flex gap-2 items-center w-full sm:justify-between">
       <div className="hidden sm:flex items-center gap-2">
         <span className="text-muted-foreground text-sm">Showing</span>
         <BasicSelect
@@ -63,16 +64,16 @@ export default function PaginationBar({
           out of {pagination.total} results
         </span>
       </div>
-      <div className="text-sm text-muted-foreground">
+      <div className="hidden sm:block text-sm text-muted-foreground">
         Page {current_page} of {last_page}
       </div>
-      <Pagination className="w-fit mx-0">
+      <Pagination className="sm:w-fit mx-0">
         <PaginationContent>
           <PaginationItem>
             <PaginationFirst
               disabled={isFirstPage}
               to="."
-              search={(prev) => ({
+              search={(prev: UsersIndexSearchParams) => ({
                 ...prev,
                 page: 1,
               })}
@@ -82,7 +83,7 @@ export default function PaginationBar({
             <PaginationPrevious
               disabled={isFirstPage}
               to="."
-              search={(prev) => ({
+              search={(prev: UsersIndexSearchParams) => ({
                 ...prev,
                 page: prev.page ? prev.page - 1 : undefined,
               })}
@@ -98,7 +99,7 @@ export default function PaginationBar({
                 <PaginationLink
                   isActive={page === current_page}
                   to="."
-                  search={(prev) => ({
+                  search={(prev: UsersIndexSearchParams) => ({
                     ...prev,
                     page: page,
                   })}
@@ -113,7 +114,7 @@ export default function PaginationBar({
             <PaginationNext
               to="."
               disabled={isLastPage}
-              search={(prev) => ({
+              search={(prev: UsersIndexSearchParams) => ({
                 ...prev,
                 page: prev.page ? prev.page + 1 : undefined,
               })}
@@ -123,7 +124,7 @@ export default function PaginationBar({
             <PaginationLast
               to="."
               disabled={isLastPage}
-              search={(prev) => ({
+              search={(prev: UsersIndexSearchParams) => ({
                 ...prev,
                 page: last_page,
               })}

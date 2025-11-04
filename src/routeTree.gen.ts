@@ -15,9 +15,10 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthRegisterRouteImport } from './routes/auth/register'
 import { Route as AuthLoginRouteImport } from './routes/auth/login'
 import { Route as MainDashboardRouteImport } from './routes/_main/dashboard'
-import { Route as MainUsersRouteRouteImport } from './routes/_main/users/route'
-import { Route as MainTeamsRouteRouteImport } from './routes/_main/teams/route'
 import { Route as MainSettingsRouteRouteImport } from './routes/_main/settings/route'
+import { Route as MainUsersIndexRouteImport } from './routes/_main/users/index'
+import { Route as MainTeamsIndexRouteImport } from './routes/_main/teams/index'
+import { Route as MainUsersCreateRouteImport } from './routes/_main/users/create'
 import { Route as MainSettingsTeamRouteImport } from './routes/_main/settings/team'
 import { Route as MainSettingsProfileRouteImport } from './routes/_main/settings/profile'
 
@@ -50,19 +51,24 @@ const MainDashboardRoute = MainDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => MainRouteRoute,
 } as any)
-const MainUsersRouteRoute = MainUsersRouteRouteImport.update({
-  id: '/users',
-  path: '/users',
-  getParentRoute: () => MainRouteRoute,
-} as any)
-const MainTeamsRouteRoute = MainTeamsRouteRouteImport.update({
-  id: '/teams',
-  path: '/teams',
-  getParentRoute: () => MainRouteRoute,
-} as any)
 const MainSettingsRouteRoute = MainSettingsRouteRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => MainRouteRoute,
+} as any)
+const MainUsersIndexRoute = MainUsersIndexRouteImport.update({
+  id: '/users/',
+  path: '/users/',
+  getParentRoute: () => MainRouteRoute,
+} as any)
+const MainTeamsIndexRoute = MainTeamsIndexRouteImport.update({
+  id: '/teams/',
+  path: '/teams/',
+  getParentRoute: () => MainRouteRoute,
+} as any)
+const MainUsersCreateRoute = MainUsersCreateRouteImport.update({
+  id: '/users/create',
+  path: '/users/create',
   getParentRoute: () => MainRouteRoute,
 } as any)
 const MainSettingsTeamRoute = MainSettingsTeamRouteImport.update({
@@ -80,25 +86,27 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteRouteWithChildren
   '/settings': typeof MainSettingsRouteRouteWithChildren
-  '/teams': typeof MainTeamsRouteRoute
-  '/users': typeof MainUsersRouteRoute
   '/dashboard': typeof MainDashboardRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/settings/profile': typeof MainSettingsProfileRoute
   '/settings/team': typeof MainSettingsTeamRoute
+  '/users/create': typeof MainUsersCreateRoute
+  '/teams': typeof MainTeamsIndexRoute
+  '/users': typeof MainUsersIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteRouteWithChildren
   '/settings': typeof MainSettingsRouteRouteWithChildren
-  '/teams': typeof MainTeamsRouteRoute
-  '/users': typeof MainUsersRouteRoute
   '/dashboard': typeof MainDashboardRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/settings/profile': typeof MainSettingsProfileRoute
   '/settings/team': typeof MainSettingsTeamRoute
+  '/users/create': typeof MainUsersCreateRoute
+  '/teams': typeof MainTeamsIndexRoute
+  '/users': typeof MainUsersIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -106,13 +114,14 @@ export interface FileRoutesById {
   '/_main': typeof MainRouteRouteWithChildren
   '/auth': typeof AuthRouteRouteWithChildren
   '/_main/settings': typeof MainSettingsRouteRouteWithChildren
-  '/_main/teams': typeof MainTeamsRouteRoute
-  '/_main/users': typeof MainUsersRouteRoute
   '/_main/dashboard': typeof MainDashboardRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/_main/settings/profile': typeof MainSettingsProfileRoute
   '/_main/settings/team': typeof MainSettingsTeamRoute
+  '/_main/users/create': typeof MainUsersCreateRoute
+  '/_main/teams/': typeof MainTeamsIndexRoute
+  '/_main/users/': typeof MainUsersIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -120,38 +129,41 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/settings'
-    | '/teams'
-    | '/users'
     | '/dashboard'
     | '/auth/login'
     | '/auth/register'
     | '/settings/profile'
     | '/settings/team'
+    | '/users/create'
+    | '/teams'
+    | '/users'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
     | '/settings'
-    | '/teams'
-    | '/users'
     | '/dashboard'
     | '/auth/login'
     | '/auth/register'
     | '/settings/profile'
     | '/settings/team'
+    | '/users/create'
+    | '/teams'
+    | '/users'
   id:
     | '__root__'
     | '/'
     | '/_main'
     | '/auth'
     | '/_main/settings'
-    | '/_main/teams'
-    | '/_main/users'
     | '/_main/dashboard'
     | '/auth/login'
     | '/auth/register'
     | '/_main/settings/profile'
     | '/_main/settings/team'
+    | '/_main/users/create'
+    | '/_main/teams/'
+    | '/_main/users/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -204,25 +216,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainDashboardRouteImport
       parentRoute: typeof MainRouteRoute
     }
-    '/_main/users': {
-      id: '/_main/users'
-      path: '/users'
-      fullPath: '/users'
-      preLoaderRoute: typeof MainUsersRouteRouteImport
-      parentRoute: typeof MainRouteRoute
-    }
-    '/_main/teams': {
-      id: '/_main/teams'
-      path: '/teams'
-      fullPath: '/teams'
-      preLoaderRoute: typeof MainTeamsRouteRouteImport
-      parentRoute: typeof MainRouteRoute
-    }
     '/_main/settings': {
       id: '/_main/settings'
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof MainSettingsRouteRouteImport
+      parentRoute: typeof MainRouteRoute
+    }
+    '/_main/users/': {
+      id: '/_main/users/'
+      path: '/users'
+      fullPath: '/users'
+      preLoaderRoute: typeof MainUsersIndexRouteImport
+      parentRoute: typeof MainRouteRoute
+    }
+    '/_main/teams/': {
+      id: '/_main/teams/'
+      path: '/teams'
+      fullPath: '/teams'
+      preLoaderRoute: typeof MainTeamsIndexRouteImport
+      parentRoute: typeof MainRouteRoute
+    }
+    '/_main/users/create': {
+      id: '/_main/users/create'
+      path: '/users/create'
+      fullPath: '/users/create'
+      preLoaderRoute: typeof MainUsersCreateRouteImport
       parentRoute: typeof MainRouteRoute
     }
     '/_main/settings/team': {
@@ -257,16 +276,18 @@ const MainSettingsRouteRouteWithChildren =
 
 interface MainRouteRouteChildren {
   MainSettingsRouteRoute: typeof MainSettingsRouteRouteWithChildren
-  MainTeamsRouteRoute: typeof MainTeamsRouteRoute
-  MainUsersRouteRoute: typeof MainUsersRouteRoute
   MainDashboardRoute: typeof MainDashboardRoute
+  MainUsersCreateRoute: typeof MainUsersCreateRoute
+  MainTeamsIndexRoute: typeof MainTeamsIndexRoute
+  MainUsersIndexRoute: typeof MainUsersIndexRoute
 }
 
 const MainRouteRouteChildren: MainRouteRouteChildren = {
   MainSettingsRouteRoute: MainSettingsRouteRouteWithChildren,
-  MainTeamsRouteRoute: MainTeamsRouteRoute,
-  MainUsersRouteRoute: MainUsersRouteRoute,
   MainDashboardRoute: MainDashboardRoute,
+  MainUsersCreateRoute: MainUsersCreateRoute,
+  MainTeamsIndexRoute: MainTeamsIndexRoute,
+  MainUsersIndexRoute: MainUsersIndexRoute,
 }
 
 const MainRouteRouteWithChildren = MainRouteRoute._addFileChildren(

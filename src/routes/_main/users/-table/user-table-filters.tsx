@@ -8,7 +8,7 @@ import type { SortDirection } from '@/lib/types/ui'
 import { SORTABLE_USER_FIELDS } from '@/lib/types/user'
 import { useNavigate, useSearch } from '@tanstack/react-router'
 import { useState } from 'react'
-import { string } from 'zod'
+import type { UsersIndexSearchParams } from '..'
 
 const popoverFilters: FilterOptions[] = [
   {
@@ -20,7 +20,7 @@ const popoverFilters: FilterOptions[] = [
 
 export default function UsersTableFilters() {
   const { name, role } = useSearch({
-    from: '/_main/users',
+    from: '/_main/users/',
   })
 
   const navigate = useNavigate()
@@ -28,7 +28,7 @@ export default function UsersTableFilters() {
     navigate({
       to: '.',
       replace: true,
-      search: (prev) => ({
+      search: (prev: UsersIndexSearchParams) => ({
         ...prev,
         name: newName.toString(),
         page: 1, // Reset to first page when name filter changes
@@ -46,7 +46,7 @@ export default function UsersTableFilters() {
     navigate({
       to: '.',
       replace: true,
-      search: (prev) => ({
+      search: (prev: UsersIndexSearchParams) => ({
         ...prev,
         roles: popoverFilterValues.role,
         page: 1, // Reset to first page when popover filters change
@@ -59,7 +59,7 @@ export default function UsersTableFilters() {
     navigate({
       to: '.',
       replace: true,
-      search: (prev) => {
+      search: (prev: UsersIndexSearchParams) => {
         const { roles, ...rest } = prev
         return {
           ...rest,
@@ -89,7 +89,7 @@ export default function UsersTableFilters() {
     navigate({
       to: '.',
       replace: true,
-      search: (prev) => ({
+      search: (prev: UsersIndexSearchParams) => ({
         ...prev,
         sort,
         direction,
@@ -102,7 +102,7 @@ export default function UsersTableFilters() {
     navigate({
       to: '.',
       replace: true,
-      search: (prev) => {
+      search: (prev: UsersIndexSearchParams) => {
         const { sort, direction, ...rest } = prev
         return {
           ...rest,
