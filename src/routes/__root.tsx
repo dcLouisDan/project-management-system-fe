@@ -1,4 +1,8 @@
-import { Outlet, createRootRouteWithContext } from '@tanstack/react-router'
+import {
+  HeadContent,
+  Outlet,
+  createRootRouteWithContext,
+} from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 
@@ -13,8 +17,20 @@ interface MyRouterContext {
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
+  head: () => ({
+    meta: [
+      {
+        name: 'description',
+        content: 'My App is a web application',
+      },
+      {
+        title: 'My App',
+      },
+    ],
+  }),
   component: () => (
     <>
+      <HeadContent />
       <Outlet />
       <Toaster />
       <TanStackDevtools

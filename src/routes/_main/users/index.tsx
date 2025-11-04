@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import MainInsetLayout from '../-main-inset-layout'
 import { usersQueryOptions } from '@/lib/query-options/users-query-options'
 import { useQuery } from '@tanstack/react-query'
@@ -7,7 +7,13 @@ import { columns } from './-table/columns'
 import PaginationBar from '@/components/pagination-bar'
 import UsersTableFilters from './-table/user-table-filters'
 import type { SortDirection } from '@/lib/types/ui'
+import { buttonVariants } from '@/components/ui/button'
+import { UserPlus } from 'lucide-react'
+import PageHeader from '@/components/page-header'
+import { APP_NAME } from '@/lib/constants'
 
+const PAGE_TITLE = 'Manage Users'
+const PAGE_DESCRIPTION = 'Create, view, update or delete user records'
 export interface UsersIndexSearchParams {
   page?: number
   per_page?: number
@@ -21,6 +27,17 @@ export interface UsersIndexSearchParams {
 export const Route = createFileRoute('/_main/users/')({
   component: RouteComponent,
   validateSearch: (search) => search as UsersIndexSearchParams,
+  head: () => ({
+    meta: [
+      {
+        title: PAGE_TITLE + ' - ' + APP_NAME,
+      },
+      {
+        name: 'description',
+        content: PAGE_DESCRIPTION,
+      },
+    ],
+  }),
 })
 
 function RouteComponent() {
@@ -40,7 +57,12 @@ function RouteComponent() {
 
   return (
     <MainInsetLayout breadcrumbItems={[{ label: 'Users', href: '/users' }]}>
-      <h3>Manage Users</h3>
+      <PageHeader title={PAGE_TITLE} description={PAGE_DESCRIPTION}>
+        <Link to="/users/create" className={buttonVariants()}>
+          <UserPlus />
+          Add New User
+        </Link>
+      </PageHeader>
       <UsersTableFilters />
       <DataTable
         columns={columns}

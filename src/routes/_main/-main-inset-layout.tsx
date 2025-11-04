@@ -9,6 +9,7 @@ import {
 import { Separator } from '@/components/ui/separator'
 import { SidebarTrigger } from '@/components/ui/sidebar'
 import { type BreadcrumbLinkItem } from '@/lib/types/ui'
+import { Link } from '@tanstack/react-router'
 
 export default function MainInsetLayout({
   children,
@@ -31,10 +32,10 @@ export default function MainInsetLayout({
               {breadcrumbItems.map((item, index) => {
                 if (index < breadcrumbItems.length - 1) {
                   return (
-                    <div key={index}>
+                    <div key={index} className="flex items-center gap-2">
                       <BreadcrumbItem className="hidden md:block">
-                        <BreadcrumbLink href={item.href}>
-                          {item.label}
+                        <BreadcrumbLink asChild>
+                          <Link to={item.href}>{item.label}</Link>
                         </BreadcrumbLink>
                       </BreadcrumbItem>
                       <BreadcrumbSeparator className="hidden md:block" />
@@ -51,7 +52,7 @@ export default function MainInsetLayout({
           </Breadcrumb>
         </div>
       </header>
-      <div className="flex flex-1 flex-col gap-4 p-4 pt-0">{children}</div>
+      <div className="flex flex-1 flex-col gap-4 p-8 pt-0">{children}</div>
     </>
   )
 }
