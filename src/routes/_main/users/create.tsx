@@ -27,6 +27,7 @@ import { useCallback, useEffect } from 'react'
 import type { Role } from '@/lib/types/role'
 import useManageUsers from '@/hooks/use-manage-users'
 import { ValidationErrorsAlert } from '@/components/validation-errors-alert'
+import UserAvatar from '@/components/user-avatar'
 
 const PAGE_TITLE = 'Add New User'
 const PAGE_DESCRIPTION =
@@ -84,14 +85,7 @@ function RouteComponent() {
         <div className="flex flex-col gap-4">
           <form.Subscribe
             selector={(state) => state.values.name}
-            children={(name) => (
-              <Avatar className="size-40 rounded-lg mx-auto">
-                <AvatarImage src={undefined} alt="user avatar" />
-                <AvatarFallback className="rounded-lg text-4xl">
-                  {name !== '' ? getAvatarFallback(name) : 'U'}
-                </AvatarFallback>
-              </Avatar>
-            )}
+            children={(name) => <UserAvatar name={name} />}
           />
         </div>
         <div className="flex-1">
