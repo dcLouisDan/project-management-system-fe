@@ -1,4 +1,8 @@
 import { handleApiError } from '../handle-api-error'
+import type {
+  UserLoginResponse,
+  UserRegistrationResponse,
+} from '../types/response'
 import type { UserRegistration } from '../types/user'
 import api from './request'
 import Cookies from 'js-cookie'
@@ -30,7 +34,7 @@ export async function registerUser(data: UserRegistration) {
 export async function fetchCurrentUser() {
   const XSRFToken = Cookies.get('XSRF-TOKEN')
   return api
-    .get(`/user`, {
+    .get<UserRegistrationResponse>(`/user`, {
       headers: {
         'X-XSRF-TOKEN': XSRFToken || '',
       },
@@ -47,7 +51,7 @@ export async function loginUser(email: string, password: string) {
 
   const xsrfToken = Cookies.get('XSRF-TOKEN')
   return api
-    .post(
+    .post<UserLoginResponse>(
       `/auth/login`,
       { email, password },
       {

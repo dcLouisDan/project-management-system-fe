@@ -27,7 +27,7 @@ export default function useManageUsers() {
     clearErrors()
     try {
       const response = await createUser(data)
-      const body = response.data as UserCreateResponse
+      const body = response.data
 
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.USERS],

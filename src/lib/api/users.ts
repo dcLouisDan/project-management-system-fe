@@ -1,7 +1,12 @@
 import api from './request'
 import { handleApiError } from '../handle-api-error'
 import type { SortDirection } from '../types/ui'
-import type { UserCreate } from '../types/user'
+import type { User, UserCreate } from '../types/user'
+import {
+  type PaginatedResponse,
+  type ShowUserResponse,
+  type UserCreateResponse,
+} from '../types/response'
 
 export interface FetchUsersParams {
   page: number
@@ -13,9 +18,11 @@ export interface FetchUsersParams {
   direction?: SortDirection
 }
 
+export class UserNotFoundError extends Error {}
+
 export async function fetchUsers(params: FetchUsersParams) {
   return api
-    .get(`/users`, {
+    .get<PaginatedResponse<User>>(`/users`, {
       params: params,
     })
     .catch((error) => {
@@ -24,7 +31,13 @@ export async function fetchUsers(params: FetchUsersParams) {
 }
 
 export async function createUser(data: UserCreate) {
-  return api.post('/users', data).catch((error) => {
+  return api.post<UserCreateResponse>('/users', data).catch((error) => {
+    throw handleApiError(error)
+  })
+}
+
+export async function showUser(userId: number) {
+  return api.get<ShowUserResponse>(`/users/${userId}`).catch((error) => {
     throw handleApiError(error)
   })
 }

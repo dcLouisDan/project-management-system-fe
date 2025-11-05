@@ -1,10 +1,6 @@
 import useAppStore from '@/integrations/zustand/app-store'
 import { loginUser, logoutUser, registerUser } from '@/lib/api/auth'
 import type { ApiError } from '@/lib/handle-api-error'
-import type {
-  UserLoginResponse,
-  UserRegistrationResponse,
-} from '@/lib/types/response'
 import { useState } from 'react'
 import { useNavigate, useRouter } from '@tanstack/react-router'
 import type { UserRegistration } from '@/lib/types/user'
@@ -36,7 +32,7 @@ export default function useAuth() {
     try {
       const response = await loginUser(email, password)
 
-      const body = response.data as UserLoginResponse
+      const body = response.data
       const user = body.data.user
       const mainRole: string | null =
         user.roles.length > 0 ? user.roles[0] : null
@@ -91,7 +87,7 @@ export default function useAuth() {
     try {
       const response = await registerUser(registrationData)
 
-      const body = response.data as UserRegistrationResponse
+      const body = response.data
 
       setUser(body.data.user)
       setLoading(false)

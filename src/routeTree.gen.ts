@@ -19,6 +19,7 @@ import { Route as MainSettingsRouteRouteImport } from './routes/_main/settings/r
 import { Route as MainUsersIndexRouteImport } from './routes/_main/users/index'
 import { Route as MainTeamsIndexRouteImport } from './routes/_main/teams/index'
 import { Route as MainUsersCreateRouteImport } from './routes/_main/users/create'
+import { Route as MainUsersUserIdRouteImport } from './routes/_main/users/$userId'
 import { Route as MainSettingsTeamRouteImport } from './routes/_main/settings/team'
 import { Route as MainSettingsProfileRouteImport } from './routes/_main/settings/profile'
 
@@ -71,6 +72,11 @@ const MainUsersCreateRoute = MainUsersCreateRouteImport.update({
   path: '/users/create',
   getParentRoute: () => MainRouteRoute,
 } as any)
+const MainUsersUserIdRoute = MainUsersUserIdRouteImport.update({
+  id: '/users/$userId',
+  path: '/users/$userId',
+  getParentRoute: () => MainRouteRoute,
+} as any)
 const MainSettingsTeamRoute = MainSettingsTeamRouteImport.update({
   id: '/team',
   path: '/team',
@@ -91,6 +97,7 @@ export interface FileRoutesByFullPath {
   '/auth/register': typeof AuthRegisterRoute
   '/settings/profile': typeof MainSettingsProfileRoute
   '/settings/team': typeof MainSettingsTeamRoute
+  '/users/$userId': typeof MainUsersUserIdRoute
   '/users/create': typeof MainUsersCreateRoute
   '/teams': typeof MainTeamsIndexRoute
   '/users': typeof MainUsersIndexRoute
@@ -104,6 +111,7 @@ export interface FileRoutesByTo {
   '/auth/register': typeof AuthRegisterRoute
   '/settings/profile': typeof MainSettingsProfileRoute
   '/settings/team': typeof MainSettingsTeamRoute
+  '/users/$userId': typeof MainUsersUserIdRoute
   '/users/create': typeof MainUsersCreateRoute
   '/teams': typeof MainTeamsIndexRoute
   '/users': typeof MainUsersIndexRoute
@@ -119,6 +127,7 @@ export interface FileRoutesById {
   '/auth/register': typeof AuthRegisterRoute
   '/_main/settings/profile': typeof MainSettingsProfileRoute
   '/_main/settings/team': typeof MainSettingsTeamRoute
+  '/_main/users/$userId': typeof MainUsersUserIdRoute
   '/_main/users/create': typeof MainUsersCreateRoute
   '/_main/teams/': typeof MainTeamsIndexRoute
   '/_main/users/': typeof MainUsersIndexRoute
@@ -134,6 +143,7 @@ export interface FileRouteTypes {
     | '/auth/register'
     | '/settings/profile'
     | '/settings/team'
+    | '/users/$userId'
     | '/users/create'
     | '/teams'
     | '/users'
@@ -147,6 +157,7 @@ export interface FileRouteTypes {
     | '/auth/register'
     | '/settings/profile'
     | '/settings/team'
+    | '/users/$userId'
     | '/users/create'
     | '/teams'
     | '/users'
@@ -161,6 +172,7 @@ export interface FileRouteTypes {
     | '/auth/register'
     | '/_main/settings/profile'
     | '/_main/settings/team'
+    | '/_main/users/$userId'
     | '/_main/users/create'
     | '/_main/teams/'
     | '/_main/users/'
@@ -244,6 +256,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainUsersCreateRouteImport
       parentRoute: typeof MainRouteRoute
     }
+    '/_main/users/$userId': {
+      id: '/_main/users/$userId'
+      path: '/users/$userId'
+      fullPath: '/users/$userId'
+      preLoaderRoute: typeof MainUsersUserIdRouteImport
+      parentRoute: typeof MainRouteRoute
+    }
     '/_main/settings/team': {
       id: '/_main/settings/team'
       path: '/team'
@@ -277,6 +296,7 @@ const MainSettingsRouteRouteWithChildren =
 interface MainRouteRouteChildren {
   MainSettingsRouteRoute: typeof MainSettingsRouteRouteWithChildren
   MainDashboardRoute: typeof MainDashboardRoute
+  MainUsersUserIdRoute: typeof MainUsersUserIdRoute
   MainUsersCreateRoute: typeof MainUsersCreateRoute
   MainTeamsIndexRoute: typeof MainTeamsIndexRoute
   MainUsersIndexRoute: typeof MainUsersIndexRoute
@@ -285,6 +305,7 @@ interface MainRouteRouteChildren {
 const MainRouteRouteChildren: MainRouteRouteChildren = {
   MainSettingsRouteRoute: MainSettingsRouteRouteWithChildren,
   MainDashboardRoute: MainDashboardRoute,
+  MainUsersUserIdRoute: MainUsersUserIdRoute,
   MainUsersCreateRoute: MainUsersCreateRoute,
   MainTeamsIndexRoute: MainTeamsIndexRoute,
   MainUsersIndexRoute: MainUsersIndexRoute,
