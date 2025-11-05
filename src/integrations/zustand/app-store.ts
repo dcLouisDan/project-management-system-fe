@@ -15,7 +15,7 @@ const useAppStore = create<AppStoreType>()(
     }),
     {
       name: 'app-store',
-      storage: createJSONStorage(() => sessionStorage),
+      storage: createJSONStorage(() => localStorage),
     },
   ),
 )

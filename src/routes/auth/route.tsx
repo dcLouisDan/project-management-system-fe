@@ -1,9 +1,18 @@
 import AppLogo from '@/components/app-logo'
+import useAppStore from '@/integrations/zustand/app-store'
 import { APP_NAME } from '@/lib/constants'
-import { createFileRoute, Outlet } from '@tanstack/react-router'
+import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/auth')({
   component: RouteComponent,
+  beforeLoad: async () => {
+    const isAuthenticated = useAppStore.getState().isAuthenticated
+    if (isAuthenticated) {
+      throw redirect({
+        to: '/dashboard',
+      })
+    }
+  },
 })
 
 function RouteComponent() {

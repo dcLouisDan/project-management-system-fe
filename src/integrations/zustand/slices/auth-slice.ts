@@ -15,7 +15,7 @@ const createAuthSlice: StateCreator<AuthSlice, [], [], AuthSlice> = (set) => ({
   user: null,
   loading: false,
   error: null,
-  setUser: (user) => set({ user, isAuthenticated: !!user }),
+  setUser: (user) => set({ user, isAuthenticated: true }),
   unsetUser: () => set({ user: null, isAuthenticated: false }),
   setLoading: (loading) => set({ loading }),
 })

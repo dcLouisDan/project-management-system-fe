@@ -6,7 +6,7 @@ import type {
   UserRegistrationResponse,
 } from '@/lib/types/response'
 import { useState } from 'react'
-import { useNavigate } from '@tanstack/react-router'
+import { useNavigate, useRouter } from '@tanstack/react-router'
 import type { UserRegistration } from '@/lib/types/user'
 import { validateRoleString } from '@/lib/types/role'
 
@@ -19,6 +19,7 @@ export default function useAuth() {
 
   const clearError = () => setError(null)
   const navigate = useNavigate()
+  const router = useRouter()
 
   const {
     setUser,
@@ -48,6 +49,7 @@ export default function useAuth() {
 
       setUser(user)
       setLoading(false)
+      router.invalidate()
 
       navigate({ to: '/dashboard' })
     } catch (err) {
@@ -72,6 +74,7 @@ export default function useAuth() {
       if (response.status == 204) {
         unsetUser()
         setLoading(false)
+        router.invalidate()
         navigate({ to: '/auth/login' })
       }
     } catch (err) {
@@ -92,7 +95,7 @@ export default function useAuth() {
 
       setUser(body.data.user)
       setLoading(false)
-
+      router.invalidate()
       navigate({ to: '/dashboard' })
     } catch (err) {
       setLoading(false)
