@@ -7,7 +7,6 @@ export const Route = createFileRoute('/_main')({
   component: RouteComponent,
   beforeLoad: async () => {
     const isAuthenticated = useAppStore.getState().isAuthenticated
-    console.log('Is authenticated', isAuthenticated)
     if (!isAuthenticated) {
       throw redirect({
         to: '/auth/login',

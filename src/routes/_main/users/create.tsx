@@ -80,12 +80,12 @@ function RouteComponent() {
       ]}
     >
       <PageHeader title={PAGE_TITLE} description={PAGE_DESCRIPTION} />
-      <div className="flex align-top gap-8">
+      <div className="flex flex-col sm:flex-row align-top gap-8">
         <div className="flex flex-col gap-4">
           <form.Subscribe
             selector={(state) => state.values.name}
             children={(name) => (
-              <Avatar className="size-40 rounded-lg">
+              <Avatar className="size-40 rounded-lg mx-auto">
                 <AvatarImage src={undefined} alt="user avatar" />
                 <AvatarFallback className="rounded-lg text-4xl">
                   {name !== '' ? getAvatarFallback(name) : 'U'}
