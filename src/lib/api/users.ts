@@ -1,7 +1,7 @@
 import api from './request'
 import { handleApiError } from '../handle-api-error'
-import Cookies from 'js-cookie'
 import type { SortDirection } from '../types/ui'
+import type { UserCreate } from '../types/user'
 
 export interface FetchUsersParams {
   page: number
@@ -14,15 +14,17 @@ export interface FetchUsersParams {
 }
 
 export async function fetchUsers(params: FetchUsersParams) {
-  const xsrfToken = Cookies.get('XSRF-TOKEN')
   return api
     .get(`/users`, {
-      headers: {
-        'X-XSRF-TOKEN': xsrfToken || '',
-      },
       params: params,
     })
     .catch((error) => {
       throw handleApiError(error)
     })
+}
+
+export async function createUser(data: UserCreate) {
+  return api.post('/users', data).catch((error) => {
+    throw handleApiError(error)
+  })
 }

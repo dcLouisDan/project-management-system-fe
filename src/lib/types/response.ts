@@ -9,6 +9,7 @@ export interface ApiResponse<T> {
 }
 
 export type UserRegistrationResponse = ApiResponse<{ user: User }>
+export type UserCreateResponse = ApiResponse<User>
 
 export type UserLoginResponse = ApiResponse<{ two_factor: boolean; user: User }>
 
