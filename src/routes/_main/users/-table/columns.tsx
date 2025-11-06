@@ -15,7 +15,7 @@ export const columns: ColumnDef<User>[] = [
       const user = row.original
       return (
         <Link
-          className="underline hover:font-bold"
+          className="border-b border-foreground/30 border-dotted hover:border-dashed hover:border-foreground/50"
           to="/users/$userId"
           params={{ userId: user.id.toString() }}
         >

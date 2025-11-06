@@ -43,11 +43,13 @@ export const SORTABLE_USER_FIELDS: string[] = ['id', 'name', 'created_at']
 export interface UserLogin {
   email: string
   password: string
+  remember?: boolean
 }
 
 export const DEFAULT_USER_LOGIN: UserLogin = {
   email: '',
   password: '',
+  remember: false,
 }
 
 export interface UserProfileUpdate {

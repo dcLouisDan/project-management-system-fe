@@ -1,9 +1,6 @@
-import { handleApiError } from '../handle-api-error'
-import type {
-  UserLoginResponse,
-  UserRegistrationResponse,
-} from '../types/response'
-import type { UserRegistration } from '../types/user'
+import { handleApiError, type ApiError } from '../handle-api-error'
+import type { UserLoginResponse, GetAuthUserResponse } from '../types/response'
+import type { User, UserRegistration } from '../types/user'
 import api from './request'
 import Cookies from 'js-cookie'
 
@@ -34,7 +31,7 @@ export async function registerUser(data: UserRegistration) {
 export async function fetchCurrentUser() {
   const XSRFToken = Cookies.get('XSRF-TOKEN')
   return api
-    .get<UserRegistrationResponse>(`/user`, {
+    .get<GetAuthUserResponse>(`/user`, {
       headers: {
         'X-XSRF-TOKEN': XSRFToken || '',
       },
@@ -44,7 +41,26 @@ export async function fetchCurrentUser() {
     })
 }
 
-export async function loginUser(email: string, password: string) {
+export async function checkAuthSession(): Promise<{
+  success: boolean
+  error?: string
+  user?: User | null
+}> {
+  try {
+    const response = await fetchCurrentUser()
+    const user = response.data.data.user
+    return { success: true, user: user }
+  } catch (err) {
+    const error = err as ApiError
+    return { success: false, error: error.message, user: null }
+  }
+}
+
+export async function loginUser(
+  email: string,
+  password: string,
+  remember: boolean = false,
+) {
   await api.get('/sanctum/csrf-cookie').catch((error) => {
     throw handleApiError(error)
   })
@@ -53,7 +69,7 @@ export async function loginUser(email: string, password: string) {
   return api
     .post<UserLoginResponse>(
       `/auth/login`,
-      { email, password },
+      { email, password, remember },
       {
         headers: {
           'X-XSRF-TOKEN': xsrfToken || '',

@@ -10,7 +10,8 @@ import { TriangleAlert } from 'lucide-react'
 export const Route = createFileRoute('/_main')({
   component: RouteComponent,
   beforeLoad: async () => {
-    const isAuthenticated = useAppStore.getState().isAuthenticated
+    const { isAuthenticated, remember } = useAppStore.getState()
+
     if (!isAuthenticated) {
       throw redirect({
         to: '/auth/login',

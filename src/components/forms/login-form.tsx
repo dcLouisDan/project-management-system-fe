@@ -21,6 +21,8 @@ import { DEFAULT_USER_LOGIN } from '@/lib/types/user'
 import { PasswordInput } from '../ui/password-input'
 import z from 'zod'
 import useAuth from '@/hooks/use-auth'
+import { Checkbox } from '../ui/checkbox'
+import { Label } from '../ui/label'
 
 export function LoginForm({
   className,
@@ -31,7 +33,7 @@ export function LoginForm({
   const form = useForm({
     defaultValues: DEFAULT_USER_LOGIN,
     onSubmit: async ({ value }) => {
-      await login(value.email, value.password)
+      await login(value.email, value.password, value.remember)
     },
   })
 
@@ -77,12 +79,6 @@ export function LoginForm({
                   <Field>
                     <div className="flex items-center">
                       <FieldLabel htmlFor={field.name}>Password</FieldLabel>
-                      <a
-                        href="#"
-                        className="ml-auto text-sm underline-offset-4 hover:underline"
-                      >
-                        Forgot your password?
-                      </a>
                     </div>
                     <PasswordInput
                       id={field.name}
@@ -90,6 +86,30 @@ export function LoginForm({
                       onChange={(e) => field.handleChange(e.target.value)}
                       required
                     />
+                  </Field>
+                )}
+              </form.Field>
+              <form.Field name="remember">
+                {(field) => (
+                  <Field>
+                    <div className="flex justify-between items-center">
+                      <div className="flex items-center gap-3">
+                        <Checkbox
+                          checked={field.state.value}
+                          onCheckedChange={(checked) =>
+                            field.handleChange(checked ? true : false)
+                          }
+                          id={field.name}
+                        />
+                        <Label htmlFor={field.name}>Remember me</Label>
+                      </div>
+                      <a
+                        href="#"
+                        className="ml-auto text-sm underline-offset-4 hover:underline"
+                      >
+                        Forgot your password?
+                      </a>
+                    </div>
                   </Field>
                 )}
               </form.Field>

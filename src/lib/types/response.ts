@@ -8,7 +8,7 @@ export interface ApiResponse<T> {
   errors?: Record<string, string>
 }
 
-export type UserRegistrationResponse = ApiResponse<{ user: User }>
+export type GetAuthUserResponse = ApiResponse<{ user: User }>
 export type ShowUserResponse = { data: User }
 export type UserCreateResponse = ApiResponse<User>
 

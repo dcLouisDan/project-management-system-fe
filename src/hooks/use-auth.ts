@@ -25,12 +25,16 @@ export default function useAuth() {
     setUiMode,
   } = useAppStore((state) => state)
 
-  async function login(email: string, password: string): Promise<void> {
+  async function login(
+    email: string,
+    password: string,
+    remember: boolean = false,
+  ): Promise<void> {
     setLoading(true)
     setValidationErrors(null)
     clearError()
     try {
-      const response = await loginUser(email, password)
+      const response = await loginUser(email, password, remember)
 
       const body = response.data
       const user = body.data.user
@@ -43,7 +47,7 @@ export default function useAuth() {
         setUiMode(mainRole)
       }
 
-      setUser(user)
+      setUser(user, remember)
       setLoading(false)
       router.invalidate()
 
