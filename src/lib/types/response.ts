@@ -11,6 +11,7 @@ export interface ApiResponse<T> {
 export type GetAuthUserResponse = ApiResponse<{ user: User }>
 export type ShowUserResponse = { data: User }
 export type UserCreateResponse = ApiResponse<User>
+export type UserUpdateResponse = ApiResponse<User>
 
 export type UserLoginResponse = ApiResponse<{ two_factor: boolean; user: User }>
 

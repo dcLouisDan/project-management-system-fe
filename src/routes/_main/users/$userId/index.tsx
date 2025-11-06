@@ -1,8 +1,8 @@
 import type { ApiError } from '@/lib/handle-api-error'
 import { showUserQueryOptions } from '@/lib/query-options/show-user-query-options'
 import { createFileRoute, Link, notFound } from '@tanstack/react-router'
-import MainInsetLayout from '../-main-inset-layout'
-import { Edit, Trash2, UserX } from 'lucide-react'
+import MainInsetLayout from '../../-main-inset-layout'
+import { Edit, Trash2 } from 'lucide-react'
 import { buttonVariants } from '@/components/ui/button'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import UserAvatar from '@/components/user-avatar'
@@ -11,15 +11,20 @@ import { APP_NAME } from '@/lib/constants'
 import { Separator } from '@/components/ui/separator'
 import { RoleDisplayNames, type Role } from '@/lib/types/role'
 import { Badge } from '@/components/ui/badge'
+import UserNotFoundComponent from './-not-found-component'
 
 const PAGE_TITLE = 'User Details'
 const PAGE_DESCRIPTION = 'Show user information and other related data'
 
-export const Route = createFileRoute('/_main/users/$userId')({
+export const Route = createFileRoute('/_main/users/$userId/')({
   component: RouteComponent,
   loader: ({ context: { queryClient }, params: { userId } }) => {
     const id = Number(userId)
-    return queryClient.ensureQueryData(showUserQueryOptions(id))
+    try {
+      return queryClient.ensureQueryData(showUserQueryOptions(id))
+    } catch (error) {
+      console.log('Loader error:', error)
+    }
   },
   head: ({ loaderData }) => ({
     meta: [
@@ -36,36 +41,17 @@ export const Route = createFileRoute('/_main/users/$userId')({
   }),
   onError: (err) => {
     const error = err as ApiError
+    console.log('Index error', error)
     if (error.status == 404) {
       throw notFound()
     }
   },
-  notFoundComponent: () => {
-    return (
-      <MainInsetLayout
-        breadcrumbItems={[
-          { label: 'Users', href: '/users' },
-          { label: 'Not Found', href: '/users' },
-        ]}
-      >
-        <div className="flex flex-col items-center justify-center gap-4 flex-1">
-          <UserX className="size-40" />
-          <h1>User not Found</h1>
-          <p className="max-w-lg text-center">
-            We couldn't find the page you're looking for.
-          </p>
-          <Link className={buttonVariants({ size: 'lg' })} to="/users">
-            Back to Users List
-          </Link>
-        </div>
-      </MainInsetLayout>
-    )
-  },
+  notFoundComponent: UserNotFoundComponent,
 })
 
 function RouteComponent() {
-  const userId = Number(Route.useParams().userId)
-  const { data: user } = useSuspenseQuery(showUserQueryOptions(userId))
+  const userId = Route.useParams().userId
+  const { data: user } = useSuspenseQuery(showUserQueryOptions(Number(userId)))
   return (
     <MainInsetLayout
       breadcrumbItems={[
@@ -90,7 +76,11 @@ function RouteComponent() {
             })}
           </div>
           <Separator />
-          <Link to="." className={buttonVariants({ variant: 'secondary' })}>
+          <Link
+            to="/users/$userId/edit"
+            params={{ userId }}
+            className={buttonVariants({ variant: 'secondary' })}
+          >
             <Edit />
             Edit
           </Link>

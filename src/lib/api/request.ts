@@ -23,9 +23,8 @@ api.interceptors.response.use(
       if (window.location.pathname !== '/auth/login') {
         window.location.href = '/auth/login'
       }
-
-      return Promise.reject(error)
     }
+    return Promise.reject(error)
   },
 )
 

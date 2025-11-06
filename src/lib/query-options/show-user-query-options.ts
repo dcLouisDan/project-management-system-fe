@@ -5,8 +5,5 @@ import { showUser } from '../api/users'
 export const showUserQueryOptions = (userId: number) =>
   queryOptions({
     queryKey: [QUERY_KEYS.USERS, userId],
-    queryFn: async () => {
-      const response = await showUser(userId)
-      return response.data.data
-    },
+    queryFn: () => showUser(userId),
   })

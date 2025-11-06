@@ -1,11 +1,14 @@
-import { createFileRoute } from '@tanstack/react-router'
-import MainInsetLayout from '../-main-inset-layout'
-import PageHeader from '@/components/page-header'
+import type { ApiError } from '@/lib/handle-api-error'
+import { showUserQueryOptions } from '@/lib/query-options/show-user-query-options'
+import { createFileRoute, Link, notFound } from '@tanstack/react-router'
+import UserNotFoundComponent from './-not-found-component'
 import { APP_NAME } from '@/lib/constants'
+
+import PageHeader from '@/components/page-header'
 import { generatePassword } from '@/lib/string-utils'
-import { DEFAULT_USER_CREATE } from '@/lib/types/user'
+import { type UserUpdate } from '@/lib/types/user'
 import { useForm } from '@tanstack/react-form'
-import { Button } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import {
   Field,
@@ -21,23 +24,34 @@ import z from 'zod'
 import { Input } from '@/components/ui/input'
 import { PasswordInput } from '@/components/ui/password-input'
 import RolesToggleSelect from '@/components/roles-toggle-select'
-import { UserPlus } from 'lucide-react'
+import { UserPen, UserPlus } from 'lucide-react'
 import { useCallback, useEffect } from 'react'
 import type { Role } from '@/lib/types/role'
 import useManageUsers from '@/hooks/use-manage-users'
 import { ValidationErrorsAlert } from '@/components/validation-errors-alert'
 import UserAvatar from '@/components/user-avatar'
+import MainInsetLayout from '../../-main-inset-layout'
+import { useSuspenseQuery } from '@tanstack/react-query'
 
-const PAGE_TITLE = 'Add New User'
-const PAGE_DESCRIPTION =
-  'Add a new team member and assign roles to control their permissions across the platform.'
+const PAGE_TITLE = 'Edit User'
+const PAGE_DESCRIPTION = 'Edit user information and other related data'
 
-export const Route = createFileRoute('/_main/users/create')({
+export const Route = createFileRoute('/_main/users/$userId/edit')({
   component: RouteComponent,
-  head: () => ({
+  loader: ({ context: { queryClient }, params: { userId } }) => {
+    const id = Number(userId)
+    try {
+      return queryClient.ensureQueryData(showUserQueryOptions(id))
+    } catch (error) {
+      console.log('Loader error:', error)
+    }
+  },
+  head: ({ loaderData }) => ({
     meta: [
       {
-        title: PAGE_TITLE + ' - ' + APP_NAME,
+        title: loaderData
+          ? PAGE_TITLE + ' - ' + loaderData.name + ' - ' + APP_NAME
+          : PAGE_TITLE + ' - ' + APP_NAME,
       },
       {
         name: 'description',
@@ -45,15 +59,28 @@ export const Route = createFileRoute('/_main/users/create')({
       },
     ],
   }),
+  onError: (err) => {
+    const error = err as ApiError
+    if (error.status == 404) {
+      throw notFound()
+    }
+  },
+  notFoundComponent: UserNotFoundComponent,
 })
 
 function RouteComponent() {
-  const { create, validationErrors, requestProgress, setRequestProgress } =
+  const userId = Route.useParams().userId
+  const { data: user } = useSuspenseQuery(showUserQueryOptions(Number(userId)))
+  const { update, validationErrors, requestProgress, setRequestProgress } =
     useManageUsers()
   const form = useForm({
-    defaultValues: DEFAULT_USER_CREATE,
+    defaultValues: {
+      name: user.name ?? '',
+      email: user.email ?? '',
+      roles: user.roles ?? [],
+    } as UserUpdate,
     onSubmit: async ({ value }) => {
-      await create(value)
+      await update(Number(userId), value)
     },
   })
 
@@ -76,7 +103,8 @@ function RouteComponent() {
     <MainInsetLayout
       breadcrumbItems={[
         { label: 'Users', href: '/users' },
-        { label: 'Add', href: '/users/create' },
+        { label: user.name, href: `/users/${user.id}` },
+        { label: 'Edit', href: `/users/${user.id}/edit` },
       ]}
     >
       <PageHeader title={PAGE_TITLE} description={PAGE_DESCRIPTION} />
@@ -149,12 +177,21 @@ function RouteComponent() {
                         </Field>
                       )}
                     </form.Field>
+                  </FieldSet>
+                  <FieldSeparator />
+                  <FieldSet>
+                    <FieldLegend>Reset Password (optional)</FieldLegend>
+                    <FieldDescription>
+                      Enter a new password or leave blank to keep the current
+                      one.
+                    </FieldDescription>
                     <form.Field
                       name="password"
                       validators={{
                         onChange: z
                           .string()
-                          .min(8, 'Password must be at least 8 characters'),
+                          .min(8, 'Password must be at least 8 characters')
+                          .optional(),
                       }}
                     >
                       {(field) => (
@@ -173,7 +210,6 @@ function RouteComponent() {
                           </div>
                           <PasswordInput
                             id={field.name}
-                            required
                             value={field.state.value}
                             onChange={(e) => field.handleChange(e.target.value)}
                           />
@@ -197,7 +233,8 @@ function RouteComponent() {
                               .min(8, 'Password must be at least 8 characters')
                               .refine((val) => val === passwordValue, {
                                 message: 'Passwords do not match',
-                              }),
+                              })
+                              .optional(),
                           )
                         },
                       }}
@@ -211,7 +248,6 @@ function RouteComponent() {
                           </div>
                           <PasswordInput
                             id={field.name}
-                            required
                             value={field.state.value}
                             onChange={(e) => field.handleChange(e.target.value)}
                           />
@@ -258,15 +294,25 @@ function RouteComponent() {
                       ]}
                       children={([canSubmit, isSubmitting]) => (
                         <Field>
-                          <div className="flex justify-end">
+                          <div className="flex gap-2 justify-end">
+                            <Link
+                              to="/users/$userId"
+                              params={{ userId }}
+                              className={buttonVariants({
+                                variant: 'outline',
+                                size: 'lg',
+                              })}
+                            >
+                              Cancel
+                            </Link>
                             <Button
                               size="lg"
                               type="submit"
                               className="w-40"
                               disabled={!canSubmit}
                             >
-                              <UserPlus />
-                              {isSubmitting ? '...' : 'Add User'}
+                              <UserPen />
+                              {isSubmitting ? '...' : 'Update User'}
                             </Button>
                           </div>
                         </Field>

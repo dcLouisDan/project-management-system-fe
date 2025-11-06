@@ -1,11 +1,12 @@
 import api from './request'
 import { handleApiError } from '../handle-api-error'
 import type { SortDirection } from '../types/ui'
-import type { User, UserCreate } from '../types/user'
+import type { User, UserCreate, UserUpdate } from '../types/user'
 import {
   type PaginatedResponse,
   type ShowUserResponse,
   type UserCreateResponse,
+  type UserUpdateResponse,
 } from '../types/response'
 
 export interface FetchUsersParams {
@@ -36,8 +37,19 @@ export async function createUser(data: UserCreate) {
   })
 }
 
+export async function updateUser(userId: number, data: UserUpdate) {
+  return api
+    .put<UserUpdateResponse>(`/users/${userId}`, data)
+    .catch((error) => {
+      throw handleApiError(error)
+    })
+}
+
 export async function showUser(userId: number) {
-  return api.get<ShowUserResponse>(`/users/${userId}`).catch((error) => {
-    throw handleApiError(error)
-  })
+  return api
+    .get<ShowUserResponse>(`/users/${userId}`)
+    .then((response) => response.data.data)
+    .catch((error) => {
+      throw handleApiError(error)
+    })
 }

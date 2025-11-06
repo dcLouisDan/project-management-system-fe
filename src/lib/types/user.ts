@@ -23,6 +23,14 @@ export interface UserCreate {
   roles: Role[]
 }
 
+export interface UserUpdate {
+  name: string
+  email: string
+  password?: string
+  password_confirmation?: string
+  roles: Role[]
+}
+
 export const DEFAULT_USER_REGISTRATION: UserRegistration = {
   name: '',
   email: '',
