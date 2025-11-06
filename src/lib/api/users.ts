@@ -7,9 +7,11 @@ import {
   type ShowUserResponse,
   type UserCreateResponse,
   type UserDeleteResponse,
+  type UserRestoreResponse,
   type UserUpdateResponse,
 } from '../types/response'
 
+export type SoftDeleteStatus = 'all' | 'deleted' | 'active'
 export interface FetchUsersParams {
   page: number
   per_page?: number
@@ -18,6 +20,7 @@ export interface FetchUsersParams {
   roles?: string
   sort?: string
   direction?: SortDirection
+  status?: SoftDeleteStatus
 }
 
 export class UserNotFoundError extends Error {}
@@ -59,4 +62,12 @@ export async function deleteUser(userId: number) {
   return api.delete<UserDeleteResponse>(`/users/${userId}`).catch((error) => {
     throw handleApiError(error)
   })
+}
+
+export async function restoreUser(userId: number) {
+  return api
+    .post<UserRestoreResponse>(`/users/${userId}/restore`)
+    .catch((error) => {
+      throw handleApiError(error)
+    })
 }

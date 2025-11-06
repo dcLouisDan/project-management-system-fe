@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import MainInsetLayout from '../-main-inset-layout'
 import { usersQueryOptions } from '@/lib/query-options/users-query-options'
 import { useQuery } from '@tanstack/react-query'
@@ -8,12 +8,16 @@ import PaginationBar from '@/components/pagination-bar'
 import UsersTableFilters from './-table/user-table-filters'
 import type { SortDirection } from '@/lib/types/ui'
 import { buttonVariants } from '@/components/ui/button'
-import { UserPlus } from 'lucide-react'
+import { UserPlus, Users, UserX } from 'lucide-react'
 import PageHeader from '@/components/page-header'
 import { APP_NAME } from '@/lib/constants'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { columnsDeleted } from './-table/columns-deleted'
 
 const PAGE_TITLE = 'Manage Users'
 const PAGE_DESCRIPTION = 'Create, view, update or delete user records'
+
+type TabValues = 'active' | 'deleted'
 export interface UsersIndexSearchParams {
   page?: number
   per_page?: number
@@ -22,6 +26,7 @@ export interface UsersIndexSearchParams {
   roles?: string[]
   sort?: string
   direction?: SortDirection
+  tab?: TabValues
 }
 
 export const Route = createFileRoute('/_main/users/')({
@@ -41,6 +46,75 @@ export const Route = createFileRoute('/_main/users/')({
 })
 
 function RouteComponent() {
+  const { tab } = Route.useSearch()
+  const navigate = useNavigate()
+  return (
+    <MainInsetLayout breadcrumbItems={[{ label: 'Users', href: '/users' }]}>
+      <PageHeader title={PAGE_TITLE} description={PAGE_DESCRIPTION}>
+        <Link to="/users/create" className={buttonVariants()}>
+          <UserPlus />
+          Add New User
+        </Link>
+      </PageHeader>
+      <Tabs
+        defaultValue="active"
+        value={tab}
+        onValueChange={(value) =>
+          navigate({ to: '.', search: { tab: value as TabValues } })
+        }
+        className="w-full"
+      >
+        <TabsList>
+          <TabsTrigger value="active">
+            <Users /> Active
+          </TabsTrigger>
+          <TabsTrigger value="deleted">
+            <UserX />
+            Deleted
+          </TabsTrigger>
+        </TabsList>
+        <TabsContent value="active">
+          <ActiveUsers />
+        </TabsContent>
+        <TabsContent value="deleted">
+          <DeletedUsers />
+        </TabsContent>
+      </Tabs>
+    </MainInsetLayout>
+  )
+}
+
+function DeletedUsers() {
+  const { page, per_page, name, role, roles, sort, direction } =
+    Route.useSearch()
+  const { data, isFetching } = useQuery(
+    usersQueryOptions({
+      page: page ?? 1,
+      per_page: per_page ?? 10,
+      name: name ?? '',
+      role: role ?? '',
+      roles: roles ? roles.join(',') : '',
+      sort: sort,
+      direction: direction,
+      status: 'deleted',
+    }),
+  )
+  return (
+    <>
+      <UsersTableFilters />
+      <DataTable
+        columns={columnsDeleted}
+        data={data?.data || []}
+        isFetching={isFetching}
+      />
+      {data?.meta && (
+        <PaginationBar className="mt-2" pagination={data?.meta!} />
+      )}
+    </>
+  )
+}
+
+function ActiveUsers() {
   const { page, per_page, name, role, roles, sort, direction } =
     Route.useSearch()
   const { data, isFetching } = useQuery(
@@ -54,22 +128,17 @@ function RouteComponent() {
       direction: direction,
     }),
   )
-
   return (
-    <MainInsetLayout breadcrumbItems={[{ label: 'Users', href: '/users' }]}>
-      <PageHeader title={PAGE_TITLE} description={PAGE_DESCRIPTION}>
-        <Link to="/users/create" className={buttonVariants()}>
-          <UserPlus />
-          Add New User
-        </Link>
-      </PageHeader>
+    <>
       <UsersTableFilters />
       <DataTable
         columns={columns}
         data={data?.data || []}
         isFetching={isFetching}
       />
-      {data?.meta && <PaginationBar pagination={data?.meta!} />}
-    </MainInsetLayout>
+      {data?.meta && (
+        <PaginationBar className="mt-2" pagination={data?.meta!} />
+      )}
+    </>
   )
 }

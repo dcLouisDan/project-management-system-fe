@@ -4,7 +4,7 @@ import { Link } from '@tanstack/react-router'
 import { type ColumnDef } from '@tanstack/react-table'
 import dayjs from 'dayjs'
 
-export const columns: ColumnDef<User>[] = [
+export const columnsDeleted: ColumnDef<User>[] = [
   {
     accessorKey: 'id',
     header: 'ID',
@@ -38,10 +38,10 @@ export const columns: ColumnDef<User>[] = [
         .join(', '),
   },
   {
-    accessorKey: 'created_at',
-    header: 'Created at',
+    accessorKey: 'deleted_at',
+    header: 'Deleted at',
     accessorFn: (row) => {
-      return dayjs().to(row.created_at)
+      return row.deleted_at ? dayjs().to(row.deleted_at) : null
     },
   },
 ]

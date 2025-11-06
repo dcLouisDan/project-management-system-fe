@@ -1,4 +1,4 @@
-import { BookOpen, Bot, Settings2, SquareTerminal, Users } from 'lucide-react'
+import { LayoutDashboard, Settings2, Users } from 'lucide-react'
 import type { SidebarNavItem, SidebarNavSubItem } from './types/ui'
 
 export const SETTING_LINKS: SidebarNavSubItem[] = [
@@ -10,41 +10,15 @@ export const SETTING_LINKS: SidebarNavSubItem[] = [
     title: 'Team',
     url: '/settings/team',
   },
-  {
-    title: 'Billing',
-    url: '#',
-  },
-  {
-    title: 'Limits',
-    url: '#',
-  },
 ]
 
 export const NAV_MAIN_LINKS: SidebarNavItem[] = [
   {
     title: 'Dashboard',
     url: '/dashboard',
-    icon: SquareTerminal,
+    icon: LayoutDashboard,
   },
-  {
-    title: 'Models',
-    url: '#',
-    icon: Bot,
-    items: [
-      {
-        title: 'Genesis',
-        url: '#',
-      },
-      {
-        title: 'Explorer',
-        url: '#',
-      },
-      {
-        title: 'Quantum',
-        url: '#',
-      },
-    ],
-  },
+
   {
     title: 'Users and Teams',
     url: '#',

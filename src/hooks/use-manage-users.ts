@@ -1,4 +1,9 @@
-import { createUser, deleteUser, updateUser } from '@/lib/api/users'
+import {
+  createUser,
+  deleteUser,
+  restoreUser,
+  updateUser,
+} from '@/lib/api/users'
 import { QUERY_KEYS } from '@/lib/constants'
 import type { ApiError } from '@/lib/handle-api-error'
 import type { RequestProgress } from '@/lib/types/response'
@@ -77,7 +82,7 @@ export default function useManageUsers() {
       setRequestProgress('failed')
       const error = err as ApiError
       setError(error.message || 'User update failed')
-      toast.error('Failed to create user', {
+      toast.error('Failed to update user', {
         description: error.message,
       })
       if (error.errors) {
@@ -110,7 +115,37 @@ export default function useManageUsers() {
       setRequestProgress('failed')
       const error = err as ApiError
       setError(error.message || 'User delete failed')
-      toast.error('Failed to create user', {
+      toast.error('Failed to delete user', {
+        description: error.message,
+      })
+      if (error.errors) {
+        const fieldErrors: Record<string, string> = {}
+        for (const key in error.errors) {
+          fieldErrors[key] = error.errors[key].join(' ')
+        }
+        setValidationErrors(fieldErrors)
+      }
+    }
+  }
+
+  async function restore(userId: number) {
+    setRequestProgress('in-progress')
+    clearErrors()
+    try {
+      await restoreUser(userId)
+
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.USERS],
+      })
+      toast.success('User Restored', {
+        description: `Successfully restored user.`,
+      })
+      setRequestProgress('completed')
+    } catch (err) {
+      setRequestProgress('failed')
+      const error = err as ApiError
+      setError(error.message || 'User restore failed')
+      toast.error('Failed to restore user', {
         description: error.message,
       })
       if (error.errors) {
@@ -127,6 +162,7 @@ export default function useManageUsers() {
     create,
     update,
     destroy,
+    restore,
     validationErrors,
     error,
     requestProgress,

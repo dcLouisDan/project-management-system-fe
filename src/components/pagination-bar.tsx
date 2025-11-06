@@ -14,11 +14,14 @@ import { useMemo } from 'react'
 import { BasicSelect, type BasicSelectItem } from './basic-select'
 import { useNavigate } from '@tanstack/react-router'
 import { type UsersIndexSearchParams } from '@/routes/_main/users'
+import { cn } from '@/lib/utils'
 
 export default function PaginationBar({
   pagination,
+  className,
 }: {
   pagination: PaginatedResponseMetaData
+  className?: string
 }) {
   const navigate = useNavigate()
   const handlePerPageValueChange = (value: string) => {
@@ -51,7 +54,12 @@ export default function PaginationBar({
     label: num.toString(),
   }))
   return (
-    <div className="flex gap-2 items-center w-full sm:justify-between">
+    <div
+      className={cn(
+        'flex gap-2 items-center w-full sm:justify-between',
+        className,
+      )}
+    >
       <div className="hidden sm:flex items-center gap-2">
         <span className="text-muted-foreground text-sm">Showing</span>
         <BasicSelect

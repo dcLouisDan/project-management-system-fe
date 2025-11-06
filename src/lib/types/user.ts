@@ -6,6 +6,7 @@ export interface User {
   email: string
   roles: string[]
   created_at: string
+  deleted_at?: string
 }
 
 export interface UserRegistration {

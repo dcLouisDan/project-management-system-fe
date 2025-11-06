@@ -2,7 +2,7 @@ import type { ApiError } from '@/lib/handle-api-error'
 import { showUserQueryOptions } from '@/lib/query-options/show-user-query-options'
 import { createFileRoute, Link, notFound } from '@tanstack/react-router'
 import MainInsetLayout from '../../-main-inset-layout'
-import { Edit, Trash2 } from 'lucide-react'
+import { ArchiveRestore, Edit, Trash2 } from 'lucide-react'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import UserAvatar from '@/components/user-avatar'
@@ -14,6 +14,7 @@ import { Badge } from '@/components/ui/badge'
 import UserNotFoundComponent from './-not-found-component'
 import { ConfirmationDialog } from '@/components/confirmation-dialog'
 import useManageUsers from '@/hooks/use-manage-users'
+import { RestoreAlert } from '@/components/restore-alert'
 
 const PAGE_TITLE = 'User Details'
 const PAGE_DESCRIPTION = 'Show user information and other related data'
@@ -53,7 +54,7 @@ export const Route = createFileRoute('/_main/users/$userId/')({
 
 function RouteComponent() {
   const userId = Route.useParams().userId
-  const { destroy } = useManageUsers()
+  const { destroy, restore } = useManageUsers()
   const { data: user } = useSuspenseQuery(showUserQueryOptions(Number(userId)))
   return (
     <MainInsetLayout
@@ -62,6 +63,7 @@ function RouteComponent() {
         { label: user.name, href: `/users/${user.id}` },
       ]}
     >
+      {user.deleted_at && <RestoreAlert />}
       <PageHeader title={PAGE_TITLE} description={PAGE_DESCRIPTION} />
       <div className="flex gap-4 items-center">
         <div className="flex flex-col text-center border rounded-lg p-4 gap-2 w-64">
@@ -79,30 +81,51 @@ function RouteComponent() {
             })}
           </div>
           <Separator />
-          <Link
-            to="/users/$userId/edit"
-            params={{ userId }}
-            className={buttonVariants({ variant: 'secondary' })}
-          >
-            <Edit />
-            Edit
-          </Link>
-          <ConfirmationDialog
-            description="This will mark the user as deleted. You can restore this user later if you change your mind."
-            triggerComponent={
-              <Button variant="outline">
-                <Trash2 />
-                Delete
-              </Button>
-            }
-            submitButtonVariant={{ variant: 'destructive' }}
-            submitButtonContent={
-              <>
-                <Trash2 /> Delete User
-              </>
-            }
-            onSubmit={async () => await destroy(user.id)}
-          />
+          {user.deleted_at ? (
+            <ConfirmationDialog
+              description="This user will be reactivated and become accessible throughout the system again."
+              triggerComponent={
+                <Button variant="default">
+                  <ArchiveRestore />
+                  Restore
+                </Button>
+              }
+              submitButtonVariant={{ variant: 'default' }}
+              submitButtonContent={
+                <>
+                  <ArchiveRestore /> Restore User
+                </>
+              }
+              onSubmit={async () => await restore(user.id)}
+            />
+          ) : (
+            <>
+              <Link
+                to="/users/$userId/edit"
+                params={{ userId }}
+                className={buttonVariants({ variant: 'secondary' })}
+              >
+                <Edit />
+                Edit
+              </Link>
+              <ConfirmationDialog
+                description="This will mark the user as deleted. You can restore this user later if you change your mind."
+                triggerComponent={
+                  <Button variant="outline">
+                    <Trash2 />
+                    Delete
+                  </Button>
+                }
+                submitButtonVariant={{ variant: 'destructive' }}
+                submitButtonContent={
+                  <>
+                    <Trash2 /> Delete User
+                  </>
+                }
+                onSubmit={async () => await destroy(user.id)}
+              />
+            </>
+          )}
         </div>
         <div className="flex flex-col gap-2"></div>
       </div>
