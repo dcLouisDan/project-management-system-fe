@@ -1,4 +1,4 @@
-import { createUser, updateUser } from '@/lib/api/users'
+import { createUser, deleteUser, updateUser } from '@/lib/api/users'
 import { QUERY_KEYS } from '@/lib/constants'
 import type { ApiError } from '@/lib/handle-api-error'
 import type { RequestProgress } from '@/lib/types/response'
@@ -90,9 +90,43 @@ export default function useManageUsers() {
     }
   }
 
+  async function destroy(userId: number) {
+    setRequestProgress('in-progress')
+    clearErrors()
+    try {
+      await deleteUser(userId)
+
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.USERS],
+      })
+      navigate({
+        to: '/users',
+      })
+      toast.success('User Deleted', {
+        description: `Successfully deleted user.`,
+      })
+      setRequestProgress('completed')
+    } catch (err) {
+      setRequestProgress('failed')
+      const error = err as ApiError
+      setError(error.message || 'User delete failed')
+      toast.error('Failed to create user', {
+        description: error.message,
+      })
+      if (error.errors) {
+        const fieldErrors: Record<string, string> = {}
+        for (const key in error.errors) {
+          fieldErrors[key] = error.errors[key].join(' ')
+        }
+        setValidationErrors(fieldErrors)
+      }
+    }
+  }
+
   return {
     create,
     update,
+    destroy,
     validationErrors,
     error,
     requestProgress,

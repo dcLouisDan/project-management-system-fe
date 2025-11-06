@@ -12,6 +12,7 @@ export type GetAuthUserResponse = ApiResponse<{ user: User }>
 export type ShowUserResponse = { data: User }
 export type UserCreateResponse = ApiResponse<User>
 export type UserUpdateResponse = ApiResponse<User>
+export type UserDeleteResponse = ApiResponse<null>
 
 export type UserLoginResponse = ApiResponse<{ two_factor: boolean; user: User }>
 

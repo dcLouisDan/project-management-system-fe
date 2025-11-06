@@ -3,7 +3,7 @@ import { showUserQueryOptions } from '@/lib/query-options/show-user-query-option
 import { createFileRoute, Link, notFound } from '@tanstack/react-router'
 import MainInsetLayout from '../../-main-inset-layout'
 import { Edit, Trash2 } from 'lucide-react'
-import { buttonVariants } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import UserAvatar from '@/components/user-avatar'
 import PageHeader from '@/components/page-header'
@@ -12,6 +12,8 @@ import { Separator } from '@/components/ui/separator'
 import { RoleDisplayNames, type Role } from '@/lib/types/role'
 import { Badge } from '@/components/ui/badge'
 import UserNotFoundComponent from './-not-found-component'
+import { ConfirmationDialog } from '@/components/confirmation-dialog'
+import useManageUsers from '@/hooks/use-manage-users'
 
 const PAGE_TITLE = 'User Details'
 const PAGE_DESCRIPTION = 'Show user information and other related data'
@@ -51,6 +53,7 @@ export const Route = createFileRoute('/_main/users/$userId/')({
 
 function RouteComponent() {
   const userId = Route.useParams().userId
+  const { destroy } = useManageUsers()
   const { data: user } = useSuspenseQuery(showUserQueryOptions(Number(userId)))
   return (
     <MainInsetLayout
@@ -84,15 +87,22 @@ function RouteComponent() {
             <Edit />
             Edit
           </Link>
-          <Link
-            to="."
-            className={buttonVariants({
-              variant: 'outline',
-            })}
-          >
-            <Trash2 />
-            Delete
-          </Link>
+          <ConfirmationDialog
+            description="This will mark the user as deleted. You can restore this user later if you change your mind."
+            triggerComponent={
+              <Button variant="outline">
+                <Trash2 />
+                Delete
+              </Button>
+            }
+            submitButtonVariant={{ variant: 'destructive' }}
+            submitButtonContent={
+              <>
+                <Trash2 /> Delete User
+              </>
+            }
+            onSubmit={async () => await destroy(user.id)}
+          />
         </div>
         <div className="flex flex-col gap-2"></div>
       </div>

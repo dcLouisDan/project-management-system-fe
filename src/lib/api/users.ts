@@ -6,6 +6,7 @@ import {
   type PaginatedResponse,
   type ShowUserResponse,
   type UserCreateResponse,
+  type UserDeleteResponse,
   type UserUpdateResponse,
 } from '../types/response'
 
@@ -52,4 +53,10 @@ export async function showUser(userId: number) {
     .catch((error) => {
       throw handleApiError(error)
     })
+}
+
+export async function deleteUser(userId: number) {
+  return api.delete<UserDeleteResponse>(`/users/${userId}`).catch((error) => {
+    throw handleApiError(error)
+  })
 }
