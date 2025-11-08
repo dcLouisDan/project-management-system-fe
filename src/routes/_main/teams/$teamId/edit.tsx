@@ -1,10 +1,15 @@
-import { createFileRoute } from '@tanstack/react-router'
-import MainInsetLayout from '../-main-inset-layout'
+import { createFileRoute, notFound } from '@tanstack/react-router'
+import type { ApiError } from '@/lib/handle-api-error'
+import MainInsetLayout from '../../-main-inset-layout'
+import { Button } from '@/components/ui/button'
+import { useSuspenseQuery } from '@tanstack/react-query'
 import PageHeader from '@/components/page-header'
 import { APP_NAME } from '@/lib/constants'
-import { DEFAULT_TEAM_CREATE } from '@/lib/types/team'
+import TeamNotFoundComponent from './-not-found-component'
+import useManageTeams from '@/hooks/use-manage-teams'
+import { showTeamQueryOptions } from '@/lib/query-options/show-team-query-options'
 import { useForm } from '@tanstack/react-form'
-import { Button } from '@/components/ui/button'
+import { useEffect } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import {
   Field,
@@ -15,24 +20,31 @@ import {
   FieldLegend,
   FieldSet,
 } from '@/components/ui/field'
-import z from 'zod'
 import { Input } from '@/components/ui/input'
-import { BadgePlus } from 'lucide-react'
-import { useEffect } from 'react'
-import useManageTeams from '@/hooks/use-manage-teams'
-import { ValidationErrorsAlert } from '@/components/validation-errors-alert'
+import z from 'zod'
 import { Textarea } from '@/components/ui/textarea'
+import { ValidationErrorsAlert } from '@/components/validation-errors-alert'
+import { BadgePlus } from 'lucide-react'
 
-const PAGE_TITLE = 'Add New Team'
-const PAGE_DESCRIPTION =
-  'Add a new team and describe its role within the company.'
+const PAGE_TITLE = 'Team Details'
+const PAGE_DESCRIPTION = 'Show team information and other related data'
 
-export const Route = createFileRoute('/_main/teams/create')({
+export const Route = createFileRoute('/_main/teams/$teamId/edit')({
   component: RouteComponent,
-  head: () => ({
+  loader: ({ context: { queryClient }, params: { teamId } }) => {
+    const id = Number(teamId)
+    try {
+      return queryClient.ensureQueryData(showTeamQueryOptions(id))
+    } catch (error) {
+      console.log('Loader error:', error)
+    }
+  },
+  head: ({ loaderData }) => ({
     meta: [
       {
-        title: PAGE_TITLE + ' - ' + APP_NAME,
+        title: loaderData
+          ? loaderData.name + ' - ' + APP_NAME
+          : PAGE_TITLE + ' - ' + APP_NAME,
       },
       {
         name: 'description',
@@ -40,15 +52,28 @@ export const Route = createFileRoute('/_main/teams/create')({
       },
     ],
   }),
+  onError: (err) => {
+    const error = err as ApiError
+    console.log('Index error', error)
+    if (error.status == 404) {
+      throw notFound()
+    }
+  },
+  notFoundComponent: TeamNotFoundComponent,
 })
 
 function RouteComponent() {
-  const { create, validationErrors, requestProgress, setRequestProgress } =
+  const { update, validationErrors, requestProgress, setRequestProgress } =
     useManageTeams()
+  const teamId = Route.useParams().teamId
+  const { data: team } = useSuspenseQuery(showTeamQueryOptions(Number(teamId)))
   const form = useForm({
-    defaultValues: DEFAULT_TEAM_CREATE,
+    defaultValues: {
+      name: team.name,
+      description: team.description,
+    },
     onSubmit: async ({ value }) => {
-      await create(value)
+      await update(team.id, value)
     },
   })
 
@@ -63,7 +88,7 @@ function RouteComponent() {
     <MainInsetLayout
       breadcrumbItems={[
         { label: 'Teams', href: '/teams' },
-        { label: 'Add', href: '/teams/create' },
+        { label: 'Edit', href: '/teams/update' },
       ]}
     >
       <PageHeader title={PAGE_TITLE} description={PAGE_DESCRIPTION} />
@@ -130,7 +155,7 @@ function RouteComponent() {
 
               {validationErrors && requestProgress == 'failed' && (
                 <ValidationErrorsAlert
-                  title="Unable to create team"
+                  title="Unable to update team"
                   errorList={Object.values(validationErrors)}
                 />
               )}
@@ -147,7 +172,7 @@ function RouteComponent() {
                           disabled={!canSubmit}
                         >
                           <BadgePlus />
-                          {isSubmitting ? '...' : 'Add Team'}
+                          {isSubmitting ? '...' : 'Edit Team'}
                         </Button>
                       </div>
                     </Field>

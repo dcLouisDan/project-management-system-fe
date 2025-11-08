@@ -25,6 +25,7 @@ import { Route as MainSettingsProfileRouteImport } from './routes/_main/settings
 import { Route as MainUsersUserIdIndexRouteImport } from './routes/_main/users/$userId/index'
 import { Route as MainTeamsTeamIdIndexRouteImport } from './routes/_main/teams/$teamId/index'
 import { Route as MainUsersUserIdEditRouteImport } from './routes/_main/users/$userId/edit'
+import { Route as MainTeamsTeamIdEditRouteImport } from './routes/_main/teams/$teamId/edit'
 
 const AuthRouteRoute = AuthRouteRouteImport.update({
   id: '/auth',
@@ -105,6 +106,11 @@ const MainUsersUserIdEditRoute = MainUsersUserIdEditRouteImport.update({
   path: '/users/$userId/edit',
   getParentRoute: () => MainRouteRoute,
 } as any)
+const MainTeamsTeamIdEditRoute = MainTeamsTeamIdEditRouteImport.update({
+  id: '/teams/$teamId/edit',
+  path: '/teams/$teamId/edit',
+  getParentRoute: () => MainRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -119,6 +125,7 @@ export interface FileRoutesByFullPath {
   '/users/create': typeof MainUsersCreateRoute
   '/teams': typeof MainTeamsIndexRoute
   '/users': typeof MainUsersIndexRoute
+  '/teams/$teamId/edit': typeof MainTeamsTeamIdEditRoute
   '/users/$userId/edit': typeof MainUsersUserIdEditRoute
   '/teams/$teamId': typeof MainTeamsTeamIdIndexRoute
   '/users/$userId': typeof MainUsersUserIdIndexRoute
@@ -136,6 +143,7 @@ export interface FileRoutesByTo {
   '/users/create': typeof MainUsersCreateRoute
   '/teams': typeof MainTeamsIndexRoute
   '/users': typeof MainUsersIndexRoute
+  '/teams/$teamId/edit': typeof MainTeamsTeamIdEditRoute
   '/users/$userId/edit': typeof MainUsersUserIdEditRoute
   '/teams/$teamId': typeof MainTeamsTeamIdIndexRoute
   '/users/$userId': typeof MainUsersUserIdIndexRoute
@@ -155,6 +163,7 @@ export interface FileRoutesById {
   '/_main/users/create': typeof MainUsersCreateRoute
   '/_main/teams/': typeof MainTeamsIndexRoute
   '/_main/users/': typeof MainUsersIndexRoute
+  '/_main/teams/$teamId/edit': typeof MainTeamsTeamIdEditRoute
   '/_main/users/$userId/edit': typeof MainUsersUserIdEditRoute
   '/_main/teams/$teamId/': typeof MainTeamsTeamIdIndexRoute
   '/_main/users/$userId/': typeof MainUsersUserIdIndexRoute
@@ -174,6 +183,7 @@ export interface FileRouteTypes {
     | '/users/create'
     | '/teams'
     | '/users'
+    | '/teams/$teamId/edit'
     | '/users/$userId/edit'
     | '/teams/$teamId'
     | '/users/$userId'
@@ -191,6 +201,7 @@ export interface FileRouteTypes {
     | '/users/create'
     | '/teams'
     | '/users'
+    | '/teams/$teamId/edit'
     | '/users/$userId/edit'
     | '/teams/$teamId'
     | '/users/$userId'
@@ -209,6 +220,7 @@ export interface FileRouteTypes {
     | '/_main/users/create'
     | '/_main/teams/'
     | '/_main/users/'
+    | '/_main/teams/$teamId/edit'
     | '/_main/users/$userId/edit'
     | '/_main/teams/$teamId/'
     | '/_main/users/$userId/'
@@ -334,6 +346,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainUsersUserIdEditRouteImport
       parentRoute: typeof MainRouteRoute
     }
+    '/_main/teams/$teamId/edit': {
+      id: '/_main/teams/$teamId/edit'
+      path: '/teams/$teamId/edit'
+      fullPath: '/teams/$teamId/edit'
+      preLoaderRoute: typeof MainTeamsTeamIdEditRouteImport
+      parentRoute: typeof MainRouteRoute
+    }
   }
 }
 
@@ -357,6 +376,7 @@ interface MainRouteRouteChildren {
   MainUsersCreateRoute: typeof MainUsersCreateRoute
   MainTeamsIndexRoute: typeof MainTeamsIndexRoute
   MainUsersIndexRoute: typeof MainUsersIndexRoute
+  MainTeamsTeamIdEditRoute: typeof MainTeamsTeamIdEditRoute
   MainUsersUserIdEditRoute: typeof MainUsersUserIdEditRoute
   MainTeamsTeamIdIndexRoute: typeof MainTeamsTeamIdIndexRoute
   MainUsersUserIdIndexRoute: typeof MainUsersUserIdIndexRoute
@@ -369,6 +389,7 @@ const MainRouteRouteChildren: MainRouteRouteChildren = {
   MainUsersCreateRoute: MainUsersCreateRoute,
   MainTeamsIndexRoute: MainTeamsIndexRoute,
   MainUsersIndexRoute: MainUsersIndexRoute,
+  MainTeamsTeamIdEditRoute: MainTeamsTeamIdEditRoute,
   MainUsersUserIdEditRoute: MainUsersUserIdEditRoute,
   MainTeamsTeamIdIndexRoute: MainTeamsTeamIdIndexRoute,
   MainUsersUserIdIndexRoute: MainUsersUserIdIndexRoute,

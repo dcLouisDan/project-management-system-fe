@@ -23,6 +23,11 @@ export interface TeamCreate {
 
 export interface TeamUpdate extends TeamCreate {}
 
+export const DEFAULT_TEAM_CREATE: TeamCreate = {
+  name: '',
+  description: '',
+}
+
 export interface TeamAddMember {
   id: number
   role: TeamRole
