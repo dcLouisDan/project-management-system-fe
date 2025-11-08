@@ -5,13 +5,13 @@ import type { User, UserCreate, UserUpdate } from '../types/user'
 import {
   type PaginatedResponse,
   type ShowUserResponse,
+  type SoftDeleteStatus,
   type UserCreateResponse,
   type UserDeleteResponse,
   type UserRestoreResponse,
   type UserUpdateResponse,
 } from '../types/response'
 
-export type SoftDeleteStatus = 'all' | 'deleted' | 'active'
 export interface FetchUsersParams {
   page: number
   per_page?: number

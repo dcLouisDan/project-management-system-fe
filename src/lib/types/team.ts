@@ -1,6 +1,7 @@
 import type { Project } from './project'
 import type { User } from './user'
 
+export type TeamRole = 'team_lead' | 'team_member'
 export interface Team {
   id: number
   name: string
@@ -19,6 +20,27 @@ export interface TeamCreate {
 }
 
 export interface TeamUpdate extends TeamCreate {}
+
+export interface TeamAddMember {
+  id: number
+  role: TeamRole
+}
+export interface TeamAddMembersBulkItem {
+  user_id: number
+  role: TeamRole
+}
+
+export interface TeamSetLeader {
+  user_id: number
+}
+
+export interface TeamAddMembersBulk {
+  members: TeamAddMembersBulkItem[]
+}
+
+export interface TeamRemoveMembersBulk {
+  user_ids: number[]
+}
 
 export type InvalidTeamMembers = Record<
   number,

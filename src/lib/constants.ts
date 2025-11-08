@@ -7,4 +7,5 @@ export const BACKEND_API_URL = `${BACKEND_URL}${BACKEND_API_ROOT}`
 
 export const QUERY_KEYS = {
   USERS: 'users',
+  TEAMS: 'teams',
 }

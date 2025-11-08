@@ -29,6 +29,25 @@ export default function useManageUsers() {
     setValidationErrors({})
   }
 
+  function handleError(
+    error: ApiError,
+    action: string,
+    resource: string = 'User',
+  ) {
+    setRequestProgress('failed')
+    setError(error.message || `${resource} ${action} failed`)
+    toast.error(`Failed to ${action} ${resource}`, {
+      description: error.message,
+    })
+    if (error.errors) {
+      const fieldErrors: Record<string, string> = {}
+      for (const key in error.errors) {
+        fieldErrors[key] = error.errors[key].join(' ')
+      }
+      setValidationErrors(fieldErrors)
+    }
+  }
+
   async function create(data: UserCreate) {
     setRequestProgress('in-progress')
     clearErrors()
@@ -44,19 +63,7 @@ export default function useManageUsers() {
       })
       setRequestProgress('completed')
     } catch (err) {
-      setRequestProgress('failed')
-      const error = err as ApiError
-      setError(error.message || 'User creation failed')
-      toast.error('Failed to create user', {
-        description: error.message,
-      })
-      if (error.errors) {
-        const fieldErrors: Record<string, string> = {}
-        for (const key in error.errors) {
-          fieldErrors[key] = error.errors[key].join(' ')
-        }
-        setValidationErrors(fieldErrors)
-      }
+      handleError(err as ApiError, 'create')
     }
   }
 
@@ -79,19 +86,7 @@ export default function useManageUsers() {
       })
       setRequestProgress('completed')
     } catch (err) {
-      setRequestProgress('failed')
-      const error = err as ApiError
-      setError(error.message || 'User update failed')
-      toast.error('Failed to update user', {
-        description: error.message,
-      })
-      if (error.errors) {
-        const fieldErrors: Record<string, string> = {}
-        for (const key in error.errors) {
-          fieldErrors[key] = error.errors[key].join(' ')
-        }
-        setValidationErrors(fieldErrors)
-      }
+      handleError(err as ApiError, 'update')
     }
   }
 
@@ -112,19 +107,7 @@ export default function useManageUsers() {
       })
       setRequestProgress('completed')
     } catch (err) {
-      setRequestProgress('failed')
-      const error = err as ApiError
-      setError(error.message || 'User delete failed')
-      toast.error('Failed to delete user', {
-        description: error.message,
-      })
-      if (error.errors) {
-        const fieldErrors: Record<string, string> = {}
-        for (const key in error.errors) {
-          fieldErrors[key] = error.errors[key].join(' ')
-        }
-        setValidationErrors(fieldErrors)
-      }
+      handleError(err as ApiError, 'delete')
     }
   }
 
@@ -142,19 +125,7 @@ export default function useManageUsers() {
       })
       setRequestProgress('completed')
     } catch (err) {
-      setRequestProgress('failed')
-      const error = err as ApiError
-      setError(error.message || 'User restore failed')
-      toast.error('Failed to restore user', {
-        description: error.message,
-      })
-      if (error.errors) {
-        const fieldErrors: Record<string, string> = {}
-        for (const key in error.errors) {
-          fieldErrors[key] = error.errors[key].join(' ')
-        }
-        setValidationErrors(fieldErrors)
-      }
+      handleError(err as ApiError, 'restore')
     }
   }
 

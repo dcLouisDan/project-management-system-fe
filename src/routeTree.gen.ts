@@ -22,6 +22,7 @@ import { Route as MainUsersCreateRouteImport } from './routes/_main/users/create
 import { Route as MainSettingsTeamRouteImport } from './routes/_main/settings/team'
 import { Route as MainSettingsProfileRouteImport } from './routes/_main/settings/profile'
 import { Route as MainUsersUserIdIndexRouteImport } from './routes/_main/users/$userId/index'
+import { Route as MainTeamsTeamIdIndexRouteImport } from './routes/_main/teams/$teamId/index'
 import { Route as MainUsersUserIdEditRouteImport } from './routes/_main/users/$userId/edit'
 
 const AuthRouteRoute = AuthRouteRouteImport.update({
@@ -88,6 +89,11 @@ const MainUsersUserIdIndexRoute = MainUsersUserIdIndexRouteImport.update({
   path: '/users/$userId/',
   getParentRoute: () => MainRouteRoute,
 } as any)
+const MainTeamsTeamIdIndexRoute = MainTeamsTeamIdIndexRouteImport.update({
+  id: '/teams/$teamId/',
+  path: '/teams/$teamId/',
+  getParentRoute: () => MainRouteRoute,
+} as any)
 const MainUsersUserIdEditRoute = MainUsersUserIdEditRouteImport.update({
   id: '/users/$userId/edit',
   path: '/users/$userId/edit',
@@ -107,6 +113,7 @@ export interface FileRoutesByFullPath {
   '/teams': typeof MainTeamsIndexRoute
   '/users': typeof MainUsersIndexRoute
   '/users/$userId/edit': typeof MainUsersUserIdEditRoute
+  '/teams/$teamId': typeof MainTeamsTeamIdIndexRoute
   '/users/$userId': typeof MainUsersUserIdIndexRoute
 }
 export interface FileRoutesByTo {
@@ -122,6 +129,7 @@ export interface FileRoutesByTo {
   '/teams': typeof MainTeamsIndexRoute
   '/users': typeof MainUsersIndexRoute
   '/users/$userId/edit': typeof MainUsersUserIdEditRoute
+  '/teams/$teamId': typeof MainTeamsTeamIdIndexRoute
   '/users/$userId': typeof MainUsersUserIdIndexRoute
 }
 export interface FileRoutesById {
@@ -139,6 +147,7 @@ export interface FileRoutesById {
   '/_main/teams/': typeof MainTeamsIndexRoute
   '/_main/users/': typeof MainUsersIndexRoute
   '/_main/users/$userId/edit': typeof MainUsersUserIdEditRoute
+  '/_main/teams/$teamId/': typeof MainTeamsTeamIdIndexRoute
   '/_main/users/$userId/': typeof MainUsersUserIdIndexRoute
 }
 export interface FileRouteTypes {
@@ -156,6 +165,7 @@ export interface FileRouteTypes {
     | '/teams'
     | '/users'
     | '/users/$userId/edit'
+    | '/teams/$teamId'
     | '/users/$userId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -171,6 +181,7 @@ export interface FileRouteTypes {
     | '/teams'
     | '/users'
     | '/users/$userId/edit'
+    | '/teams/$teamId'
     | '/users/$userId'
   id:
     | '__root__'
@@ -187,6 +198,7 @@ export interface FileRouteTypes {
     | '/_main/teams/'
     | '/_main/users/'
     | '/_main/users/$userId/edit'
+    | '/_main/teams/$teamId/'
     | '/_main/users/$userId/'
   fileRoutesById: FileRoutesById
 }
@@ -289,6 +301,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainUsersUserIdIndexRouteImport
       parentRoute: typeof MainRouteRoute
     }
+    '/_main/teams/$teamId/': {
+      id: '/_main/teams/$teamId/'
+      path: '/teams/$teamId'
+      fullPath: '/teams/$teamId'
+      preLoaderRoute: typeof MainTeamsTeamIdIndexRouteImport
+      parentRoute: typeof MainRouteRoute
+    }
     '/_main/users/$userId/edit': {
       id: '/_main/users/$userId/edit'
       path: '/users/$userId/edit'
@@ -319,6 +338,7 @@ interface MainRouteRouteChildren {
   MainTeamsIndexRoute: typeof MainTeamsIndexRoute
   MainUsersIndexRoute: typeof MainUsersIndexRoute
   MainUsersUserIdEditRoute: typeof MainUsersUserIdEditRoute
+  MainTeamsTeamIdIndexRoute: typeof MainTeamsTeamIdIndexRoute
   MainUsersUserIdIndexRoute: typeof MainUsersUserIdIndexRoute
 }
 
@@ -329,6 +349,7 @@ const MainRouteRouteChildren: MainRouteRouteChildren = {
   MainTeamsIndexRoute: MainTeamsIndexRoute,
   MainUsersIndexRoute: MainUsersIndexRoute,
   MainUsersUserIdEditRoute: MainUsersUserIdEditRoute,
+  MainTeamsTeamIdIndexRoute: MainTeamsTeamIdIndexRoute,
   MainUsersUserIdIndexRoute: MainUsersUserIdIndexRoute,
 }
 

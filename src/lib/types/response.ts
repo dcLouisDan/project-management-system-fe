@@ -8,6 +8,7 @@ export interface ApiResponse<T> {
   meta?: Record<string, any>
   errors?: Record<string, string>
 }
+export type SoftDeleteStatus = 'all' | 'deleted' | 'active'
 
 // User Responses
 export type GetAuthUserResponse = ApiResponse<{ user: User }>
