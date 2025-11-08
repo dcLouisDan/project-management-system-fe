@@ -23,6 +23,8 @@ import {
 } from '../types/response'
 
 export interface FetchTeamsParams {
+  page?: number
+  per_page?: number
   name?: string
   has_leader?: boolean
   sort?: string

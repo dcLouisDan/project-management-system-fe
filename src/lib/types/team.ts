@@ -2,6 +2,8 @@ import type { Project } from './project'
 import type { User } from './user'
 
 export type TeamRole = 'team_lead' | 'team_member'
+
+export const SORTABLE_TEAM_FIELDS: string[] = ['id', 'name', 'created_at']
 export interface Team {
   id: number
   name: string

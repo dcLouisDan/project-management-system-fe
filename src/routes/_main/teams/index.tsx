@@ -1,9 +1,130 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
+import MainInsetLayout from '../-main-inset-layout'
+import { teamsQueryOptions } from '@/lib/query-options/teams-query-options'
+import { useQuery } from '@tanstack/react-query'
+import { DataTable } from '@/components/data-table'
+import { columns } from './-table/columns'
+import PaginationBar from '@/components/pagination-bar'
+import TeamsTableFilters from './-table/team-table-filters'
+import type { SortDirection } from '@/lib/types/ui'
+import { buttonVariants } from '@/components/ui/button'
+import PageHeader from '@/components/page-header'
+import { APP_NAME } from '@/lib/constants'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { columnsDeleted } from './-table/columns-deleted'
+
+const PAGE_TITLE = 'Manage Teams'
+const PAGE_DESCRIPTION = 'Create, view, update or delete team records'
+
+type TabValues = 'active' | 'deleted'
+export interface TeamsIndexSearchParams {
+  page?: number
+  per_page?: number
+  name?: string
+  sort?: string
+  direction?: SortDirection
+  tab?: TabValues
+}
 
 export const Route = createFileRoute('/_main/teams/')({
   component: RouteComponent,
+  validateSearch: (search) => search as TeamsIndexSearchParams,
+  head: () => ({
+    meta: [
+      {
+        title: PAGE_TITLE + ' - ' + APP_NAME,
+      },
+      {
+        name: 'description',
+        content: PAGE_DESCRIPTION,
+      },
+    ],
+  }),
 })
 
 function RouteComponent() {
-  return <div>Hello "/_main/teams/"!</div>
+  const { tab } = Route.useSearch()
+  const navigate = useNavigate()
+  return (
+    <MainInsetLayout breadcrumbItems={[{ label: 'Teams', href: '/teams' }]}>
+      <PageHeader title={PAGE_TITLE} description={PAGE_DESCRIPTION}>
+        <Link to="/teams/create" className={buttonVariants()}>
+          Add New Team
+        </Link>
+      </PageHeader>
+      <Tabs
+        defaultValue="active"
+        value={tab}
+        onValueChange={(value) =>
+          navigate({ to: '.', search: { tab: value as TabValues } })
+        }
+        className="w-full"
+      >
+        <TabsList>
+          <TabsTrigger value="active">Active</TabsTrigger>
+          <TabsTrigger value="deleted">Deleted</TabsTrigger>
+        </TabsList>
+        <TabsContent value="active">
+          <ActiveTeams />
+        </TabsContent>
+        <TabsContent value="deleted">
+          <DeletedTeams />
+        </TabsContent>
+      </Tabs>
+    </MainInsetLayout>
+  )
+}
+
+function DeletedTeams() {
+  const { page, per_page, name, sort, direction } = Route.useSearch()
+  const { data, isFetching } = useQuery(
+    teamsQueryOptions({
+      page: page ?? 1,
+      per_page: per_page ?? 10,
+      name: name ?? '',
+      sort: sort,
+      direction: direction,
+      status: 'deleted',
+    }),
+  )
+  return (
+    <>
+      <TeamsTableFilters />
+      <DataTable
+        columns={columnsDeleted}
+        data={data?.data || []}
+        isFetching={isFetching}
+      />
+      {data?.meta && (
+        <PaginationBar className="mt-2" pagination={data?.meta!} />
+      )}
+    </>
+  )
+}
+
+function ActiveTeams() {
+  const { page, per_page, name, sort, direction } = Route.useSearch()
+  const { data, isFetching } = useQuery(
+    teamsQueryOptions({
+      page: page ?? 1,
+      per_page: per_page ?? 10,
+      name: name ?? '',
+
+      sort: sort,
+      direction: direction,
+    }),
+  )
+  return (
+    <>
+      <TeamsTableFilters />
+      <DataTable
+        columns={columns}
+        data={data?.data || []}
+        isFetching={isFetching}
+      />
+      {data?.meta && (
+        <PaginationBar className="mt-2" pagination={data?.meta!} />
+      )}
+    </>
+  )
 }

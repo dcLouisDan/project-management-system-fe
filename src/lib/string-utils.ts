@@ -14,6 +14,11 @@ export function snakeCaseToTitleCase(str: string) {
   return wordsArr.map((word) => word[0].toUpperCase() + word.slice(1)).join(' ')
 }
 
+export function truncateText(str?: string, limit: number = 60) {
+  if (!str) return ''
+  return str.length <= limit ? str : str.slice(0, limit).trim() + '...'
+}
+
 export interface GeneratePasswordOptions {
   length?: number
   useLowercase?: boolean
