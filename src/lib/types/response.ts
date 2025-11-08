@@ -1,3 +1,4 @@
+import type { InvalidTeamMembers, Team } from './team'
 import { type User } from './user'
 
 export interface ApiResponse<T> {
@@ -8,14 +9,30 @@ export interface ApiResponse<T> {
   errors?: Record<string, string>
 }
 
+// User Responses
 export type GetAuthUserResponse = ApiResponse<{ user: User }>
 export type ShowUserResponse = { data: User }
 export type UserCreateResponse = ApiResponse<User>
 export type UserRestoreResponse = ApiResponse<User>
 export type UserUpdateResponse = ApiResponse<User>
 export type UserDeleteResponse = ApiResponse<null>
-
 export type UserLoginResponse = ApiResponse<{ two_factor: boolean; user: User }>
+
+// Team Response
+export type ShowTeamResponse = { data: Team }
+export type TeamCreateResponse = ApiResponse<Team>
+export type TeamRestoreResponse = ApiResponse<Team>
+export type TeamUpdateResponse = ApiResponse<Team>
+export type TeamDeleteResponse = ApiResponse<null>
+export type TeamAddMemberReponse = ApiResponse<null>
+export type TeamAddMembersBulkResponse = ApiResponse<{
+  invalid_users: InvalidTeamMembers
+}>
+export type TeamSetLeaderResponse = ApiResponse<{ previous_lead?: User }>
+export type TeamRemoveMemberResponse = ApiResponse<null>
+export type TeamRemoveMembersBulkResponse = ApiResponse<null>
+export type TeamAssignProjectResponse = ApiResponse<null>
+export type TeamRemoveProjectResponse = ApiResponse<null>
 
 export type RequestProgress = 'started' | 'in-progress' | 'completed' | 'failed'
 
