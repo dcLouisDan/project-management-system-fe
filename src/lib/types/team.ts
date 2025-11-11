@@ -1,7 +1,7 @@
 import type { Project } from './project'
 import type { User } from './user'
 
-export type TeamRole = 'team_lead' | 'team_member'
+export type TeamRole = 'team lead' | 'team member'
 
 export const SORTABLE_TEAM_FIELDS: string[] = ['id', 'name', 'created_at']
 export interface Team {
@@ -43,6 +43,10 @@ export interface TeamSetLeader {
 
 export interface TeamAddMembersBulk {
   members: TeamAddMembersBulkItem[]
+}
+
+export const DEFAULT_TEAM_ADD_MEMBERS_BULK: TeamAddMembersBulk = {
+  members: [],
 }
 
 export interface TeamRemoveMembersBulk {

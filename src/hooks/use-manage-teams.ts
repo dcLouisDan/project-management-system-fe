@@ -186,6 +186,10 @@ export default function useManageTeams() {
       toast.success('Team Restored', {
         description: `Successfully sync team members.`,
       })
+      navigate({
+        to: '/teams/$teamId',
+        params: { teamId: teamId.toString() },
+      })
       setRequestProgress('completed')
     } catch (err) {
       handleError(err as ApiError, 'add', 'Team members')

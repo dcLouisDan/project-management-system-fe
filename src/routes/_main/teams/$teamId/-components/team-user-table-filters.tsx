@@ -8,19 +8,19 @@ import type { SortDirection } from '@/lib/types/ui'
 import { SORTABLE_USER_FIELDS } from '@/lib/types/user'
 import { useNavigate, useSearch } from '@tanstack/react-router'
 import { useState } from 'react'
-import type { UsersIndexSearchParams } from '..'
+import type { TeamUsersSelectSearchParams } from '../members'
 
 const popoverFilters: FilterOptions[] = [
   {
     label: 'Roles',
     key: 'role',
-    items: RoleSelectItems,
+    items: RoleSelectItems.filter((role) => role.value != 'project manager'),
   },
 ]
 
-export default function UsersTableFilters() {
+export default function TeamUsersTableFilters() {
   const { name, role, roles } = useSearch({
-    from: '/_main/users/',
+    from: '/_main/teams/$teamId/members',
   })
 
   const navigate = useNavigate()
@@ -28,7 +28,7 @@ export default function UsersTableFilters() {
     navigate({
       to: '.',
       replace: true,
-      search: (prev: UsersIndexSearchParams) => ({
+      search: (prev: TeamUsersSelectSearchParams) => ({
         ...prev,
         name: newName.toString(),
         page: 1, // Reset to first page when name filter changes
@@ -46,7 +46,7 @@ export default function UsersTableFilters() {
     navigate({
       to: '.',
       replace: true,
-      search: (prev: UsersIndexSearchParams) => ({
+      search: (prev: TeamUsersSelectSearchParams) => ({
         ...prev,
         roles: popoverFilterValues.role,
         page: 1, // Reset to first page when popover filters change
@@ -59,7 +59,7 @@ export default function UsersTableFilters() {
     navigate({
       to: '.',
       replace: true,
-      search: (prev: UsersIndexSearchParams) => {
+      search: (prev: TeamUsersSelectSearchParams) => {
         const { roles, ...rest } = prev
         return {
           ...rest,
@@ -89,7 +89,7 @@ export default function UsersTableFilters() {
     navigate({
       to: '.',
       replace: true,
-      search: (prev: UsersIndexSearchParams) => ({
+      search: (prev: TeamUsersSelectSearchParams) => ({
         ...prev,
         sort,
         direction,
@@ -102,7 +102,7 @@ export default function UsersTableFilters() {
     navigate({
       to: '.',
       replace: true,
-      search: (prev: UsersIndexSearchParams) => {
+      search: (prev: TeamUsersSelectSearchParams) => {
         const { sort, direction, ...rest } = prev
         return {
           ...rest,

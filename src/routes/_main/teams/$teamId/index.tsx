@@ -1,7 +1,7 @@
 import type { ApiError } from '@/lib/handle-api-error'
 import { createFileRoute, Link, notFound } from '@tanstack/react-router'
 import MainInsetLayout from '../../-main-inset-layout'
-import { ArchiveRestore, Edit, Trash2 } from 'lucide-react'
+import { ArchiveRestore, Edit, Trash2, Users } from 'lucide-react'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import PageHeader from '@/components/page-header'
@@ -12,6 +12,7 @@ import { ConfirmationDialog } from '@/components/confirmation-dialog'
 import useManageTeams from '@/hooks/use-manage-teams'
 import { RestoreAlert } from '@/components/restore-alert'
 import { showTeamQueryOptions } from '@/lib/query-options/show-team-query-options'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 const PAGE_TITLE = 'Team Details'
 const PAGE_DESCRIPTION = 'Show team information and other related data'
@@ -62,8 +63,8 @@ function RouteComponent() {
     >
       {team.deleted_at && <RestoreAlert />}
       <PageHeader title={PAGE_TITLE} description={PAGE_DESCRIPTION} />
-      <div className="flex gap-4 items-center">
-        <div className="flex flex-col text-left border rounded-lg p-4 gap-2 w-64">
+      <div className="flex gap-4">
+        <div className="flex flex-col text-left border rounded-xl p-4 gap-2 w-64">
           <h4>{team.name}</h4>
           <Separator />
           <div>
@@ -94,6 +95,14 @@ function RouteComponent() {
           ) : (
             <>
               <Link
+                to="/teams/$teamId/members"
+                params={{ teamId }}
+                className={buttonVariants({ variant: 'default' })}
+              >
+                <Users />
+                Assign Members
+              </Link>
+              <Link
                 to="/teams/$teamId/edit"
                 params={{ teamId }}
                 className={buttonVariants({ variant: 'secondary' })}
@@ -120,7 +129,19 @@ function RouteComponent() {
             </>
           )}
         </div>
-        <div className="flex flex-col gap-2"></div>
+        <div className="flex flex-col gap-2 flex-1">
+          <Card>
+            <CardHeader>
+              <CardTitle>Team Members</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex gap-2">
+                <p>Leader</p>
+                <p>{team.lead?.name}</p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </MainInsetLayout>
   )
