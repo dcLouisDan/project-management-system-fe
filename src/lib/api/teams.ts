@@ -20,6 +20,7 @@ import {
   type TeamUpdateResponse,
   type TeamRemoveMembersBulkResponse,
   type TeamRemoveMemberResponse,
+  type TeamSyncMembersResponse,
 } from '../types/response'
 
 export interface FetchTeamsParams {
@@ -95,6 +96,17 @@ export async function addTeamMembersBulk(
 ) {
   return api
     .post<TeamAddMemberReponse>(`/teams/${teamId}/members/bulk`, data)
+    .catch((error) => {
+      throw handleApiError(error)
+    })
+}
+
+export async function syncTeamMembers(
+  teamId: number,
+  data: TeamAddMembersBulk,
+) {
+  return api
+    .post<TeamSyncMembersResponse>(`/teams/${teamId}/members/sync`, data)
     .catch((error) => {
       throw handleApiError(error)
     })

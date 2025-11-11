@@ -4,6 +4,7 @@ import {
   deleteTeam,
   removeTeamMembersBulk,
   restoreTeam,
+  syncTeamMembers,
   updateTeam,
 } from '@/lib/api/teams'
 import { QUERY_KEYS } from '@/lib/constants'
@@ -147,7 +148,7 @@ export default function useManageTeams() {
         queryKey: [QUERY_KEYS.TEAMS],
       })
       toast.success('Team Restored', {
-        description: `Successfully restored team.`,
+        description: `Successfully added team member.`,
       })
       setRequestProgress('completed')
     } catch (err) {
@@ -165,7 +166,25 @@ export default function useManageTeams() {
         queryKey: [QUERY_KEYS.TEAMS],
       })
       toast.success('Team Restored', {
-        description: `Successfully restored team.`,
+        description: `Successfully added new team members.`,
+      })
+      setRequestProgress('completed')
+    } catch (err) {
+      handleError(err as ApiError, 'add', 'Team members')
+    }
+  }
+
+  async function syncMembers(teamId: number, data: TeamAddMembersBulk) {
+    setRequestProgress('in-progress')
+    clearErrors()
+    try {
+      await syncTeamMembers(teamId, data)
+
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.TEAMS],
+      })
+      toast.success('Team Restored', {
+        description: `Successfully sync team members.`,
       })
       setRequestProgress('completed')
     } catch (err) {
@@ -183,7 +202,7 @@ export default function useManageTeams() {
         queryKey: [QUERY_KEYS.TEAMS],
       })
       toast.success('Team Restored', {
-        description: `Successfully restored team.`,
+        description: `Successfully removed team member.`,
       })
       setRequestProgress('completed')
     } catch (err) {
@@ -204,7 +223,7 @@ export default function useManageTeams() {
         queryKey: [QUERY_KEYS.TEAMS],
       })
       toast.success('Team Restored', {
-        description: `Successfully restored team.`,
+        description: `Successfully removed multiple team members.`,
       })
       setRequestProgress('completed')
     } catch (err) {
@@ -221,6 +240,7 @@ export default function useManageTeams() {
     addMembersBulk,
     removeMember,
     removeMembersBulk,
+    syncMembers,
     validationErrors,
     error,
     requestProgress,

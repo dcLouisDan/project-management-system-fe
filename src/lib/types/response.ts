@@ -32,6 +32,7 @@ export type TeamAddMembersBulkResponse = ApiResponse<{
 export type TeamSetLeaderResponse = ApiResponse<{ previous_lead?: User }>
 export type TeamRemoveMemberResponse = ApiResponse<null>
 export type TeamRemoveMembersBulkResponse = ApiResponse<null>
+export type TeamSyncMembersResponse = ApiResponse<Team>
 export type TeamAssignProjectResponse = ApiResponse<null>
 export type TeamRemoveProjectResponse = ApiResponse<null>
 
