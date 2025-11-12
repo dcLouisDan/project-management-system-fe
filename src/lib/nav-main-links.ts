@@ -1,4 +1,4 @@
-import { LayoutDashboard, Settings2, Users } from 'lucide-react'
+import { ClipboardList, LayoutDashboard, Settings2, Users } from 'lucide-react'
 import type { SidebarNavItem, SidebarNavSubItem } from './types/ui'
 
 export const SETTING_LINKS: SidebarNavSubItem[] = [
@@ -18,7 +18,17 @@ export const NAV_MAIN_LINKS: SidebarNavItem[] = [
     url: '/dashboard',
     icon: LayoutDashboard,
   },
-
+  {
+    title: 'Projects',
+    url: '#',
+    icon: ClipboardList,
+    items: [
+      {
+        title: 'Projects List',
+        url: '/projects',
+      },
+    ],
+  },
   {
     title: 'Users and Teams',
     url: '#',

@@ -96,7 +96,7 @@ function DeletedUsers() {
       roles: roles ? roles.join(',') : '',
       sort: sort,
       direction: direction,
-      status: 'deleted',
+      delete_status: 'deleted',
     }),
   )
   return (

@@ -1,0 +1,11 @@
+export type ProgressStatus =
+  | 'not_started'
+  | 'assigned'
+  | 'in_progress'
+  | 'awaiting_review'
+  | 'under_review'
+  | 'approved'
+  | 'rejected'
+  | 'completed'
+  | 'on_hold'
+  | 'cancelled'

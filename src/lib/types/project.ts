@@ -1,1 +1,48 @@
-export interface Project {}
+import type { ApiResponse } from './response'
+import type { ProgressStatus } from './status'
+import type { Team } from './team'
+import type { User } from './user'
+
+export interface Project {
+  id: number
+  name: string
+  description: string
+  manager?: User
+  teams: Team[]
+  status: ProgressStatus
+  start_date: string
+  due_date?: string | null
+  created_at: string
+  updated_at?: string
+  deleted_at?: string | null
+}
+export const SORTABLE_PROJECT_FIELDS: string[] = [
+  'id',
+  'name',
+  'start_date',
+  'due_date',
+  'created_at',
+]
+
+export interface ProjectCreate {
+  name: string
+  description?: string
+  status: ProgressStatus
+  start_date: string
+  due_date?: string
+}
+
+export interface ProjectUpdate extends ProjectCreate {}
+
+export const DEFAULT_PROJECT_CREATE: ProjectCreate = {
+  name: '',
+  description: '',
+  status: 'not_started',
+  start_date: new Date().toDateString(),
+}
+
+export type ShowProjectResponse = { data: Project }
+export type ProjectCreateResponse = ApiResponse<Project>
+export type ProjectRestoreResponse = ApiResponse<Project>
+export type ProjectUpdateResponse = ApiResponse<Project>
+export type ProjectDeleteResponse = ApiResponse<null>

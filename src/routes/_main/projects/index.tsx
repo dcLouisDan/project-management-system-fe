@@ -1,23 +1,23 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import MainInsetLayout from '../-main-inset-layout'
-import { teamsQueryOptions } from '@/lib/query-options/teams-query-options'
+import { projectsQueryOptions } from '@/lib/query-options/projects-query-options'
 import { useQuery } from '@tanstack/react-query'
 import { DataTable } from '@/components/data-table'
 import { columns } from './-table/columns'
 import PaginationBar from '@/components/pagination-bar'
-import TeamsTableFilters from './-table/team-table-filters'
 import type { SortDirection } from '@/lib/types/ui'
 import { buttonVariants } from '@/components/ui/button'
 import PageHeader from '@/components/page-header'
 import { APP_NAME } from '@/lib/constants'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { columnsDeleted } from './-table/columns-deleted'
+import ProjectsTableFilters from './-table/project-table-filters'
 
-const PAGE_TITLE = 'Manage Teams'
-const PAGE_DESCRIPTION = 'Create, view, update or delete team records'
+const PAGE_TITLE = 'Manage Projects'
+const PAGE_DESCRIPTION = 'Create, view, update or delete project records'
 
 type TabValues = 'active' | 'deleted'
-export interface TeamsIndexSearchParams {
+export interface ProjectsIndexSearchParams {
   page?: number
   per_page?: number
   name?: string
@@ -26,9 +26,9 @@ export interface TeamsIndexSearchParams {
   tab?: TabValues
 }
 
-export const Route = createFileRoute('/_main/teams/')({
+export const Route = createFileRoute('/_main/projects/')({
   component: RouteComponent,
-  validateSearch: (search) => search as TeamsIndexSearchParams,
+  validateSearch: (search) => search as ProjectsIndexSearchParams,
   head: () => ({
     meta: [
       {
@@ -46,10 +46,12 @@ function RouteComponent() {
   const { tab } = Route.useSearch()
   const navigate = useNavigate()
   return (
-    <MainInsetLayout breadcrumbItems={[{ label: 'Teams', href: '/teams' }]}>
+    <MainInsetLayout
+      breadcrumbItems={[{ label: 'Projects', href: '/projects' }]}
+    >
       <PageHeader title={PAGE_TITLE} description={PAGE_DESCRIPTION}>
-        <Link to="/teams/create" className={buttonVariants()}>
-          Add New Team
+        <Link to="/projects/create" className={buttonVariants()}>
+          Add New Project
         </Link>
       </PageHeader>
       <Tabs
@@ -65,20 +67,20 @@ function RouteComponent() {
           <TabsTrigger value="deleted">Deleted</TabsTrigger>
         </TabsList>
         <TabsContent value="active">
-          <ActiveTeams />
+          <ActiveProjects />
         </TabsContent>
         <TabsContent value="deleted">
-          <DeletedTeams />
+          <DeletedProjects />
         </TabsContent>
       </Tabs>
     </MainInsetLayout>
   )
 }
 
-function DeletedTeams() {
+function DeletedProjects() {
   const { page, per_page, name, sort, direction } = Route.useSearch()
   const { data, isFetching } = useQuery(
-    teamsQueryOptions({
+    projectsQueryOptions({
       page: page ?? 1,
       per_page: per_page ?? 10,
       name: name ?? '',
@@ -89,7 +91,7 @@ function DeletedTeams() {
   )
   return (
     <>
-      <TeamsTableFilters />
+      <ProjectsTableFilters />
       <DataTable
         columns={columnsDeleted}
         data={data?.data || []}
@@ -102,10 +104,10 @@ function DeletedTeams() {
   )
 }
 
-function ActiveTeams() {
+function ActiveProjects() {
   const { page, per_page, name, sort, direction } = Route.useSearch()
   const { data, isFetching } = useQuery(
-    teamsQueryOptions({
+    projectsQueryOptions({
       page: page ?? 1,
       per_page: per_page ?? 10,
       name: name ?? '',
@@ -116,7 +118,7 @@ function ActiveTeams() {
   )
   return (
     <>
-      <TeamsTableFilters />
+      <ProjectsTableFilters />
       <DataTable
         columns={columns}
         data={data?.data || []}

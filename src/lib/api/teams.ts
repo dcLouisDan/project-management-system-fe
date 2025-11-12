@@ -30,7 +30,7 @@ export interface FetchTeamsParams {
   has_leader?: boolean
   sort?: string
   direction?: SortDirection
-  status?: SoftDeleteStatus
+  delete_status?: SoftDeleteStatus
 }
 
 export class TeamNotFoundError extends Error {}

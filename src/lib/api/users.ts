@@ -20,7 +20,7 @@ export interface FetchUsersParams {
   roles?: string
   sort?: string
   direction?: SortDirection
-  status?: SoftDeleteStatus
+  delete_status?: SoftDeleteStatus
 }
 
 export class UserNotFoundError extends Error {}
