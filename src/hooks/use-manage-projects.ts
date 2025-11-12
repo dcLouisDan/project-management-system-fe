@@ -77,10 +77,10 @@ export default function useManageProjects() {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.PROJECTS],
       })
-      // navigate({
-      //   to: '/projects/$projectId',
-      //   params: { projectId: projectId.toString() },
-      // })
+      navigate({
+        to: '/projects/$projectId',
+        params: { projectId: projectId.toString() },
+      })
       toast.success('Project Updated', {
         description: `Project record updated for ${body.data.name}`,
       })
@@ -99,9 +99,9 @@ export default function useManageProjects() {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.PROJECTS],
       })
-      // navigate({
-      //   to: '/projects',
-      // })
+      navigate({
+        to: '/projects',
+      })
       toast.success('Project Deleted', {
         description: `Successfully deleted project.`,
       })

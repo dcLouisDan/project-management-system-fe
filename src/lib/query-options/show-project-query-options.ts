@@ -1,9 +1,9 @@
 import { queryOptions } from '@tanstack/react-query'
 import { QUERY_KEYS } from '../constants'
-import { showTeam } from '../api/teams'
+import { showProject } from '../api/projects'
 
-export const showTeamQueryOptions = (teamId: number) =>
+export const showProjectQueryOptions = (projectId: number) =>
   queryOptions({
-    queryKey: [QUERY_KEYS.USERS, teamId],
-    queryFn: () => showTeam(teamId),
+    queryKey: [QUERY_KEYS.USERS, projectId],
+    queryFn: () => showProject(projectId),
   })

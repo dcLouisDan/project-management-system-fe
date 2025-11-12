@@ -7,7 +7,7 @@ import type { User } from './user'
 export interface Project {
   id: number
   name: string
-  description: string
+  description?: string
   manager?: User
   teams: Team[]
   status: ProgressStatus
