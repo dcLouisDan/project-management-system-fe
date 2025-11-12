@@ -23,7 +23,7 @@ import {
 import TeamUserSelectTable from './-components/team-user-select-table'
 import type { SortDirection } from '@/lib/types/ui'
 import { Button, buttonVariants } from '@/components/ui/button'
-import { BadgePlus, Crown, Save, User as UserIcon, X } from 'lucide-react'
+import { Crown, Save, User as UserIcon, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import type { User } from '@/lib/types/user'
 import { Toggle } from '@/components/ui/toggle'

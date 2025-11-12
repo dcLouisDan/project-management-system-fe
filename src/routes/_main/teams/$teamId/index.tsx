@@ -132,13 +132,17 @@ function RouteComponent() {
         <div className="flex flex-col gap-2 flex-1">
           <Card>
             <CardHeader>
-              <CardTitle>Team Members</CardTitle>
+              <CardTitle>
+                <span className="font-bold">Leader:</span> {team.lead?.name}
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex gap-2">
-                <p>Leader</p>
-                <p>{team.lead?.name}</p>
-              </div>
+              <p className="font-bold">Members</p>
+              <ul className="list-disc px-4">
+                {team.members.map((member) => (
+                  <li>{member.name}</li>
+                ))}
+              </ul>
             </CardContent>
           </Card>
         </div>
