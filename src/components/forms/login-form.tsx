@@ -28,11 +28,12 @@ export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<'div'>) {
-  const { login, validationErrors } = useAuth()
+  const { login, logout, validationErrors } = useAuth()
 
   const form = useForm({
     defaultValues: DEFAULT_USER_LOGIN,
     onSubmit: async ({ value }) => {
+      await logout()
       await login(value.email, value.password, value.remember)
     },
   })

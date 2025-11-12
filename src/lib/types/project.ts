@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 import type { ApiResponse } from './response'
 import type { ProgressStatus } from './status'
 import type { Team } from './team'
@@ -38,7 +39,7 @@ export const DEFAULT_PROJECT_CREATE: ProjectCreate = {
   name: '',
   description: '',
   status: 'not_started',
-  start_date: new Date().toDateString(),
+  start_date: dayjs().format('YYYY-MM-DD'),
 }
 
 export type ShowProjectResponse = { data: Project }

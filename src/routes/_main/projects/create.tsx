@@ -18,10 +18,19 @@ import {
 import z from 'zod'
 import { Input } from '@/components/ui/input'
 import { BadgePlus } from 'lucide-react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import useManageProjects from '@/hooks/use-manage-projects'
 import { ValidationErrorsAlert } from '@/components/validation-errors-alert'
 import { Textarea } from '@/components/ui/textarea'
+import {
+  getProgressStatusOptions,
+  type ProgressStatus,
+} from '@/lib/types/status'
+import { BasicSelect } from '@/components/basic-select'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Label } from '@/components/ui/label'
+import type { CheckedState } from '@radix-ui/react-checkbox'
+import dayjs from 'dayjs'
 
 const PAGE_TITLE = 'Add New Project'
 const PAGE_DESCRIPTION = "Add a new project and describe what it's all about."
@@ -41,6 +50,8 @@ export const Route = createFileRoute('/_main/projects/create')({
   }),
 })
 
+const statusSelectOptions = getProgressStatusOptions('milestone')
+
 function RouteComponent() {
   const { create, validationErrors, requestProgress, setRequestProgress } =
     useManageProjects()
@@ -50,6 +61,17 @@ function RouteComponent() {
       await create(value)
     },
   })
+  const [noDueDate, setNoDueDate] = useState(true)
+
+  const handleNoDueDateCheck = (checked: CheckedState) => {
+    if (checked) {
+      setNoDueDate(true)
+      form.setFieldValue('due_date', undefined)
+    } else {
+      setNoDueDate(false)
+      form.setFieldValue('due_date', dayjs().format('YYYY-MM-DD'))
+    }
+  }
 
   useEffect(() => {
     if (requestProgress == 'completed') {
@@ -105,6 +127,84 @@ function RouteComponent() {
                     </>
                   )}
                 </form.Field>
+                <div className="grid gap-4 sm:grid-cols-3">
+                  <form.Field name="status">
+                    {(field) => (
+                      <>
+                        <Field>
+                          <FieldLabel htmlFor={field.name}>Status</FieldLabel>
+                          <BasicSelect
+                            items={statusSelectOptions}
+                            label="Status"
+                            value={field.state.value}
+                            onValueChange={(value) =>
+                              field.handleChange(value as ProgressStatus)
+                            }
+                          />
+                          <FieldError errors={field.state.meta.errors} />
+                        </Field>
+                      </>
+                    )}
+                  </form.Field>
+
+                  <form.Field name="start_date">
+                    {(field) => (
+                      <>
+                        <Field>
+                          <FieldLabel htmlFor={field.name}>
+                            Start Date
+                          </FieldLabel>
+                          <Input
+                            id={field.name}
+                            type="date"
+                            required
+                            value={field.state.value}
+                            onChange={(e) => field.handleChange(e.target.value)}
+                          />
+                          <FieldError errors={field.state.meta.errors} />
+                        </Field>
+                      </>
+                    )}
+                  </form.Field>
+
+                  <form.Subscribe selector={(state) => state.values.due_date}>
+                    {(stateValue) => (
+                      <form.Field name="due_date">
+                        {(field) => (
+                          <>
+                            <Field>
+                              <div className="flex items-center justify-between">
+                                <FieldLabel htmlFor={field.name}>
+                                  Due Date
+                                </FieldLabel>
+                                <div className="flex gap-2">
+                                  <Checkbox
+                                    checked={noDueDate}
+                                    onCheckedChange={handleNoDueDateCheck}
+                                    id="no-due-date"
+                                  />
+                                  <Label htmlFor="no-due-date">
+                                    No due date
+                                  </Label>
+                                </div>
+                              </div>
+                              <Input
+                                id={field.name}
+                                disabled={noDueDate}
+                                type="date"
+                                value={stateValue}
+                                onChange={(e) =>
+                                  field.handleChange(e.target.value)
+                                }
+                              />
+                              <FieldError errors={field.state.meta.errors} />
+                            </Field>
+                          </>
+                        )}
+                      </form.Field>
+                    )}
+                  </form.Subscribe>
+                </div>
                 <form.Field
                   name="description"
                   validators={{

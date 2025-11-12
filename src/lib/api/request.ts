@@ -17,7 +17,7 @@ api.defaults.withXSRFToken = true
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    if ([419, 401].includes(error.response?.status)) {
       useAppStore.getState().unsetUser()
 
       if (window.location.pathname !== '/auth/login') {

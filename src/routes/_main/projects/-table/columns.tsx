@@ -1,4 +1,4 @@
-import { truncateText } from '@/lib/string-utils'
+import { snakeCaseToTitleCase, truncateText } from '@/lib/string-utils'
 import type { Project } from '@/lib/types/project'
 import { Link } from '@tanstack/react-router'
 import { type ColumnDef } from '@tanstack/react-table'
@@ -29,6 +29,24 @@ export const columns: ColumnDef<Project>[] = [
     accessorKey: 'description',
     header: 'Description',
     accessorFn: (project) => truncateText(project.description),
+  },
+  {
+    accessorKey: 'status',
+    header: 'Status',
+    accessorFn: (project) => snakeCaseToTitleCase(project.status),
+  },
+  {
+    accessorKey: 'start_date',
+    header: 'Start Date',
+    accessorFn: (project) => dayjs(project.start_date).format('MMM D, YYYY'),
+  },
+  {
+    accessorKey: 'due_date',
+    header: 'Due Date',
+    accessorFn: (project) =>
+      project.due_date
+        ? dayjs(project.due_date).format('MMM D, YYYY')
+        : 'No Due Date',
   },
   {
     accessorKey: 'created_at',
