@@ -12,6 +12,8 @@ import type {
   ProjectUpdateResponse,
   ProjectSyncTeams,
   ProjectSyncTeamsResponse,
+  ProjectAssignManagerResponse,
+  ProjectAssignManager,
 } from '../types/project'
 import {
   type PaginatedResponse,
@@ -86,6 +88,17 @@ export async function syncTeamsProject(
 ) {
   return api
     .post<ProjectSyncTeamsResponse>(`/projects/${projectId}/teams/sync`, data)
+    .catch((error) => {
+      throw handleApiError(error)
+    })
+}
+
+export async function assignManagerProject(
+  projectId: number,
+  data: ProjectAssignManager,
+) {
+  return api
+    .post<ProjectAssignManagerResponse>(`/projects/${projectId}/manager`, data)
     .catch((error) => {
       throw handleApiError(error)
     })

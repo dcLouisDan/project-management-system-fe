@@ -1,7 +1,7 @@
 import type { ApiError } from '@/lib/handle-api-error'
 import { createFileRoute, Link, notFound } from '@tanstack/react-router'
 import MainInsetLayout from '../../-main-inset-layout'
-import { ArchiveRestore, Edit, Trash2, Users } from 'lucide-react'
+import { ArchiveRestore, Contact, Edit, Trash2, Users } from 'lucide-react'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import PageHeader from '@/components/page-header'
@@ -12,6 +12,8 @@ import useManageProjects from '@/hooks/use-manage-projects'
 import { RestoreAlert } from '@/components/restore-alert'
 import { showProjectQueryOptions } from '@/lib/query-options/show-project-query-options'
 import ProjectNotFoundComponent from './-not-found-component'
+import AssignManagerDialog from './-components/assign-manager-dialog'
+import UserAvatar from '@/components/user-avatar'
 
 const PAGE_TITLE = 'Project Details'
 const PAGE_DESCRIPTION = 'Show project information and other related data'
@@ -78,7 +80,35 @@ function RouteComponent() {
           </div>
 
           <Separator />
-          <p className="font-bold text-muted-foreground">Assigned Teams</p>
+          <p className="font-bold text-muted-foreground text-sm">
+            Project Manager
+          </p>
+          <div className="text-sm space-y-2 border p-2 rounded-lg flex items-center justify-between">
+            {project.manager ? (
+              <>
+                <UserAvatar
+                  name={project.manager.name}
+                  className="size-8 mx-0 my-auto"
+                  textClassName="text-sm"
+                />
+                <Link
+                  className="border-b border-foreground/30 border-dotted hover:border-dashed hover:border-foreground/50"
+                  to="/users/$userId"
+                  params={{ userId: project.manager.id.toString() }}
+                >
+                  {project.manager.name}
+                </Link>
+              </>
+            ) : (
+              <div>
+                <p>No manager assigned yet</p>
+              </div>
+            )}
+          </div>
+          <Separator />
+          <p className="font-bold text-muted-foreground text-sm">
+            Assigned Teams
+          </p>
           {project.teams.length > 0 ? (
             <ul className="list-disc ps-4">
               {project.teams.map((team) => (
@@ -111,6 +141,14 @@ function RouteComponent() {
             />
           ) : (
             <>
+              <AssignManagerDialog
+                project={project}
+                triggerComponent={
+                  <Button variant={'default'}>
+                    <Contact /> Assign Manager
+                  </Button>
+                }
+              />
               <Link
                 to="/projects/$projectId/teams"
                 params={{ projectId }}

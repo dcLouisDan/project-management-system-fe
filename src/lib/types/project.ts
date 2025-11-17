@@ -39,6 +39,10 @@ export interface ProjectSyncTeams {
   team_ids: number[]
 }
 
+export interface ProjectAssignManager {
+  manager_id?: number
+}
+
 export const DEFAULT_PROJECT_SYNC_TEAMS: ProjectSyncTeams = {
   team_ids: [],
 }
@@ -50,9 +54,14 @@ export const DEFAULT_PROJECT_CREATE: ProjectCreate = {
   start_date: dayjs().format('YYYY-MM-DD'),
 }
 
+export const DEFAULT_ASSIGN_MANAGER: ProjectAssignManager = {
+  manager_id: undefined,
+}
+
 export type ShowProjectResponse = { data: Project }
 export type ProjectCreateResponse = ApiResponse<Project>
 export type ProjectRestoreResponse = ApiResponse<Project>
 export type ProjectUpdateResponse = ApiResponse<Project>
 export type ProjectDeleteResponse = ApiResponse<null>
 export type ProjectSyncTeamsResponse = ApiResponse<Project>
+export type ProjectAssignManagerResponse = ApiResponse<Project>

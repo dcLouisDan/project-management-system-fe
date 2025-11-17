@@ -1,4 +1,5 @@
 import {
+  assignManagerProject,
   createProject,
   deleteProject,
   restoreProject,
@@ -9,6 +10,7 @@ import { QUERY_KEYS } from '@/lib/constants'
 import type { ApiError } from '@/lib/handle-api-error'
 import type { RequestProgress } from '@/lib/types/response'
 import type {
+  ProjectAssignManager,
   ProjectCreate,
   ProjectSyncTeams,
   ProjectUpdate,
@@ -157,12 +159,36 @@ export default function useManageProjects() {
     }
   }
 
+  async function assignManager(projectId: number, data: ProjectAssignManager) {
+    setRequestProgress('in-progress')
+    clearErrors()
+    try {
+      const response = await assignManagerProject(projectId, data)
+      const body = response.data
+
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.PROJECTS, projectId],
+      })
+      navigate({
+        to: '/projects/$projectId',
+        params: { projectId: projectId.toString() },
+      })
+      toast.success('Project Updated', {
+        description: `Project manager assigned for ${body.data.name}`,
+      })
+      setRequestProgress('completed')
+    } catch (err) {
+      handleError(err as ApiError, 'assign manager')
+    }
+  }
+
   return {
     create,
     update,
     destroy,
     restore,
     syncTeams,
+    assignManager,
     validationErrors,
     error,
     requestProgress,
