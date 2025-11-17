@@ -33,7 +33,8 @@ export const columns: ColumnDef<Project>[] = [
   {
     accessorKey: 'status',
     header: 'Status',
-    accessorFn: (project) => snakeCaseToTitleCase(project.status),
+    accessorFn: (project) =>
+      project.status ? snakeCaseToTitleCase(project.status) : '',
   },
   {
     accessorKey: 'start_date',

@@ -61,7 +61,6 @@ export default function PaginationBar({
       )}
     >
       <div className="hidden sm:flex items-center gap-2">
-        <span className="text-muted-foreground text-sm">Showing</span>
         <BasicSelect
           onValueChange={handlePerPageValueChange}
           label="Rows per page"

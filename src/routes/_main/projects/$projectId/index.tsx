@@ -11,7 +11,6 @@ import { ConfirmationDialog } from '@/components/confirmation-dialog'
 import useManageProjects from '@/hooks/use-manage-projects'
 import { RestoreAlert } from '@/components/restore-alert'
 import { showProjectQueryOptions } from '@/lib/query-options/show-project-query-options'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import ProjectNotFoundComponent from './-not-found-component'
 
 const PAGE_TITLE = 'Project Details'
@@ -79,6 +78,20 @@ function RouteComponent() {
           </div>
 
           <Separator />
+          <p className="font-bold text-muted-foreground">Assigned Teams</p>
+          {project.teams.length > 0 ? (
+            <ul className="list-disc ps-4">
+              {project.teams.map((team) => (
+                <li key={team.id}>{team.name}</li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-muted-foreground text-center text-sm">
+              No Teams are assigned to this project yet.
+            </p>
+          )}
+
+          <Separator />
           {project.deleted_at ? (
             <ConfirmationDialog
               description="This project will be reactivated and become accessible throughout the system again."
@@ -98,6 +111,14 @@ function RouteComponent() {
             />
           ) : (
             <>
+              <Link
+                to="/projects/$projectId/teams"
+                params={{ projectId }}
+                className={buttonVariants({ variant: 'default' })}
+              >
+                <Users />
+                Assign Teams
+              </Link>
               <Link
                 to="/projects/$projectId/edit"
                 params={{ projectId }}

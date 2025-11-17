@@ -35,6 +35,14 @@ export interface ProjectCreate {
 
 export interface ProjectUpdate extends ProjectCreate {}
 
+export interface ProjectSyncTeams {
+  team_ids: number[]
+}
+
+export const DEFAULT_PROJECT_SYNC_TEAMS: ProjectSyncTeams = {
+  team_ids: [],
+}
+
 export const DEFAULT_PROJECT_CREATE: ProjectCreate = {
   name: '',
   description: '',
@@ -47,3 +55,4 @@ export type ProjectCreateResponse = ApiResponse<Project>
 export type ProjectRestoreResponse = ApiResponse<Project>
 export type ProjectUpdateResponse = ApiResponse<Project>
 export type ProjectDeleteResponse = ApiResponse<null>
+export type ProjectSyncTeamsResponse = ApiResponse<Project>

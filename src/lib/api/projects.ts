@@ -10,6 +10,8 @@ import type {
   ProjectDeleteResponse,
   ProjectRestoreResponse,
   ProjectUpdateResponse,
+  ProjectSyncTeams,
+  ProjectSyncTeamsResponse,
 } from '../types/project'
 import {
   type PaginatedResponse,
@@ -73,6 +75,17 @@ export async function deleteProject(projectId: number) {
 export async function restoreProject(projectId: number) {
   return api
     .post<ProjectRestoreResponse>(`/projects/${projectId}/restore`)
+    .catch((error) => {
+      throw handleApiError(error)
+    })
+}
+
+export async function syncTeamsProject(
+  projectId: number,
+  data: ProjectSyncTeams,
+) {
+  return api
+    .post<ProjectSyncTeamsResponse>(`/projects/${projectId}/teams/sync`, data)
     .catch((error) => {
       throw handleApiError(error)
     })

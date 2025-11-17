@@ -88,6 +88,7 @@ function RouteComponent() {
     <MainInsetLayout
       breadcrumbItems={[
         { label: 'Teams', href: '/teams' },
+        { label: team.name, href: `/teams/${team.id}` },
         { label: 'Edit', href: '/teams/update' },
       ]}
     >

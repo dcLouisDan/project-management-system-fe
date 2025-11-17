@@ -2,12 +2,17 @@ import {
   createProject,
   deleteProject,
   restoreProject,
+  syncTeamsProject,
   updateProject,
 } from '@/lib/api/projects'
 import { QUERY_KEYS } from '@/lib/constants'
 import type { ApiError } from '@/lib/handle-api-error'
 import type { RequestProgress } from '@/lib/types/response'
-import type { ProjectCreate, ProjectUpdate } from '@/lib/types/project'
+import type {
+  ProjectCreate,
+  ProjectSyncTeams,
+  ProjectUpdate,
+} from '@/lib/types/project'
 import { useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
@@ -129,11 +134,35 @@ export default function useManageProjects() {
     }
   }
 
+  async function syncTeams(projectId: number, data: ProjectSyncTeams) {
+    setRequestProgress('in-progress')
+    clearErrors()
+    try {
+      const response = await syncTeamsProject(projectId, data)
+      const body = response.data
+
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.PROJECTS, projectId],
+      })
+      navigate({
+        to: '/projects/$projectId',
+        params: { projectId: projectId.toString() },
+      })
+      toast.success('Project Updated', {
+        description: `Project teams synced for ${body.data.name}`,
+      })
+      setRequestProgress('completed')
+    } catch (err) {
+      handleError(err as ApiError, 'sync teams')
+    }
+  }
+
   return {
     create,
     update,
     destroy,
     restore,
+    syncTeams,
     validationErrors,
     error,
     requestProgress,

@@ -128,7 +128,8 @@ function RouteComponent() {
     <MainInsetLayout
       breadcrumbItems={[
         { label: 'Teams', href: '/teams' },
-        { label: 'Edit', href: '/teams/update' },
+        { label: team.name, href: `/teams/${team.id}` },
+        { label: 'Assign Members', href: '/teams/update' },
       ]}
     >
       <PageHeader title={PAGE_TITLE} description={PAGE_DESCRIPTION} />
