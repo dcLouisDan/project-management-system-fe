@@ -32,6 +32,7 @@ import { Route as MainTeamsTeamIdMembersRouteImport } from './routes/_main/teams
 import { Route as MainTeamsTeamIdEditRouteImport } from './routes/_main/teams/$teamId/edit'
 import { Route as MainProjectsProjectIdTeamsRouteImport } from './routes/_main/projects/$projectId/teams'
 import { Route as MainProjectsProjectIdEditRouteImport } from './routes/_main/projects/$projectId/edit'
+import { Route as MainProjectsProjectIdTasksCreateRouteImport } from './routes/_main/projects/$projectId/tasks/create'
 
 const AuthRouteRoute = AuthRouteRouteImport.update({
   id: '/auth',
@@ -150,6 +151,12 @@ const MainProjectsProjectIdEditRoute =
     path: '/projects/$projectId/edit',
     getParentRoute: () => MainRouteRoute,
   } as any)
+const MainProjectsProjectIdTasksCreateRoute =
+  MainProjectsProjectIdTasksCreateRouteImport.update({
+    id: '/projects/$projectId/tasks/create',
+    path: '/projects/$projectId/tasks/create',
+    getParentRoute: () => MainRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -174,6 +181,7 @@ export interface FileRoutesByFullPath {
   '/projects/$projectId': typeof MainProjectsProjectIdIndexRoute
   '/teams/$teamId': typeof MainTeamsTeamIdIndexRoute
   '/users/$userId': typeof MainUsersUserIdIndexRoute
+  '/projects/$projectId/tasks/create': typeof MainProjectsProjectIdTasksCreateRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -198,6 +206,7 @@ export interface FileRoutesByTo {
   '/projects/$projectId': typeof MainProjectsProjectIdIndexRoute
   '/teams/$teamId': typeof MainTeamsTeamIdIndexRoute
   '/users/$userId': typeof MainUsersUserIdIndexRoute
+  '/projects/$projectId/tasks/create': typeof MainProjectsProjectIdTasksCreateRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -224,6 +233,7 @@ export interface FileRoutesById {
   '/_main/projects/$projectId/': typeof MainProjectsProjectIdIndexRoute
   '/_main/teams/$teamId/': typeof MainTeamsTeamIdIndexRoute
   '/_main/users/$userId/': typeof MainUsersUserIdIndexRoute
+  '/_main/projects/$projectId/tasks/create': typeof MainProjectsProjectIdTasksCreateRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -250,6 +260,7 @@ export interface FileRouteTypes {
     | '/projects/$projectId'
     | '/teams/$teamId'
     | '/users/$userId'
+    | '/projects/$projectId/tasks/create'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -274,6 +285,7 @@ export interface FileRouteTypes {
     | '/projects/$projectId'
     | '/teams/$teamId'
     | '/users/$userId'
+    | '/projects/$projectId/tasks/create'
   id:
     | '__root__'
     | '/'
@@ -299,6 +311,7 @@ export interface FileRouteTypes {
     | '/_main/projects/$projectId/'
     | '/_main/teams/$teamId/'
     | '/_main/users/$userId/'
+    | '/_main/projects/$projectId/tasks/create'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -470,6 +483,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainProjectsProjectIdEditRouteImport
       parentRoute: typeof MainRouteRoute
     }
+    '/_main/projects/$projectId/tasks/create': {
+      id: '/_main/projects/$projectId/tasks/create'
+      path: '/projects/$projectId/tasks/create'
+      fullPath: '/projects/$projectId/tasks/create'
+      preLoaderRoute: typeof MainProjectsProjectIdTasksCreateRouteImport
+      parentRoute: typeof MainRouteRoute
+    }
   }
 }
 
@@ -503,6 +523,7 @@ interface MainRouteRouteChildren {
   MainProjectsProjectIdIndexRoute: typeof MainProjectsProjectIdIndexRoute
   MainTeamsTeamIdIndexRoute: typeof MainTeamsTeamIdIndexRoute
   MainUsersUserIdIndexRoute: typeof MainUsersUserIdIndexRoute
+  MainProjectsProjectIdTasksCreateRoute: typeof MainProjectsProjectIdTasksCreateRoute
 }
 
 const MainRouteRouteChildren: MainRouteRouteChildren = {
@@ -522,6 +543,7 @@ const MainRouteRouteChildren: MainRouteRouteChildren = {
   MainProjectsProjectIdIndexRoute: MainProjectsProjectIdIndexRoute,
   MainTeamsTeamIdIndexRoute: MainTeamsTeamIdIndexRoute,
   MainUsersUserIdIndexRoute: MainUsersUserIdIndexRoute,
+  MainProjectsProjectIdTasksCreateRoute: MainProjectsProjectIdTasksCreateRoute,
 }
 
 const MainRouteRouteWithChildren = MainRouteRoute._addFileChildren(

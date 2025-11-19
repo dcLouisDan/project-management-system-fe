@@ -210,13 +210,17 @@ function RouteComponent() {
                 Manage tasks required to finish this project.
               </CardDescription>
               <CardAction>
-                <Link to="." className={buttonVariants()}>
+                <Link
+                  to="/projects/$projectId/tasks/create"
+                  params={{ projectId }}
+                  className={buttonVariants()}
+                >
                   <Plus /> Create Task
                 </Link>
               </CardAction>
             </CardHeader>
             <CardContent>
-              <p>Card Content</p>
+              <div className="flex flex-col gap-2"></div>
             </CardContent>
             <CardFooter>
               <p>Card Footer</p>

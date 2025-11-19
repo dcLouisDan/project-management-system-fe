@@ -1,0 +1,265 @@
+import type { ApiError } from '@/lib/handle-api-error'
+import { showProjectQueryOptions } from '@/lib/query-options/show-project-query-options'
+import MainInsetLayout from '@/routes/_main/-main-inset-layout'
+import { useSuspenseQuery } from '@tanstack/react-query'
+import { createFileRoute, notFound } from '@tanstack/react-router'
+import ProjectNotFoundComponent from '../-not-found-component'
+import { APP_NAME } from '@/lib/constants'
+import PageHeader from '@/components/page-header'
+import useManageTasks from '@/hooks/use-manage-tasks'
+import { DEFAULT_TASK_CREATE } from '@/lib/types/task'
+import { useForm } from '@tanstack/react-form'
+import { useEffect, useState } from 'react'
+import type { CheckedState } from '@radix-ui/react-checkbox'
+import dayjs from 'dayjs'
+import { Card, CardContent } from '@/components/ui/card'
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+  FieldLegend,
+  FieldSet,
+} from '@/components/ui/field'
+import z from 'zod'
+import { Input } from '@/components/ui/input'
+import { BasicSelect } from '@/components/basic-select'
+import { priorityLevelOptions, type PriorityLevel } from '@/lib/types/priority'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import { ValidationErrorsAlert } from '@/components/validation-errors-alert'
+import { Button } from '@/components/ui/button'
+import { NotepadText } from 'lucide-react'
+
+const PAGE_TITLE = 'Create Task'
+const PAGE_DESCRIPTION = 'Add a new task that can be assigned to your team.'
+
+export const Route = createFileRoute('/_main/projects/$projectId/tasks/create')(
+  {
+    component: RouteComponent,
+    loader: ({ context: { queryClient }, params: { projectId } }) => {
+      const id = Number(projectId)
+      try {
+        return queryClient.ensureQueryData(showProjectQueryOptions(id))
+      } catch (error) {
+        console.log('Loader error:', error)
+      }
+    },
+    head: ({ loaderData }) => ({
+      meta: [
+        {
+          title: loaderData
+            ? loaderData.name + ' - New Task' + ' - ' + APP_NAME
+            : PAGE_TITLE + ' - ' + APP_NAME,
+        },
+        {
+          name: 'description',
+          content: PAGE_DESCRIPTION,
+        },
+      ],
+    }),
+    onError: (err) => {
+      const error = err as ApiError
+      console.log('Index error', error)
+      if (error.status == 404) {
+        throw notFound()
+      }
+    },
+    notFoundComponent: ProjectNotFoundComponent,
+  },
+)
+
+function RouteComponent() {
+  const projectId = Route.useParams().projectId
+  const { data: project } = useSuspenseQuery(
+    showProjectQueryOptions(Number(projectId)),
+  )
+
+  const { create, validationErrors, requestProgress, setRequestProgress } =
+    useManageTasks()
+  const form = useForm({
+    defaultValues: DEFAULT_TASK_CREATE,
+    onSubmit: async ({ value }) => {
+      await create(project.id, value)
+    },
+  })
+  const [noDueDate, setNoDueDate] = useState(true)
+
+  const handleNoDueDateCheck = (checked: CheckedState) => {
+    if (checked) {
+      setNoDueDate(true)
+      form.setFieldValue('due_date', undefined)
+    } else {
+      setNoDueDate(false)
+      form.setFieldValue('due_date', dayjs().format('YYYY-MM-DD'))
+    }
+  }
+
+  useEffect(() => {
+    if (requestProgress == 'completed') {
+      form.reset()
+      setRequestProgress('started')
+    }
+  }, [requestProgress, setRequestProgress])
+  return (
+    <MainInsetLayout
+      breadcrumbItems={[
+        { label: 'Projects', href: '/projects' },
+        { label: project.name, href: `/projects/${project.id}` },
+        { label: 'Create Task', href: `/projects/${project.id}/tasks/create` },
+      ]}
+    >
+      <PageHeader title={PAGE_TITLE} description={PAGE_DESCRIPTION} />
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+          e.stopPropagation()
+          form.handleSubmit()
+        }}
+      >
+        <Card>
+          <CardContent>
+            <FieldGroup>
+              <FieldSet>
+                <FieldLegend>Project information</FieldLegend>
+                <FieldDescription>
+                  Project name and description of the new project
+                </FieldDescription>
+                <form.Field
+                  validators={{
+                    onChange: z.string().min(1),
+                  }}
+                  name="title"
+                >
+                  {(field) => (
+                    <>
+                      <Field>
+                        <FieldLabel htmlFor={field.name}>Name</FieldLabel>
+                        <Input
+                          id={field.name}
+                          type="text"
+                          placeholder="Task Title"
+                          required
+                          value={field.state.value}
+                          onChange={(e) => field.handleChange(e.target.value)}
+                        />
+                        <FieldError errors={field.state.meta.errors} />
+                      </Field>
+                    </>
+                  )}
+                </form.Field>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <form.Field name="priority">
+                    {(field) => (
+                      <>
+                        <Field>
+                          <FieldLabel htmlFor={field.name}>Status</FieldLabel>
+                          <BasicSelect
+                            items={priorityLevelOptions}
+                            label="Status"
+                            value={field.state.value}
+                            onValueChange={(value) =>
+                              field.handleChange(value as PriorityLevel)
+                            }
+                          />
+                          <FieldError errors={field.state.meta.errors} />
+                        </Field>
+                      </>
+                    )}
+                  </form.Field>
+
+                  <form.Subscribe selector={(state) => state.values.due_date}>
+                    {(stateValue) => (
+                      <form.Field name="due_date">
+                        {(field) => (
+                          <>
+                            <Field>
+                              <div className="flex items-center justify-between">
+                                <FieldLabel htmlFor={field.name}>
+                                  Due Date
+                                </FieldLabel>
+                                <div className="flex gap-2">
+                                  <Checkbox
+                                    checked={noDueDate}
+                                    onCheckedChange={handleNoDueDateCheck}
+                                    id="no-due-date"
+                                  />
+                                  <Label htmlFor="no-due-date">
+                                    No due date
+                                  </Label>
+                                </div>
+                              </div>
+                              <Input
+                                id={field.name}
+                                disabled={noDueDate}
+                                type="date"
+                                value={stateValue}
+                                onChange={(e) =>
+                                  field.handleChange(e.target.value)
+                                }
+                              />
+                              <FieldError errors={field.state.meta.errors} />
+                            </Field>
+                          </>
+                        )}
+                      </form.Field>
+                    )}
+                  </form.Subscribe>
+                </div>
+                <form.Field
+                  name="description"
+                  validators={{
+                    onChange: z.string().optional(),
+                  }}
+                >
+                  {(field) => (
+                    <Field>
+                      <FieldLabel htmlFor={field.name}>Description</FieldLabel>
+                      <Textarea
+                        id={field.name}
+                        placeholder="Describe the purpose of this project..."
+                        required
+                        value={field.state.value}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                      />
+                      <FieldError errors={field.state.meta.errors} />
+                    </Field>
+                  )}
+                </form.Field>
+              </FieldSet>
+
+              {validationErrors && requestProgress == 'failed' && (
+                <ValidationErrorsAlert
+                  title="Unable to create project"
+                  errorList={Object.values(validationErrors)}
+                />
+              )}
+              <div>
+                <form.Subscribe
+                  selector={(state) => [state.canSubmit, state.isSubmitting]}
+                  children={([canSubmit, isSubmitting]) => (
+                    <Field>
+                      <div className="flex justify-end">
+                        <Button
+                          size="lg"
+                          type="submit"
+                          className="w-40"
+                          disabled={!canSubmit}
+                        >
+                          <NotepadText />
+                          {isSubmitting ? '...' : 'Add Project'}
+                        </Button>
+                      </div>
+                    </Field>
+                  )}
+                />
+              </div>
+            </FieldGroup>
+          </CardContent>
+        </Card>
+      </form>
+    </MainInsetLayout>
+  )
+}
