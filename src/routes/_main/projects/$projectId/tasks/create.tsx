@@ -123,9 +123,9 @@ function RouteComponent() {
           <CardContent>
             <FieldGroup>
               <FieldSet>
-                <FieldLegend>Project information</FieldLegend>
+                <FieldLegend>Task information</FieldLegend>
                 <FieldDescription>
-                  Project name and description of the new project
+                  Task title and other related details of the new task
                 </FieldDescription>
                 <form.Field
                   validators={{
@@ -219,7 +219,7 @@ function RouteComponent() {
                       <FieldLabel htmlFor={field.name}>Description</FieldLabel>
                       <Textarea
                         id={field.name}
-                        placeholder="Describe the purpose of this project..."
+                        placeholder="Describe the specifics of this task..."
                         required
                         value={field.state.value}
                         onChange={(e) => field.handleChange(e.target.value)}
@@ -249,7 +249,7 @@ function RouteComponent() {
                           disabled={!canSubmit}
                         >
                           <NotepadText />
-                          {isSubmitting ? '...' : 'Add Project'}
+                          {isSubmitting ? '...' : 'Add Task'}
                         </Button>
                       </div>
                     </Field>
