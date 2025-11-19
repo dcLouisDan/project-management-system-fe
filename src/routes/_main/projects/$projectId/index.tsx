@@ -1,7 +1,14 @@
 import type { ApiError } from '@/lib/handle-api-error'
 import { createFileRoute, Link, notFound } from '@tanstack/react-router'
 import MainInsetLayout from '../../-main-inset-layout'
-import { ArchiveRestore, Contact, Edit, Trash2, Users } from 'lucide-react'
+import {
+  ArchiveRestore,
+  Contact,
+  Edit,
+  Plus,
+  Trash2,
+  Users,
+} from 'lucide-react'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import PageHeader from '@/components/page-header'
@@ -14,6 +21,15 @@ import { showProjectQueryOptions } from '@/lib/query-options/show-project-query-
 import ProjectNotFoundComponent from './-not-found-component'
 import AssignManagerDialog from './-components/assign-manager-dialog'
 import UserAvatar from '@/components/user-avatar'
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 
 const PAGE_TITLE = 'Project Details'
 const PAGE_DESCRIPTION = 'Show project information and other related data'
@@ -152,39 +168,61 @@ function RouteComponent() {
               <Link
                 to="/projects/$projectId/teams"
                 params={{ projectId }}
-                className={buttonVariants({ variant: 'default' })}
+                className={buttonVariants({ variant: 'secondary' })}
               >
                 <Users />
                 Assign Teams
               </Link>
-              <Link
-                to="/projects/$projectId/edit"
-                params={{ projectId }}
-                className={buttonVariants({ variant: 'secondary' })}
-              >
-                <Edit />
-                Edit
-              </Link>
-              <ConfirmationDialog
-                description="This will mark the project as deleted. You can restore this project later if you change your mind."
-                triggerComponent={
-                  <Button variant="outline">
-                    <Trash2 />
-                    Delete
-                  </Button>
-                }
-                submitButtonVariant={{ variant: 'destructive' }}
-                submitButtonContent={
-                  <>
-                    <Trash2 /> Delete Project
-                  </>
-                }
-                onSubmit={async () => await destroy(project.id)}
-              />
+              <div className="grid grid-cols-2 gap-2">
+                <Link
+                  to="/projects/$projectId/edit"
+                  params={{ projectId }}
+                  className={buttonVariants({ variant: 'outline' })}
+                >
+                  <Edit />
+                  Edit
+                </Link>
+                <ConfirmationDialog
+                  description="This will mark the project as deleted. You can restore this project later if you change your mind."
+                  triggerComponent={
+                    <Button variant="outline">
+                      <Trash2 />
+                      Delete
+                    </Button>
+                  }
+                  submitButtonVariant={{ variant: 'destructive' }}
+                  submitButtonContent={
+                    <>
+                      <Trash2 /> Delete Project
+                    </>
+                  }
+                  onSubmit={async () => await destroy(project.id)}
+                />
+              </div>
             </>
           )}
         </div>
-        <div className="flex flex-col gap-2 flex-1"></div>
+        <div className="flex flex-col gap-2 flex-1">
+          <Card>
+            <CardHeader>
+              <CardTitle>Tasks</CardTitle>
+              <CardDescription>
+                Manage tasks required to finish this project.
+              </CardDescription>
+              <CardAction>
+                <Link to="." className={buttonVariants()}>
+                  <Plus /> Create Task
+                </Link>
+              </CardAction>
+            </CardHeader>
+            <CardContent>
+              <p>Card Content</p>
+            </CardContent>
+            <CardFooter>
+              <p>Card Footer</p>
+            </CardFooter>
+          </Card>
+        </div>
       </div>
     </MainInsetLayout>
   )
