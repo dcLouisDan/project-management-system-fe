@@ -35,6 +35,27 @@ code {
   --accent-foreground: oklch(0.21 0.006 285.885);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.577 0.245 27.325);
+
+  /* INFO */
+  --info: oklch(0.72 0.15 259); /* blue-500ish */
+  --info-foreground: oklch(0.98 0 0);
+
+  /* SUCCESS */
+  --success: oklch(0.74 0.17 149); /* green-500ish */
+  --success-foreground: oklch(0.98 0 0);
+
+  /* WARNING */
+  --warning: oklch(0.78 0.18 82); /* amber-500ish */
+  --warning-foreground: oklch(0.22 0.02 80);
+
+  /* MUTED 2 (slightly warmer neutral) */
+  --muted-2: oklch(0.92 0.01 250);
+  --muted-2-foreground: oklch(0.45 0.01 250);
+
+  /* SUBTLE (ultra-light neutral surface) */
+  --subtle: oklch(0.97 0.002 260);
+  --subtle-foreground: oklch(0.5 0.01 260);
+
   --border: oklch(0.92 0.004 286.32);
   --input: oklch(0.92 0.004 286.32);
   --ring: oklch(0.871 0.006 286.286);
@@ -71,6 +92,27 @@ code {
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.396 0.141 25.723);
   --destructive-foreground: oklch(0.637 0.237 25.331);
+
+  /* INFO */
+  --info: oklch(0.65 0.14 260);
+  --info-foreground: oklch(0.22 0.01 260);
+
+  /* SUCCESS */
+  --success: oklch(0.66 0.16 150);
+  --success-foreground: oklch(0.2 0.015 150);
+
+  /* WARNING */
+  --warning: oklch(0.7 0.17 82);
+  --warning-foreground: oklch(0.22 0.02 80);
+
+  /* MUTED 2 */
+  --muted-2: oklch(0.28 0.01 250);
+  --muted-2-foreground: oklch(0.85 0.01 250);
+
+  /* SUBTLE */
+  --subtle: oklch(0.22 0.005 260);
+  --subtle-foreground: oklch(0.88 0.005 260);
+
   --border: oklch(0.274 0.006 286.033);
   --input: oklch(0.274 0.006 286.033);
   --ring: oklch(0.442 0.017 285.786);
@@ -106,6 +148,16 @@ code {
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-muted-2: var(--muted-2);
+  --color-muted-2-foreground: var(--muted-2-foreground);
+  --color-subtle: var(--subtle);
+  --color-subtle-foreground: var(--subtle-foreground);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);

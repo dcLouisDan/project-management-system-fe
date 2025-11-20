@@ -19,14 +19,20 @@ import {
   type PaginatedResponse,
   type SoftDeleteStatus,
 } from '../types/response'
+import type { ProgressStatus } from '../types/status'
+import type { PriorityLevel } from '../types/priority'
 
 export interface FetchTasksParams {
   page?: number
   per_page?: number
   title?: string
-  start_date?: string
   due_date?: string
   sort?: string
+  status?: ProgressStatus
+  priority?: PriorityLevel
+  project_id?: number
+  assigned_to_id?: number
+  assigned_by_id?: number
   direction?: SortDirection
   delete_status?: SoftDeleteStatus
 }

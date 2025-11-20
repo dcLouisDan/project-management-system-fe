@@ -65,3 +65,12 @@ export type TaskUpdateResponse = ApiResponse<Task>
 export type TaskDeleteResponse = ApiResponse<null>
 export type TaskSyncRelationsResponse = ApiResponse<Task>
 export type TaskAssignToUserResponse = ApiResponse<Task>
+
+export const SORTABLE_TASKS_FIELDS = [
+  'id',
+  'title',
+  'priority',
+  'status',
+  'due_date',
+  'created_at',
+]

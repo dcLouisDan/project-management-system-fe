@@ -1,14 +1,7 @@
 import type { ApiError } from '@/lib/handle-api-error'
 import { createFileRoute, Link, notFound } from '@tanstack/react-router'
 import MainInsetLayout from '../../-main-inset-layout'
-import {
-  ArchiveRestore,
-  Contact,
-  Edit,
-  Plus,
-  Trash2,
-  Users,
-} from 'lucide-react'
+import { ArchiveRestore, Contact, Edit, Trash2, Users } from 'lucide-react'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import PageHeader from '@/components/page-header'
@@ -21,15 +14,7 @@ import { showProjectQueryOptions } from '@/lib/query-options/show-project-query-
 import ProjectNotFoundComponent from './-not-found-component'
 import AssignManagerDialog from './-components/assign-manager-dialog'
 import UserAvatar from '@/components/user-avatar'
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import ProjectTasksCard from './-components/project-tasks-card'
 
 const PAGE_TITLE = 'Project Details'
 const PAGE_DESCRIPTION = 'Show project information and other related data'
@@ -90,9 +75,7 @@ function RouteComponent() {
             <p className="text-sm text-muted-foreground font-bold mb-1">
               Description
             </p>
-            <p className="text-sm text-muted-foreground">
-              {project.description}
-            </p>
+            <p className="text-sm">{project.description}</p>
           </div>
 
           <Separator />
@@ -203,29 +186,7 @@ function RouteComponent() {
           )}
         </div>
         <div className="flex flex-col gap-2 flex-1">
-          <Card>
-            <CardHeader>
-              <CardTitle>Tasks</CardTitle>
-              <CardDescription>
-                Manage tasks required to finish this project.
-              </CardDescription>
-              <CardAction>
-                <Link
-                  to="/projects/$projectId/tasks/create"
-                  params={{ projectId }}
-                  className={buttonVariants()}
-                >
-                  <Plus /> Create Task
-                </Link>
-              </CardAction>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-col gap-2"></div>
-            </CardContent>
-            <CardFooter>
-              <p>Card Footer</p>
-            </CardFooter>
-          </Card>
+          <ProjectTasksCard projectId={projectId} />
         </div>
       </div>
     </MainInsetLayout>
