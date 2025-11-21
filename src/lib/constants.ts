@@ -9,4 +9,5 @@ export const QUERY_KEYS = {
   USERS: 'users',
   TEAMS: 'teams',
   PROJECTS: 'projects',
+  TASKS: 'tasks',
 }

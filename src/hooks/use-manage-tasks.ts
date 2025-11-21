@@ -68,7 +68,7 @@ export default function useManageTasks() {
       })
 
       queryClient.invalidateQueries({
-        queryKey: [QUERY_KEYS.PROJECTS],
+        queryKey: [QUERY_KEYS.TASKS],
       })
       toast.success('Task Created', {
         description: `New task record created for ${body.data.title}`,
@@ -87,7 +87,7 @@ export default function useManageTasks() {
       const body = response.data
 
       queryClient.invalidateQueries({
-        queryKey: [QUERY_KEYS.PROJECTS],
+        queryKey: [QUERY_KEYS.TASKS],
       })
 
       toast.success('Task Updated', {
@@ -106,7 +106,7 @@ export default function useManageTasks() {
       await deleteTask(taskId)
 
       queryClient.invalidateQueries({
-        queryKey: [QUERY_KEYS.PROJECTS],
+        queryKey: [QUERY_KEYS.TASKS],
       })
 
       toast.success('Task Deleted', {
@@ -125,7 +125,7 @@ export default function useManageTasks() {
       await restoreTask(taskId)
 
       queryClient.invalidateQueries({
-        queryKey: [QUERY_KEYS.PROJECTS],
+        queryKey: [QUERY_KEYS.TASKS],
       })
       toast.success('Task Restored', {
         description: `Successfully restored task.`,
@@ -144,7 +144,7 @@ export default function useManageTasks() {
       const body = response.data
 
       queryClient.invalidateQueries({
-        queryKey: [QUERY_KEYS.PROJECTS, taskId],
+        queryKey: [QUERY_KEYS.TASKS, taskId],
       })
 
       toast.success('Task Updated', {
@@ -164,15 +164,15 @@ export default function useManageTasks() {
       const body = response.data
 
       queryClient.invalidateQueries({
-        queryKey: [QUERY_KEYS.PROJECTS, taskId],
+        queryKey: [QUERY_KEYS.TASKS, taskId],
       })
 
       toast.success('Task Updated', {
-        description: `Task manager assigned for ${body.data.title}`,
+        description: `Task in-charge assigned for ${body.data.title}`,
       })
       setRequestProgress('completed')
     } catch (err) {
-      handleError(err as ApiError, 'assign manager')
+      handleError(err as ApiError, 'assign assignee')
     }
   }
 

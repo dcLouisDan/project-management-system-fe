@@ -1,4 +1,5 @@
 import type { PriorityLevel } from './priority'
+import type { Project } from './project'
 import type { ProjectRelation } from './project-relations'
 import type { ApiResponse } from './response'
 import type { ProgressStatus } from './status'
@@ -7,6 +8,7 @@ import type { User } from './user'
 export interface Task {
   id: number
   project_id: number
+  project?: Project
   assigned_to?: User
   assigned_by?: User
   title: string

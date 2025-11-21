@@ -3,6 +3,7 @@ import { snakeCaseToTitleCase } from '@/lib/string-utils'
 import { priorityColorMap } from '@/lib/types/priority'
 import type { Task } from '@/lib/types/task'
 import { cn } from '@/lib/utils'
+import { Link } from '@tanstack/react-router'
 import { type ColumnDef } from '@tanstack/react-table'
 import dayjs from 'dayjs'
 
@@ -14,6 +15,21 @@ export const taskColumns: ColumnDef<Task>[] = [
   {
     accessorKey: 'title',
     header: 'Title',
+    cell: ({ row }) => {
+      const task = row.original
+      return (
+        <Link
+          className="border-b border-foreground/30 border-dotted hover:border-dashed hover:border-foreground/50"
+          to="/projects/$projectId/tasks/$taskId"
+          params={{
+            taskId: task.id.toString(),
+            projectId: task.project_id.toString(),
+          }}
+        >
+          {task.title}
+        </Link>
+      )
+    },
   },
   {
     accessorKey: 'priority',

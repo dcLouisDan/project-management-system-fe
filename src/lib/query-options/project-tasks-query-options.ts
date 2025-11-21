@@ -4,7 +4,7 @@ import { fetchTasks, type FetchTasksParams } from '../api/tasks'
 
 export const tasksQueryOptions = (params: FetchTasksParams) =>
   queryOptions({
-    queryKey: [QUERY_KEYS.USERS].concat(Object.values(params)),
+    queryKey: [QUERY_KEYS.TASKS].concat(Object.values(params)),
     queryFn: async () => {
       const response = await fetchTasks(params)
       return response.data

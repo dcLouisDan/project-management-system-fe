@@ -4,6 +4,6 @@ import { showProject } from '../api/projects'
 
 export const showProjectQueryOptions = (projectId: number) =>
   queryOptions({
-    queryKey: [QUERY_KEYS.USERS, projectId],
+    queryKey: [QUERY_KEYS.PROJECTS, projectId],
     queryFn: () => showProject(projectId),
   })

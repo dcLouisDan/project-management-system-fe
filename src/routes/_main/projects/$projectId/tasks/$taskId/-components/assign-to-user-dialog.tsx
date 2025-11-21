@@ -13,52 +13,54 @@ import {
 import { Separator } from '@/components/ui/separator'
 import { Toggle } from '@/components/ui/toggle'
 import { ValidationErrorsAlert } from '@/components/validation-errors-alert'
-import useManageProjects from '@/hooks/use-manage-projects'
+import useManageTasks from '@/hooks/use-manage-tasks'
 import { usersQueryOptions } from '@/lib/query-options/users-query-options'
-import { DEFAULT_ASSIGN_MANAGER, type Project } from '@/lib/types/project'
+import { type Task } from '@/lib/types/task'
+import { DEFAULT_TASK_ASSIGN_TO_USER } from '@/lib/types/task'
 import { type User } from '@/lib/types/user'
 import { useForm } from '@tanstack/react-form'
 import { useQuery } from '@tanstack/react-query'
 import { Check, Save } from 'lucide-react'
 import { useEffect, useState, type ReactNode } from 'react'
 
-interface AssignManagerDialogProps {
-  project: Project
+interface AssignToUserDialogProps {
+  task: Task
   triggerComponent?: ReactNode
 }
 
-export default function AssignManagerDialog({
-  project,
+export default function AssignToUserDialog({
+  task,
   triggerComponent = <Button variant="outline">Show Dialog</Button>,
-}: AssignManagerDialogProps) {
+}: AssignToUserDialogProps) {
   const {
-    assignManager,
+    assignToUser,
     validationErrors,
     requestProgress,
     setRequestProgress,
-  } = useManageProjects()
+    error,
+  } = useManageTasks()
   const [searchName, setSearchName] = useState('')
   const [userData, setUserData] = useState<User | undefined>()
   const { data: users } = useQuery(
     usersQueryOptions({
       page: 1,
       per_page: 5,
-      roles: 'project manager,admin',
+      roles: 'admin,team lead,team member',
       name: searchName,
     }),
   )
   const form = useForm({
-    defaultValues: DEFAULT_ASSIGN_MANAGER,
+    defaultValues: DEFAULT_TASK_ASSIGN_TO_USER,
     onSubmit: async ({ value }) => {
-      await assignManager(project.id, value)
+      await assignToUser(task.id, value)
     },
   })
   useEffect(() => {
-    if (project.manager) {
-      form.setFieldValue('manager_id', project.manager.id)
-      setUserData(project.manager)
+    if (task.assigned_to) {
+      form.setFieldValue('assign_to', task.assigned_to.id)
+      setUserData(task.assigned_to)
     }
-  }, [project])
+  }, [task])
   useEffect(() => {
     if (requestProgress == 'completed') {
       setRequestProgress('started')
@@ -69,10 +71,9 @@ export default function AssignManagerDialog({
       <DialogTrigger asChild>{triggerComponent}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Assign Project Manager</DialogTitle>
+          <DialogTitle>Assign Task ToUser</DialogTitle>
           <DialogDescription>
-            Select a user that will act as the manager for this project. Only
-            users with a 'Project Manager' role are qualified.
+            Select a user that will be in charge of completing this task.
           </DialogDescription>
         </DialogHeader>
         <form
@@ -85,18 +86,18 @@ export default function AssignManagerDialog({
         >
           <Separator />
           <div></div>
-          <form.Subscribe selector={(state) => state.values.manager_id}>
-            {(managerIdState) => (
+          <form.Subscribe selector={(state) => state.values.assign_to}>
+            {(assigned_toIdState) => (
               <>
                 <div className="border rounded-lg p-3">
-                  {!managerIdState ? (
+                  {!assigned_toIdState ? (
                     <p className="text-sm text-muted-foreground text-center">
                       Search and choose a user from the list below.
                     </p>
                   ) : userData ? (
                     <div className="flex justify-between items-center">
                       <span className="font-bold text-muted-foreground">
-                        Project Manager:
+                        Assign to:
                       </span>
                       <span>{userData.name}</span>
                     </div>
@@ -117,14 +118,14 @@ export default function AssignManagerDialog({
                     <li key={user.id}>
                       <Toggle
                         className="toggle-item-parent w-full justify-between"
-                        pressed={user.id == managerIdState}
+                        pressed={user.id == assigned_toIdState}
                         onPressedChange={(pressed) => {
                           if (pressed) {
                             setUserData(user)
-                            form.setFieldValue('manager_id', user.id)
+                            form.setFieldValue('assign_to', user.id)
                           } else {
                             setUserData(undefined)
-                            form.setFieldValue('manager_id', undefined)
+                            form.setFieldValue('assign_to', undefined)
                           }
                         }}
                       >
@@ -150,13 +151,14 @@ export default function AssignManagerDialog({
           <Separator />
           {validationErrors && requestProgress == 'failed' && (
             <ValidationErrorsAlert
-              title="Unable to assign user as project manager"
+              title="Unable to assign task to user"
               errorList={Object.values(validationErrors)}
+              description={error ?? 'Check form details and try again.'}
             />
           )}
           <form.Subscribe
-            selector={(state) => [state.values.manager_id, state.isSubmitting]}
-            children={([managerId, isSubmitting]) => (
+            selector={(state) => [state.values.assign_to, state.isSubmitting]}
+            children={([assigned_toId, isSubmitting]) => (
               <DialogFooter>
                 <DialogClose asChild>
                   <Button variant={'outline'}>Close</Button>
@@ -166,7 +168,7 @@ export default function AssignManagerDialog({
                   size="lg"
                   type="submit"
                   className="w-40"
-                  disabled={!managerId}
+                  disabled={!assigned_toId}
                 >
                   <Save />
                   {isSubmitting ? '...' : 'Save Changes'}

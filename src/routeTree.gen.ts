@@ -33,6 +33,7 @@ import { Route as MainTeamsTeamIdEditRouteImport } from './routes/_main/teams/$t
 import { Route as MainProjectsProjectIdTeamsRouteImport } from './routes/_main/projects/$projectId/teams'
 import { Route as MainProjectsProjectIdEditRouteImport } from './routes/_main/projects/$projectId/edit'
 import { Route as MainProjectsProjectIdTasksCreateRouteImport } from './routes/_main/projects/$projectId/tasks/create'
+import { Route as MainProjectsProjectIdTasksTaskIdIndexRouteImport } from './routes/_main/projects/$projectId/tasks/$taskId/index'
 
 const AuthRouteRoute = AuthRouteRouteImport.update({
   id: '/auth',
@@ -157,6 +158,12 @@ const MainProjectsProjectIdTasksCreateRoute =
     path: '/projects/$projectId/tasks/create',
     getParentRoute: () => MainRouteRoute,
   } as any)
+const MainProjectsProjectIdTasksTaskIdIndexRoute =
+  MainProjectsProjectIdTasksTaskIdIndexRouteImport.update({
+    id: '/projects/$projectId/tasks/$taskId/',
+    path: '/projects/$projectId/tasks/$taskId/',
+    getParentRoute: () => MainRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -182,6 +189,7 @@ export interface FileRoutesByFullPath {
   '/teams/$teamId': typeof MainTeamsTeamIdIndexRoute
   '/users/$userId': typeof MainUsersUserIdIndexRoute
   '/projects/$projectId/tasks/create': typeof MainProjectsProjectIdTasksCreateRoute
+  '/projects/$projectId/tasks/$taskId': typeof MainProjectsProjectIdTasksTaskIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -207,6 +215,7 @@ export interface FileRoutesByTo {
   '/teams/$teamId': typeof MainTeamsTeamIdIndexRoute
   '/users/$userId': typeof MainUsersUserIdIndexRoute
   '/projects/$projectId/tasks/create': typeof MainProjectsProjectIdTasksCreateRoute
+  '/projects/$projectId/tasks/$taskId': typeof MainProjectsProjectIdTasksTaskIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -234,6 +243,7 @@ export interface FileRoutesById {
   '/_main/teams/$teamId/': typeof MainTeamsTeamIdIndexRoute
   '/_main/users/$userId/': typeof MainUsersUserIdIndexRoute
   '/_main/projects/$projectId/tasks/create': typeof MainProjectsProjectIdTasksCreateRoute
+  '/_main/projects/$projectId/tasks/$taskId/': typeof MainProjectsProjectIdTasksTaskIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -261,6 +271,7 @@ export interface FileRouteTypes {
     | '/teams/$teamId'
     | '/users/$userId'
     | '/projects/$projectId/tasks/create'
+    | '/projects/$projectId/tasks/$taskId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -286,6 +297,7 @@ export interface FileRouteTypes {
     | '/teams/$teamId'
     | '/users/$userId'
     | '/projects/$projectId/tasks/create'
+    | '/projects/$projectId/tasks/$taskId'
   id:
     | '__root__'
     | '/'
@@ -312,6 +324,7 @@ export interface FileRouteTypes {
     | '/_main/teams/$teamId/'
     | '/_main/users/$userId/'
     | '/_main/projects/$projectId/tasks/create'
+    | '/_main/projects/$projectId/tasks/$taskId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -490,6 +503,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainProjectsProjectIdTasksCreateRouteImport
       parentRoute: typeof MainRouteRoute
     }
+    '/_main/projects/$projectId/tasks/$taskId/': {
+      id: '/_main/projects/$projectId/tasks/$taskId/'
+      path: '/projects/$projectId/tasks/$taskId'
+      fullPath: '/projects/$projectId/tasks/$taskId'
+      preLoaderRoute: typeof MainProjectsProjectIdTasksTaskIdIndexRouteImport
+      parentRoute: typeof MainRouteRoute
+    }
   }
 }
 
@@ -524,6 +544,7 @@ interface MainRouteRouteChildren {
   MainTeamsTeamIdIndexRoute: typeof MainTeamsTeamIdIndexRoute
   MainUsersUserIdIndexRoute: typeof MainUsersUserIdIndexRoute
   MainProjectsProjectIdTasksCreateRoute: typeof MainProjectsProjectIdTasksCreateRoute
+  MainProjectsProjectIdTasksTaskIdIndexRoute: typeof MainProjectsProjectIdTasksTaskIdIndexRoute
 }
 
 const MainRouteRouteChildren: MainRouteRouteChildren = {
@@ -544,6 +565,8 @@ const MainRouteRouteChildren: MainRouteRouteChildren = {
   MainTeamsTeamIdIndexRoute: MainTeamsTeamIdIndexRoute,
   MainUsersUserIdIndexRoute: MainUsersUserIdIndexRoute,
   MainProjectsProjectIdTasksCreateRoute: MainProjectsProjectIdTasksCreateRoute,
+  MainProjectsProjectIdTasksTaskIdIndexRoute:
+    MainProjectsProjectIdTasksTaskIdIndexRoute,
 }
 
 const MainRouteRouteWithChildren = MainRouteRoute._addFileChildren(

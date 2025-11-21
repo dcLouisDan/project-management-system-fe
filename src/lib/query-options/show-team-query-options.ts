@@ -4,6 +4,6 @@ import { showTeam } from '../api/teams'
 
 export const showTeamQueryOptions = (teamId: number) =>
   queryOptions({
-    queryKey: [QUERY_KEYS.USERS, teamId],
+    queryKey: [QUERY_KEYS.TEAMS, teamId],
     queryFn: () => showTeam(teamId),
   })
