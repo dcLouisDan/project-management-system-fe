@@ -47,6 +47,7 @@ export default function AssignToUserDialog({
       per_page: 5,
       roles: 'admin,team lead,team member',
       name: searchName,
+      project_id: task.project_id,
     }),
   )
   const form = useForm({

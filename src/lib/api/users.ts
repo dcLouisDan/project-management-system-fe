@@ -19,6 +19,8 @@ export interface FetchUsersParams {
   role?: string
   roles?: string
   sort?: string
+  project_id?: number
+  team_id?: number
   direction?: SortDirection
   delete_status?: SoftDeleteStatus
 }
