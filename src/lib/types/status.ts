@@ -1,5 +1,6 @@
 import type { BasicSelectItem } from '@/components/basic-select'
 import { snakeCaseToTitleCase } from '../string-utils'
+import type { UiColorConfig } from './ui'
 
 export type ProgressStatus =
   | 'not_started'
@@ -55,4 +56,47 @@ export const getProgressStatusOptions = (
     value: status,
     label: snakeCaseToTitleCase(status),
   }))
+}
+
+export const statusColorMap: Record<ProgressStatus, UiColorConfig> = {
+  not_started: {
+    background: 'bg-accent',
+    foreground: 'text-accent-foreground',
+  },
+  assigned: {
+    background: 'bg-info',
+    foreground: 'text-info-foreground',
+  },
+  in_progress: {
+    background: 'bg-info',
+    foreground: 'text-info-foreground',
+  },
+  awaiting_review: {
+    background: 'bg-warning',
+    foreground: 'text-warning-foreground',
+  },
+  under_review: {
+    background: 'bg-warning',
+    foreground: 'text-warning-foreground',
+  },
+  approved: {
+    background: 'bg-success',
+    foreground: 'text-success-foreground',
+  },
+  rejected: {
+    background: 'bg-destructive',
+    foreground: 'text-white',
+  },
+  completed: {
+    background: 'bg-success',
+    foreground: 'text-success-foreground',
+  },
+  on_hold: {
+    background: 'bg-warning',
+    foreground: 'text-warning-foreground',
+  },
+  cancelled: {
+    background: 'bg-destructive',
+    foreground: 'text-white',
+  },
 }

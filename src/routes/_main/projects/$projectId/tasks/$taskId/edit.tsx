@@ -1,13 +1,11 @@
 import type { ApiError } from '@/lib/handle-api-error'
-import { showProjectQueryOptions } from '@/lib/query-options/show-project-query-options'
 import MainInsetLayout from '@/routes/_main/-main-inset-layout'
 import { useSuspenseQuery } from '@tanstack/react-query'
-import { createFileRoute, notFound } from '@tanstack/react-router'
-import ProjectNotFoundComponent from '../-not-found-component'
+import { notFound, createFileRoute } from '@tanstack/react-router'
+import TaskNotFoundComponent from './-not-found-component'
 import { APP_NAME } from '@/lib/constants'
 import PageHeader from '@/components/page-header'
 import useManageTasks from '@/hooks/use-manage-tasks'
-import { DEFAULT_TASK_CREATE } from '@/lib/types/task'
 import { useForm } from '@tanstack/react-form'
 import { useEffect, useState } from 'react'
 import type { CheckedState } from '@radix-ui/react-checkbox'
@@ -32,57 +30,63 @@ import { Textarea } from '@/components/ui/textarea'
 import { ValidationErrorsAlert } from '@/components/validation-errors-alert'
 import { Button } from '@/components/ui/button'
 import { NotepadText } from 'lucide-react'
+import { showTaskQueryOptions } from '@/lib/query-options/show-task-query-options'
 
-const PAGE_TITLE = 'Create Task'
+const PAGE_TITLE = 'Edit Task'
 const PAGE_DESCRIPTION = 'Add a new task that can be assigned to your team.'
 
-export const Route = createFileRoute('/_main/projects/$projectId/tasks/create')(
-  {
-    component: RouteComponent,
-    loader: ({ context: { queryClient }, params: { projectId } }) => {
-      const id = Number(projectId)
-      try {
-        return queryClient.ensureQueryData(showProjectQueryOptions(id))
-      } catch (error) {
-        console.log('Loader error:', error)
-      }
-    },
-    head: ({ loaderData }) => ({
-      meta: [
-        {
-          title: loaderData
-            ? loaderData.name + ' - New Task' + ' - ' + APP_NAME
-            : PAGE_TITLE + ' - ' + APP_NAME,
-        },
-        {
-          name: 'description',
-          content: PAGE_DESCRIPTION,
-        },
-      ],
-    }),
-    onError: (err) => {
-      const error = err as ApiError
-      console.log('Index error', error)
-      if (error.status == 404) {
-        throw notFound()
-      }
-    },
-    notFoundComponent: ProjectNotFoundComponent,
+export const Route = createFileRoute(
+  '/_main/projects/$projectId/tasks/$taskId/edit',
+)({
+  component: RouteComponent,
+  loader: ({ context: { queryClient }, params: { taskId } }) => {
+    const id = Number(taskId)
+    try {
+      return queryClient.ensureQueryData(showTaskQueryOptions(id))
+    } catch (error) {
+      console.log('Loader error:', error)
+    }
   },
-)
+  head: ({ loaderData }) => ({
+    meta: [
+      {
+        title: loaderData
+          ? loaderData.title + ' - Edit Task' + ' - ' + APP_NAME
+          : PAGE_TITLE + ' - ' + APP_NAME,
+      },
+      {
+        name: 'description',
+        content: PAGE_DESCRIPTION,
+      },
+    ],
+  }),
+  onError: (err) => {
+    const error = err as ApiError
+    console.log('Index error', error)
+    if (error.status == 404) {
+      throw notFound()
+    }
+  },
+  notFoundComponent: TaskNotFoundComponent,
+})
 
 function RouteComponent() {
-  const projectId = Route.useParams().projectId
-  const { data: project } = useSuspenseQuery(
-    showProjectQueryOptions(Number(projectId)),
-  )
+  const { projectId, taskId } = Route.useParams()
+  const { data: task } = useSuspenseQuery(showTaskQueryOptions(Number(taskId)))
 
-  const { create, validationErrors, requestProgress, setRequestProgress } =
+  const { update, validationErrors, requestProgress, setRequestProgress } =
     useManageTasks()
+
   const form = useForm({
-    defaultValues: DEFAULT_TASK_CREATE,
+    defaultValues: {
+      title: task.title,
+      priority: task.priority,
+      due_date: task.due_date,
+      description: task.description,
+      project_id: task.project_id,
+    },
     onSubmit: async ({ value }) => {
-      await create(project.id, value)
+      await update(task.id, value)
     },
   })
   const [noDueDate, setNoDueDate] = useState(true)
@@ -107,8 +111,14 @@ function RouteComponent() {
     <MainInsetLayout
       breadcrumbItems={[
         { label: 'Projects', href: '/projects' },
-        { label: project.name, href: `/projects/${project.id}` },
-        { label: 'Create Task', href: `/projects/${project.id}/tasks/create` },
+        {
+          label: task.project ? task.project.name : 'Project',
+          href: `/projects/${projectId}`,
+        },
+        {
+          label: 'Edit Task',
+          href: `/projects/${projectId}/tasks/${taskId}/edit`,
+        },
       ]}
     >
       <PageHeader title={PAGE_TITLE} description={PAGE_DESCRIPTION} />
@@ -232,7 +242,7 @@ function RouteComponent() {
 
               {validationErrors && requestProgress == 'failed' && (
                 <ValidationErrorsAlert
-                  title="Unable to create project"
+                  title="Unable to edit project"
                   errorList={Object.values(validationErrors)}
                 />
               )}
@@ -249,7 +259,7 @@ function RouteComponent() {
                           disabled={!canSubmit}
                         >
                           <NotepadText />
-                          {isSubmitting ? '...' : 'Add Task'}
+                          {isSubmitting ? '...' : 'Edit Task'}
                         </Button>
                       </div>
                     </Field>

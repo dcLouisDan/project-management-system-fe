@@ -30,3 +30,8 @@ export const SortDirectionSelectItems: BasicSelectItem[] = [
     label: 'Descending',
   },
 ]
+
+export interface UiColorConfig {
+  background: string
+  foreground: string
+}

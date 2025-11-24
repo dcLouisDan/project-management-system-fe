@@ -14,6 +14,12 @@ import type {
   TaskSyncRelationsResponse,
   TaskAssignToUser,
   TaskAssignToUserResponse,
+  TaskStartResponse,
+  TaskSubmit,
+  TaskSubmitResponse,
+  TaskReviewSubmit,
+  TaskSubmitReviewResponse,
+  TaskStartReviewResponse,
 } from '../types/task'
 import {
   type PaginatedResponse,
@@ -99,6 +105,45 @@ export async function syncTeamsTask(taskId: number, data: TaskSyncRelations) {
 export async function assignToUserTask(taskId: number, data: TaskAssignToUser) {
   return api
     .post<TaskAssignToUserResponse>(`/tasks/${taskId}/assign-user`, data)
+    .catch((error) => {
+      throw handleApiError(error)
+    })
+}
+
+export async function startTask(taskId: number) {
+  return api
+    .post<TaskStartResponse>(`/tasks/${taskId}/start`)
+    .catch((error) => {
+      throw handleApiError(error)
+    })
+}
+
+export async function submitTask(taskId: number, data: TaskSubmit) {
+  return api
+    .post<TaskSubmitResponse>(`/tasks/${taskId}/submit`, data)
+    .catch((error) => {
+      throw handleApiError(error)
+    })
+}
+
+export async function startReviewTask(taskId: number, reviewId: number) {
+  return api
+    .post<TaskStartReviewResponse>(`/tasks/${taskId}/reviews/${reviewId}/start`)
+    .catch((error) => {
+      throw handleApiError(error)
+    })
+}
+
+export async function submitReviewTask(
+  taskId: number,
+  reviewId: number,
+  data: TaskReviewSubmit,
+) {
+  return api
+    .post<TaskSubmitReviewResponse>(
+      `/tasks/${taskId}/reviews/${reviewId}/submit`,
+      data,
+    )
     .catch((error) => {
       throw handleApiError(error)
     })

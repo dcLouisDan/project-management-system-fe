@@ -3,6 +3,10 @@ import {
   createTask,
   deleteTask,
   restoreTask,
+  startReviewTask,
+  startTask,
+  submitReviewTask,
+  submitTask,
   syncTeamsTask,
   updateTask,
 } from '@/lib/api/tasks'
@@ -12,6 +16,8 @@ import type { RequestProgress } from '@/lib/types/response'
 import type {
   TaskAssignToUser,
   TaskCreate,
+  TaskReviewSubmit,
+  TaskSubmit,
   TaskSyncRelations,
   TaskUpdate,
 } from '@/lib/types/task'
@@ -99,7 +105,7 @@ export default function useManageTasks() {
     }
   }
 
-  async function destroy(taskId: number) {
+  async function destroy(taskId: number, projectId?: number) {
     setRequestProgress('in-progress')
     clearErrors()
     try {
@@ -108,6 +114,13 @@ export default function useManageTasks() {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.TASKS],
       })
+
+      if (projectId) {
+        navigate({
+          to: '/projects/$projectId',
+          params: { projectId: projectId.toString() },
+        })
+      }
 
       toast.success('Task Deleted', {
         description: `Successfully deleted task.`,
@@ -176,6 +189,90 @@ export default function useManageTasks() {
     }
   }
 
+  async function start(taskId: number) {
+    setRequestProgress('in-progress')
+    clearErrors()
+    try {
+      const response = await startTask(taskId)
+      const body = response.data
+
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.TASKS, taskId],
+      })
+
+      toast.success('Task Updated', {
+        description: `Task: ${body.data.title} is now in progress`,
+      })
+      setRequestProgress('completed')
+    } catch (err) {
+      handleError(err as ApiError, 'start')
+    }
+  }
+
+  async function submit(taskId: number, data: TaskSubmit) {
+    setRequestProgress('in-progress')
+    clearErrors()
+    try {
+      const response = await submitTask(taskId, data)
+      const body = response.data
+
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.TASKS, taskId],
+      })
+
+      toast.success('Task Updated', {
+        description: `Task: ${body.data.title} submitted for review`,
+      })
+      setRequestProgress('completed')
+    } catch (err) {
+      handleError(err as ApiError, 'submit for review')
+    }
+  }
+
+  async function startReview(taskId: number, reviewId: number) {
+    setRequestProgress('in-progress')
+    clearErrors()
+    try {
+      const response = await startReviewTask(taskId, reviewId)
+      const body = response.data
+
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.TASKS, taskId],
+      })
+
+      toast.success('Task Updated', {
+        description: `Task: ${body.data.title} is now in progress`,
+      })
+      setRequestProgress('completed')
+    } catch (err) {
+      handleError(err as ApiError, 'start')
+    }
+  }
+
+  async function submitReview(
+    taskId: number,
+    reviewId: number,
+    data: TaskReviewSubmit,
+  ) {
+    setRequestProgress('in-progress')
+    clearErrors()
+    try {
+      const response = await submitReviewTask(taskId, reviewId, data)
+      const body = response.data
+
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.TASKS, taskId],
+      })
+
+      toast.success('Task Updated', {
+        description: `Task: ${body.data.title} review submitted`,
+      })
+      setRequestProgress('completed')
+    } catch (err) {
+      handleError(err as ApiError, 'submit review')
+    }
+  }
+
   return {
     create,
     update,
@@ -183,6 +280,10 @@ export default function useManageTasks() {
     restore,
     syncTeams,
     assignToUser,
+    start,
+    submit,
+    startReview,
+    submitReview,
     validationErrors,
     error,
     requestProgress,
