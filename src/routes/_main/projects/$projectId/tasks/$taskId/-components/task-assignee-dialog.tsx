@@ -5,7 +5,7 @@ import useAppStore from '@/integrations/zustand/app-store'
 import { showTaskQueryOptions } from '@/lib/query-options/show-task-query-options'
 import { useQuery } from '@tanstack/react-query'
 import { useParams } from '@tanstack/react-router'
-import { Check, Hourglass, Play, Send } from 'lucide-react'
+import { Play, Send } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -15,7 +15,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 import { useForm } from '@tanstack/react-form'
-import { DEFAULT_TASK_SUBMIT } from '@/lib/types/task'
+import { DEFAULT_TASK_SUBMIT, type TaskReview } from '@/lib/types/task'
 import {
   Field,
   FieldError,
@@ -23,8 +23,10 @@ import {
   FieldLabel,
 } from '@/components/ui/field'
 import { Textarea } from '@/components/ui/textarea'
-import type { ProgressStatus } from '@/lib/types/status'
-import { snakeCaseToTitleCase } from '@/lib/string-utils'
+import { type ProgressStatus } from '@/lib/types/status'
+import { useEffect, useMemo } from 'react'
+import TaskReviewDialog from './task-review-dialog'
+import { ValidationErrorsAlert } from '@/components/validation-errors-alert'
 
 interface TaskAssigneeDialogProps {}
 
@@ -34,7 +36,20 @@ export default function TaskAssigneeDialog({}: TaskAssigneeDialogProps) {
     from: '/_main/projects/$projectId/tasks/$taskId/',
   })
   const { data: task } = useQuery(showTaskQueryOptions(Number(taskId)))
-  const { start, submit } = useManageTasks()
+  const review: TaskReview | null = useMemo(() => {
+    if (!task) return null
+
+    if (task.reviews.length == 0) return null
+
+    return task.reviews[0]
+  }, [task?.reviews])
+  const {
+    start,
+    submit,
+    requestProgress,
+    setRequestProgress,
+    validationErrors,
+  } = useManageTasks()
   const form = useForm({
     defaultValues: DEFAULT_TASK_SUBMIT,
     onSubmit: async ({ value }) => {
@@ -43,11 +58,24 @@ export default function TaskAssigneeDialog({}: TaskAssigneeDialogProps) {
       await submit(task?.id, value)
     },
   })
-  const reviewStatusArr: ProgressStatus[] = ['awaiting_review', 'under_review']
+  const reviewStatusArr: ProgressStatus[] = [
+    'awaiting_review',
+    'under_review',
+    'completed',
+  ]
+
+  useEffect(() => {
+    if (requestProgress == 'completed') {
+      form.reset()
+      setRequestProgress('started')
+    }
+  }, [requestProgress, setRequestProgress])
 
   if (!task || !task.assigned_to || task.assigned_to?.id !== user?.id) {
     return null
   }
+
+  console.log(review)
 
   if (task.status == 'not_started') {
     return (
@@ -70,85 +98,86 @@ export default function TaskAssigneeDialog({}: TaskAssigneeDialogProps) {
     )
   }
 
-  if (reviewStatusArr.includes(task.status)) {
-    return (
-      <Button disabled>
-        <Hourglass /> {snakeCaseToTitleCase(task.status)}
-      </Button>
-    )
-  }
-
-  if (task.status == 'completed') {
-    return (
-      <Button variant="success" disabled>
-        <Check /> {snakeCaseToTitleCase(task.status)}
-      </Button>
-    )
+  if (review && reviewStatusArr.includes(task.status)) {
+    return <TaskReviewDialog task={task} />
   }
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button>
-          <Send /> Submit
-        </Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Submit Task</DialogTitle>
-          <DialogDescription>
-            Write a note that describes how you completed the task. By
-            submitting this form, the task will be submitted to your supervisor
-            for review.
-          </DialogDescription>
-        </DialogHeader>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault()
-            e.stopPropagation()
-            form.handleSubmit()
-          }}
-        >
-          <FieldGroup>
-            <form.Field name="notes">
-              {(field) => (
-                <Field>
-                  <FieldLabel htmlFor={field.name}>Submission Notes</FieldLabel>
-                  <Textarea
-                    id={field.name}
-                    placeholder="Write notes..."
-                    required
-                    value={field.state.value}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    className="h-64"
-                  />
-                  <FieldError errors={field.state.meta.errors} />
-                </Field>
-              )}
-            </form.Field>
-            <div>
-              <form.Subscribe
-                selector={(state) => [state.canSubmit, state.isSubmitting]}
-                children={([canSubmit, isSubmitting]) => (
+    <>
+      {review && <TaskReviewDialog task={task} />}
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button>
+            <Send />
+            Submit
+          </Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Submit Task</DialogTitle>
+            <DialogDescription>
+              Write a note that describes how you completed the task. By
+              submitting this form, the task will be submitted to your
+              supervisor for review.
+            </DialogDescription>
+          </DialogHeader>
+
+          {validationErrors && requestProgress == 'failed' && (
+            <ValidationErrorsAlert
+              title="Unable to create team"
+              errorList={Object.values(validationErrors)}
+            />
+          )}
+          <form
+            onSubmit={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              form.handleSubmit()
+            }}
+          >
+            <FieldGroup>
+              <form.Field name="notes">
+                {(field) => (
                   <Field>
-                    <div className="flex justify-end">
-                      <Button
-                        size="lg"
-                        type="submit"
-                        className="w-40"
-                        disabled={!canSubmit}
-                      >
-                        <Send />
-                        {isSubmitting ? '...' : 'Submit Task'}
-                      </Button>
-                    </div>
+                    <FieldLabel htmlFor={field.name}>
+                      Submission Notes
+                    </FieldLabel>
+                    <Textarea
+                      id={field.name}
+                      placeholder="Write notes..."
+                      required
+                      value={field.state.value}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      className="h-64"
+                    />
+                    <FieldError errors={field.state.meta.errors} />
                   </Field>
                 )}
-              />
-            </div>
-          </FieldGroup>
-        </form>
-      </DialogContent>
-    </Dialog>
+              </form.Field>
+              <div>
+                <form.Subscribe
+                  selector={(state) => [state.canSubmit, state.isSubmitting]}
+                  children={([canSubmit, isSubmitting]) => (
+                    <Field>
+                      <div className="flex justify-end">
+                        <Button
+                          size="lg"
+                          type="submit"
+                          className="w-40"
+                          disabled={!canSubmit}
+                        >
+                          <Send />
+                          {isSubmitting ? '...' : 'Submit Task'}
+                        </Button>
+                      </div>
+                    </Field>
+                  )}
+                />
+              </div>
+            </FieldGroup>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </>
   )
 }

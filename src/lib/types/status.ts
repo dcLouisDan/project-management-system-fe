@@ -100,3 +100,9 @@ export const statusColorMap: Record<ProgressStatus, UiColorConfig> = {
     foreground: 'text-white',
   },
 }
+
+export function getStatusColorClassString(status: ProgressStatus) {
+  const { background, foreground } = statusColorMap[status]
+
+  return background + ' ' + foreground
+}

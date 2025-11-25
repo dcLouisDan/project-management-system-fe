@@ -6,7 +6,6 @@ import { showTaskQueryOptions } from '@/lib/query-options/show-task-query-option
 import { useQuery } from '@tanstack/react-query'
 import { useParams } from '@tanstack/react-router'
 import {
-  Check,
   Hourglass,
   NotebookPen,
   Play,
@@ -33,12 +32,14 @@ import {
 import { Textarea } from '@/components/ui/textarea'
 import { type ProgressStatus } from '@/lib/types/status'
 import { snakeCaseToTitleCase } from '@/lib/string-utils'
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import IconRadioGroup, {
   type IconSelectItem,
 } from '@/components/icon-radio-group'
 import dayjs from 'dayjs'
 import { Separator } from '@/components/ui/separator'
+import TaskReviewDialog from './task-review-dialog'
+import { ValidationErrorsAlert } from '@/components/validation-errors-alert'
 
 const reviewStatusOptions: IconSelectItem[] = [
   {
@@ -71,9 +72,15 @@ export default function TaskReviewerDialog({}: TaskReviewerDialogProps) {
     if (task.reviews.length == 0) return null
 
     return task.reviews[0]
-  }, [task])
+  }, [task?.reviews])
 
-  const { startReview, submitReview } = useManageTasks()
+  const {
+    startReview,
+    submitReview,
+    validationErrors,
+    requestProgress,
+    setRequestProgress,
+  } = useManageTasks()
   const form = useForm({
     defaultValues: DEFAULT_TASK_REVIEW_SUBMIT,
     onSubmit: async ({ value }) => {
@@ -83,18 +90,16 @@ export default function TaskReviewerDialog({}: TaskReviewerDialogProps) {
     },
   })
   const reviewStatusArr: ProgressStatus[] = ['awaiting_review', 'under_review']
-  console.log(task)
 
   if (!task || !task.assigned_by || task.assigned_by?.id !== user?.id) {
     return null
   }
 
-  if (task.status == 'completed') {
-    return (
-      <Button variant="success" disabled>
-        <Check /> {snakeCaseToTitleCase(task.status)}
-      </Button>
-    )
+  if (
+    review &&
+    (task.status == 'completed' || !reviewStatusArr.includes(review.status))
+  ) {
+    return <TaskReviewDialog task={task} />
   }
 
   if (!reviewStatusArr.includes(task.status) || !review) {
@@ -104,6 +109,13 @@ export default function TaskReviewerDialog({}: TaskReviewerDialogProps) {
       </Button>
     )
   }
+
+  useEffect(() => {
+    if (requestProgress == 'completed') {
+      form.reset()
+      setRequestProgress('started')
+    }
+  }, [requestProgress, setRequestProgress])
 
   if (task.status == 'awaiting_review') {
     return (
@@ -130,7 +142,7 @@ export default function TaskReviewerDialog({}: TaskReviewerDialogProps) {
     <Dialog>
       <DialogTrigger asChild>
         <Button>
-          <Send /> Submit
+          <Send /> Review Task
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-3xl max-h-screen overflow-auto">
@@ -162,6 +174,12 @@ export default function TaskReviewerDialog({}: TaskReviewerDialogProps) {
             }}
             className="sm:ps-2 pt-4 sm:pt-0"
           >
+            {validationErrors && requestProgress == 'failed' && (
+              <ValidationErrorsAlert
+                title="Unable to create team"
+                errorList={Object.values(validationErrors)}
+              />
+            )}
             <FieldGroup>
               <form.Field name="status">
                 {(field) => (

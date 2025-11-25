@@ -109,6 +109,7 @@ export interface TaskReview {
   submission_notes: string
   feedback: string
   status: ProgressStatus
+  reviewed_at?: string
   created_at: string
-  updated_at: string
+  updated_at?: string
 }
