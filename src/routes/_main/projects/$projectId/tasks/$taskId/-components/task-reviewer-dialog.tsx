@@ -99,7 +99,7 @@ export default function TaskReviewerDialog({}: TaskReviewerDialogProps) {
     review &&
     (task.status == 'completed' || !reviewStatusArr.includes(review.status))
   ) {
-    return <TaskReviewDialog task={task} />
+    return <TaskReviewDialog prefix="Review" task={task} />
   }
 
   if (!reviewStatusArr.includes(task.status) || !review) {

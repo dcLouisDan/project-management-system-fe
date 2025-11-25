@@ -84,7 +84,7 @@ export default function TaskAssigneeDialog({}: TaskAssigneeDialogProps) {
         triggerComponent={
           <Button variant="default">
             <Play />
-            Start
+            Start Task
           </Button>
         }
         submitButtonVariant={{ variant: 'default' }}
@@ -99,17 +99,17 @@ export default function TaskAssigneeDialog({}: TaskAssigneeDialogProps) {
   }
 
   if (review && reviewStatusArr.includes(task.status)) {
-    return <TaskReviewDialog task={task} />
+    return <TaskReviewDialog prefix="Submission" task={task} />
   }
 
   return (
     <>
-      {review && <TaskReviewDialog task={task} />}
+      {review && <TaskReviewDialog prefix="Submission" task={task} />}
       <Dialog>
         <DialogTrigger asChild>
           <Button>
             <Send />
-            Submit
+            Submit Task
           </Button>
         </DialogTrigger>
         <DialogContent>

@@ -20,9 +20,13 @@ import { Label } from '@/components/ui/label'
 
 interface TaskReviewDialogProps {
   task: Task
+  prefix?: string
 }
 
-export default function TaskReviewDialog({ task }: TaskReviewDialogProps) {
+export default function TaskReviewDialog({
+  task,
+  prefix,
+}: TaskReviewDialogProps) {
   const [currentReview, setCurrentReview] = useState<TaskReview | undefined>(
     task.reviews[0] ?? undefined,
   )
@@ -67,6 +71,7 @@ export default function TaskReviewDialog({ task }: TaskReviewDialogProps) {
           ) : (
             <Hourglass />
           )}{' '}
+          {prefix && prefix + ' '}
           {snakeCaseToTitleCase(currentReview.status)}
         </Button>
       </DialogTrigger>
