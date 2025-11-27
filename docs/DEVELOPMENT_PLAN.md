@@ -317,36 +317,42 @@ Demo code existed in the codebase that was not being used. All demo files have b
 
 ### 7. Fix Form Validation Messages
 **Priority:** P1  
-**Status:** Incomplete
+**Status:** ✅ Complete
 
 **Description:**
-Edit forms show "Unable to create project" instead of "Unable to update project".
+Edit forms showed "Unable to create project" instead of "Unable to update project".
 
-**File:** `src/routes/_main/projects/$projectId/edit.tsx` (line 267)
+**Files Fixed:**
+- `src/routes/_main/projects/$projectId/edit.tsx` - "Unable to create project" → "Unable to update project"
+- `src/routes/_main/users/$userId/edit.tsx` - "Unable to create user" → "Unable to update user"
+- `src/routes/_main/projects/$projectId/tasks/create.tsx` - "Unable to create project" → "Unable to create task"
+- `src/routes/_main/projects/$projectId/tasks/$taskId/edit.tsx` - "Unable to edit project" → "Unable to update task"
+- `src/routes/_main/projects/$projectId/tasks/$taskId/-components/task-reviewer-dialog.tsx` - "Unable to create team" → "Unable to assign reviewer"
+- `src/routes/_main/projects/$projectId/tasks/$taskId/-components/task-assignee-dialog.tsx` - "Unable to create team" → "Unable to assign user"
 
 **Action Items:**
-- [ ] Fix validation error message in edit form
-- [ ] Check all edit forms for similar issues
-- [ ] Make error messages dynamic based on action (create vs update)
+- [x] Fix validation error message in edit form
+- [x] Check all edit forms for similar issues
+- [x] Make error messages context-appropriate based on action (create vs update vs assign)
 
 ---
 
 ### 8. Fix Breadcrumb URLs
 **Priority:** P1  
-**Status:** Incomplete
+**Status:** ✅ Complete
 
 **Description:**
-Edit page has incorrect breadcrumb href.
+Edit pages had incorrect breadcrumb hrefs using placeholder `/*/update` URLs instead of actual route paths.
 
-**File:** `src/routes/_main/projects/$projectId/edit.tsx` (line 122)
-
-**Current:** `href: '/projects/update'`  
-**Should be:** `href: '/projects/$projectId/edit'`
+**Files Fixed:**
+- `src/routes/_main/projects/$projectId/edit.tsx` - Fixed breadcrumb to include project name and correct edit URL (`/projects/${project.id}/edit`)
+- `src/routes/_main/teams/$teamId/edit.tsx` - Fixed edit href from `/teams/update` to `/teams/${team.id}/edit`
+- `src/routes/_main/teams/$teamId/members.tsx` - Fixed href from `/teams/update` to `/teams/${team.id}/members`
 
 **Action Items:**
-- [ ] Fix breadcrumb href in edit route
-- [ ] Check all routes for correct breadcrumb URLs
-- [ ] Ensure breadcrumbs use proper route parameters
+- [x] Fix breadcrumb href in edit route
+- [x] Check all routes for correct breadcrumb URLs
+- [x] Ensure breadcrumbs use proper route parameters
 
 ---
 
@@ -366,10 +372,9 @@ Some settings navigation links point to `#` (placeholder URLs), indicating incom
 - Billing and Limits links - ❌ Not in navigation (may be future features)
 
 **Action Items:**
-- [ ] Determine if `/settings/team` route is needed
-- [ ] Implement `/settings/team` route if required
-- [ ] Remove placeholder links from navigation if not needed
-- [ ] Update navigation to reflect actual available routes
+- [x] Determine if `/settings/team` route is needed
+- [x] Remove placeholder links from navigation if not needed
+- [x] Update navigation to reflect actual available routes
 
 ---
 
@@ -607,9 +612,9 @@ Add end-to-end tests for critical user flows.
 - [ ] Add team activity widget
 
 ### Settings
-- [ ] Complete `/settings/team` route (if required)
-- [ ] Remove or implement placeholder navigation links
-- [ ] Ensure all settings routes follow consistent patterns
+- [x] Complete `/settings/team` route (if required)
+- [x] Remove or implement placeholder navigation links
+- [x] Ensure all settings routes follow consistent patterns
 
 ### Navigation
 - [ ] Fix placeholder links in `nav-main-links.ts`

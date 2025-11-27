@@ -273,7 +273,7 @@ function RouteComponent() {
                   <FieldSeparator />
                   {validationErrors && requestProgress == 'failed' && (
                     <ValidationErrorsAlert
-                      title="Unable to create user"
+                      title="Unable to update user"
                       errorList={Object.values(validationErrors)}
                     />
                   )}

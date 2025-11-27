@@ -6,10 +6,6 @@ export const SETTING_LINKS: SidebarNavSubItem[] = [
     title: 'Profile',
     url: '/settings/profile',
   },
-  {
-    title: 'Team',
-    url: '/settings/team',
-  },
 ]
 
 export const NAV_MAIN_LINKS: SidebarNavItem[] = [

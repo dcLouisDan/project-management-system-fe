@@ -175,7 +175,7 @@ export default function TaskReviewerDialog({}: TaskReviewerDialogProps) {
           >
             {validationErrors && requestProgress == 'failed' && (
               <ValidationErrorsAlert
-                title="Unable to create team"
+                title="Unable to assign reviewer"
                 errorList={Object.values(validationErrors)}
               />
             )}

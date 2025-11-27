@@ -121,7 +121,7 @@ export default function TaskAssigneeDialog({}: TaskAssigneeDialogProps) {
 
           {validationErrors && requestProgress == 'failed' && (
             <ValidationErrorsAlert
-              title="Unable to create team"
+              title="Unable to assign user"
               errorList={Object.values(validationErrors)}
             />
           )}

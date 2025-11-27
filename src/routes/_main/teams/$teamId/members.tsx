@@ -119,7 +119,7 @@ function RouteComponent() {
       breadcrumbItems={[
         { label: 'Teams', href: '/teams' },
         { label: team.name, href: `/teams/${team.id}` },
-        { label: 'Assign Members', href: '/teams/update' },
+        { label: 'Assign Members', href: `/teams/${team.id}/members` },
       ]}
     >
       <PageHeader title={PAGE_TITLE} description={PAGE_DESCRIPTION} />

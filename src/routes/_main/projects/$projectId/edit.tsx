@@ -109,7 +109,8 @@ function RouteComponent() {
     <MainInsetLayout
       breadcrumbItems={[
         { label: 'Projects', href: '/projects' },
-        { label: 'Edit', href: '/projects/update' },
+        { label: project.name, href: `/projects/${project.id}` },
+        { label: 'Edit', href: `/projects/${project.id}/edit` },
       ]}
     >
       <PageHeader title={PAGE_TITLE} description={PAGE_DESCRIPTION} />
@@ -254,7 +255,7 @@ function RouteComponent() {
 
               {validationErrors && requestProgress == 'failed' && (
                 <ValidationErrorsAlert
-                  title="Unable to create project"
+                  title="Unable to update project"
                   errorList={Object.values(validationErrors)}
                 />
               )}

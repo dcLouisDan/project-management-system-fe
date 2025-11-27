@@ -21,7 +21,6 @@ import { Route as MainTeamsIndexRouteImport } from './routes/_main/teams/index'
 import { Route as MainProjectsIndexRouteImport } from './routes/_main/projects/index'
 import { Route as MainUsersCreateRouteImport } from './routes/_main/users/create'
 import { Route as MainTeamsCreateRouteImport } from './routes/_main/teams/create'
-import { Route as MainSettingsTeamRouteImport } from './routes/_main/settings/team'
 import { Route as MainSettingsProfileRouteImport } from './routes/_main/settings/profile'
 import { Route as MainProjectsCreateRouteImport } from './routes/_main/projects/create'
 import { Route as MainUsersUserIdIndexRouteImport } from './routes/_main/users/$userId/index'
@@ -94,11 +93,6 @@ const MainTeamsCreateRoute = MainTeamsCreateRouteImport.update({
   id: '/teams/create',
   path: '/teams/create',
   getParentRoute: () => MainRouteRoute,
-} as any)
-const MainSettingsTeamRoute = MainSettingsTeamRouteImport.update({
-  id: '/team',
-  path: '/team',
-  getParentRoute: () => MainSettingsRouteRoute,
 } as any)
 const MainSettingsProfileRoute = MainSettingsProfileRouteImport.update({
   id: '/profile',
@@ -181,7 +175,6 @@ export interface FileRoutesByFullPath {
   '/auth/register': typeof AuthRegisterRoute
   '/projects/create': typeof MainProjectsCreateRoute
   '/settings/profile': typeof MainSettingsProfileRoute
-  '/settings/team': typeof MainSettingsTeamRoute
   '/teams/create': typeof MainTeamsCreateRoute
   '/users/create': typeof MainUsersCreateRoute
   '/projects': typeof MainProjectsIndexRoute
@@ -208,7 +201,6 @@ export interface FileRoutesByTo {
   '/auth/register': typeof AuthRegisterRoute
   '/projects/create': typeof MainProjectsCreateRoute
   '/settings/profile': typeof MainSettingsProfileRoute
-  '/settings/team': typeof MainSettingsTeamRoute
   '/teams/create': typeof MainTeamsCreateRoute
   '/users/create': typeof MainUsersCreateRoute
   '/projects': typeof MainProjectsIndexRoute
@@ -237,7 +229,6 @@ export interface FileRoutesById {
   '/auth/register': typeof AuthRegisterRoute
   '/_main/projects/create': typeof MainProjectsCreateRoute
   '/_main/settings/profile': typeof MainSettingsProfileRoute
-  '/_main/settings/team': typeof MainSettingsTeamRoute
   '/_main/teams/create': typeof MainTeamsCreateRoute
   '/_main/users/create': typeof MainUsersCreateRoute
   '/_main/projects/': typeof MainProjectsIndexRoute
@@ -266,7 +257,6 @@ export interface FileRouteTypes {
     | '/auth/register'
     | '/projects/create'
     | '/settings/profile'
-    | '/settings/team'
     | '/teams/create'
     | '/users/create'
     | '/projects'
@@ -293,7 +283,6 @@ export interface FileRouteTypes {
     | '/auth/register'
     | '/projects/create'
     | '/settings/profile'
-    | '/settings/team'
     | '/teams/create'
     | '/users/create'
     | '/projects'
@@ -321,7 +310,6 @@ export interface FileRouteTypes {
     | '/auth/register'
     | '/_main/projects/create'
     | '/_main/settings/profile'
-    | '/_main/settings/team'
     | '/_main/teams/create'
     | '/_main/users/create'
     | '/_main/projects/'
@@ -432,13 +420,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainTeamsCreateRouteImport
       parentRoute: typeof MainRouteRoute
     }
-    '/_main/settings/team': {
-      id: '/_main/settings/team'
-      path: '/team'
-      fullPath: '/settings/team'
-      preLoaderRoute: typeof MainSettingsTeamRouteImport
-      parentRoute: typeof MainSettingsRouteRoute
-    }
     '/_main/settings/profile': {
       id: '/_main/settings/profile'
       path: '/profile'
@@ -535,12 +516,10 @@ declare module '@tanstack/react-router' {
 
 interface MainSettingsRouteRouteChildren {
   MainSettingsProfileRoute: typeof MainSettingsProfileRoute
-  MainSettingsTeamRoute: typeof MainSettingsTeamRoute
 }
 
 const MainSettingsRouteRouteChildren: MainSettingsRouteRouteChildren = {
   MainSettingsProfileRoute: MainSettingsProfileRoute,
-  MainSettingsTeamRoute: MainSettingsTeamRoute,
 }
 
 const MainSettingsRouteRouteWithChildren =

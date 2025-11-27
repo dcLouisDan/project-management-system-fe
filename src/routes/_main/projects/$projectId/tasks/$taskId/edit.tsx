@@ -232,7 +232,7 @@ function RouteComponent() {
 
               {validationErrors && requestProgress == 'failed' && (
                 <ValidationErrorsAlert
-                  title="Unable to edit project"
+                  title="Unable to update task"
                   errorList={Object.values(validationErrors)}
                 />
               )}
