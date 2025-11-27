@@ -1,7 +1,7 @@
 import { APP_NAME } from '@/lib/constants'
-import type { ApiError } from '@/lib/handle-api-error'
+import { handleRouteError } from '@/lib/handle-api-error'
 import { showTaskQueryOptions } from '@/lib/query-options/show-task-query-options'
-import { createFileRoute, Link, notFound } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import TaskNotFoundComponent from './-not-found-component'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { Card, CardContent } from '@/components/ui/card'
@@ -29,11 +29,7 @@ export const Route = createFileRoute(
   component: RouteComponent,
   loader: ({ context: { queryClient }, params: { taskId } }) => {
     const id = Number(taskId)
-    try {
-      return queryClient.ensureQueryData(showTaskQueryOptions(id))
-    } catch (error) {
-      console.log('Loader error:', error)
-    }
+    return queryClient.ensureQueryData(showTaskQueryOptions(id))
   },
   head: ({ loaderData }) => ({
     meta: [
@@ -48,13 +44,7 @@ export const Route = createFileRoute(
       },
     ],
   }),
-  onError: (err) => {
-    const error = err as ApiError
-    console.log('Index error', error)
-    if (error.status == 404) {
-      throw notFound()
-    }
-  },
+  onError: handleRouteError,
   notFoundComponent: TaskNotFoundComponent,
 })
 

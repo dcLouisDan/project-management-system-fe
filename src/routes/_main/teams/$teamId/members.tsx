@@ -1,7 +1,7 @@
 import { APP_NAME } from '@/lib/constants'
-import type { ApiError } from '@/lib/handle-api-error'
+import { handleRouteError } from '@/lib/handle-api-error'
 import { showTeamQueryOptions } from '@/lib/query-options/show-team-query-options'
-import { createFileRoute, Link, notFound } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import TeamNotFoundComponent from './-not-found-component'
 import useManageTeams from '@/hooks/use-manage-teams'
 import { useSuspenseQuery } from '@tanstack/react-query'
@@ -47,11 +47,7 @@ export const Route = createFileRoute('/_main/teams/$teamId/members')({
   validateSearch: (search) => search as TeamUsersSelectSearchParams,
   loader: ({ context: { queryClient }, params: { teamId } }) => {
     const id = Number(teamId)
-    try {
-      return queryClient.ensureQueryData(showTeamQueryOptions(id))
-    } catch (error) {
-      console.log('Loader error:', error)
-    }
+    return queryClient.ensureQueryData(showTeamQueryOptions(id))
   },
   head: ({ loaderData }) => ({
     meta: [
@@ -66,13 +62,7 @@ export const Route = createFileRoute('/_main/teams/$teamId/members')({
       },
     ],
   }),
-  onError: (err) => {
-    const error = err as ApiError
-    console.log('Index error', error)
-    if (error.status == 404) {
-      throw notFound()
-    }
-  },
+  onError: handleRouteError,
   notFoundComponent: TeamNotFoundComponent,
 })
 
@@ -165,7 +155,6 @@ function RouteComponent() {
                     {field.state.value.map((val, i) => {
                       const id = val.user_id
                       const member = usersMap[id]
-                      console.log('Roles', member.roles)
                       return (
                         <div
                           key={i}

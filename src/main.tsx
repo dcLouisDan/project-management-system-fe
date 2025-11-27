@@ -10,6 +10,7 @@ import { routeTree } from './routeTree.gen'
 import './styles.css'
 import reportWebVitals from './reportWebVitals.ts'
 import { initializeTheme } from './hooks/use-appearance.ts'
+import { setRouterInstance } from './lib/router-instance'
 
 // Create a new router instance
 
@@ -24,6 +25,9 @@ const router = createRouter({
   defaultStructuralSharing: true,
   defaultPreloadStaleTime: 0,
 })
+
+// Store router instance for use outside React context (e.g., Axios interceptors)
+setRouterInstance(router)
 
 // Register the router instance for type safety
 declare module '@tanstack/react-router' {

@@ -1,5 +1,5 @@
-import { createFileRoute, notFound } from '@tanstack/react-router'
-import type { ApiError } from '@/lib/handle-api-error'
+import { createFileRoute } from '@tanstack/react-router'
+import { handleRouteError } from '@/lib/handle-api-error'
 import MainInsetLayout from '../../-main-inset-layout'
 import { Button } from '@/components/ui/button'
 import { useSuspenseQuery } from '@tanstack/react-query'
@@ -33,11 +33,7 @@ export const Route = createFileRoute('/_main/teams/$teamId/edit')({
   component: RouteComponent,
   loader: ({ context: { queryClient }, params: { teamId } }) => {
     const id = Number(teamId)
-    try {
-      return queryClient.ensureQueryData(showTeamQueryOptions(id))
-    } catch (error) {
-      console.log('Loader error:', error)
-    }
+    return queryClient.ensureQueryData(showTeamQueryOptions(id))
   },
   head: ({ loaderData }) => ({
     meta: [
@@ -52,13 +48,7 @@ export const Route = createFileRoute('/_main/teams/$teamId/edit')({
       },
     ],
   }),
-  onError: (err) => {
-    const error = err as ApiError
-    console.log('Index error', error)
-    if (error.status == 404) {
-      throw notFound()
-    }
-  },
+  onError: handleRouteError,
   notFoundComponent: TeamNotFoundComponent,
 })
 

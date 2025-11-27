@@ -84,7 +84,6 @@ export default function TaskReviewerDialog({}: TaskReviewerDialogProps) {
   const form = useForm({
     defaultValues: DEFAULT_TASK_REVIEW_SUBMIT,
     onSubmit: async ({ value }) => {
-      console.log('Submit click')
       if (!task || !review) return
       await submitReview(task.id, review.id, value)
     },

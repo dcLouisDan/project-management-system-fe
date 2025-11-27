@@ -1,5 +1,5 @@
-import type { ApiError } from '@/lib/handle-api-error'
-import { createFileRoute, Link, notFound } from '@tanstack/react-router'
+import { handleRouteError } from '@/lib/handle-api-error'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import MainInsetLayout from '../../-main-inset-layout'
 import { ArchiveRestore, Edit, Trash2, Users } from 'lucide-react'
 import { Button, buttonVariants } from '@/components/ui/button'
@@ -21,11 +21,7 @@ export const Route = createFileRoute('/_main/teams/$teamId/')({
   component: RouteComponent,
   loader: ({ context: { queryClient }, params: { teamId } }) => {
     const id = Number(teamId)
-    try {
-      return queryClient.ensureQueryData(showTeamQueryOptions(id))
-    } catch (error) {
-      console.log('Loader error:', error)
-    }
+    return queryClient.ensureQueryData(showTeamQueryOptions(id))
   },
   head: ({ loaderData }) => ({
     meta: [
@@ -40,13 +36,7 @@ export const Route = createFileRoute('/_main/teams/$teamId/')({
       },
     ],
   }),
-  onError: (err) => {
-    const error = err as ApiError
-    console.log('Index error', error)
-    if (error.status == 404) {
-      throw notFound()
-    }
-  },
+  onError: handleRouteError,
   notFoundComponent: TeamNotFoundComponent,
 })
 

@@ -1,6 +1,6 @@
-import type { ApiError } from '@/lib/handle-api-error'
+import { handleRouteError } from '@/lib/handle-api-error'
 import { showUserQueryOptions } from '@/lib/query-options/show-user-query-options'
-import { createFileRoute, Link, notFound } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import UserNotFoundComponent from './-not-found-component'
 import { APP_NAME } from '@/lib/constants'
 
@@ -40,11 +40,7 @@ export const Route = createFileRoute('/_main/users/$userId/edit')({
   component: RouteComponent,
   loader: ({ context: { queryClient }, params: { userId } }) => {
     const id = Number(userId)
-    try {
-      return queryClient.ensureQueryData(showUserQueryOptions(id))
-    } catch (error) {
-      console.log('Loader error:', error)
-    }
+    return queryClient.ensureQueryData(showUserQueryOptions(id))
   },
   head: ({ loaderData }) => ({
     meta: [
@@ -59,12 +55,7 @@ export const Route = createFileRoute('/_main/users/$userId/edit')({
       },
     ],
   }),
-  onError: (err) => {
-    const error = err as ApiError
-    if (error.status == 404) {
-      throw notFound()
-    }
-  },
+  onError: handleRouteError,
   notFoundComponent: UserNotFoundComponent,
 })
 

@@ -1,8 +1,8 @@
-import type { ApiError } from '@/lib/handle-api-error'
+import { handleRouteError } from '@/lib/handle-api-error'
 import { showProjectQueryOptions } from '@/lib/query-options/show-project-query-options'
 import MainInsetLayout from '@/routes/_main/-main-inset-layout'
 import { useSuspenseQuery } from '@tanstack/react-query'
-import { createFileRoute, notFound } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
 import ProjectNotFoundComponent from '../-not-found-component'
 import { APP_NAME } from '@/lib/constants'
 import PageHeader from '@/components/page-header'
@@ -41,11 +41,7 @@ export const Route = createFileRoute('/_main/projects/$projectId/tasks/create')(
     component: RouteComponent,
     loader: ({ context: { queryClient }, params: { projectId } }) => {
       const id = Number(projectId)
-      try {
-        return queryClient.ensureQueryData(showProjectQueryOptions(id))
-      } catch (error) {
-        console.log('Loader error:', error)
-      }
+      return queryClient.ensureQueryData(showProjectQueryOptions(id))
     },
     head: ({ loaderData }) => ({
       meta: [
@@ -60,13 +56,7 @@ export const Route = createFileRoute('/_main/projects/$projectId/tasks/create')(
         },
       ],
     }),
-    onError: (err) => {
-      const error = err as ApiError
-      console.log('Index error', error)
-      if (error.status == 404) {
-        throw notFound()
-      }
-    },
+    onError: handleRouteError,
     notFoundComponent: ProjectNotFoundComponent,
   },
 )

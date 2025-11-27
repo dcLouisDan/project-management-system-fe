@@ -1,8 +1,8 @@
 import { APP_NAME } from '@/lib/constants'
 import type { SortDirection } from '@/lib/types/ui'
-import { createFileRoute, Link, notFound } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 
-import type { ApiError } from '@/lib/handle-api-error'
+import { handleRouteError } from '@/lib/handle-api-error'
 import { showProjectQueryOptions } from '@/lib/query-options/show-project-query-options'
 import useManageProjects from '@/hooks/use-manage-projects'
 import { useSuspenseQuery } from '@tanstack/react-query'
@@ -36,11 +36,7 @@ export const Route = createFileRoute('/_main/projects/$projectId/teams')({
   validateSearch: (search) => search as ProjectTeamsSelectSearchParams,
   loader: ({ context: { queryClient }, params: { projectId } }) => {
     const id = Number(projectId)
-    try {
-      return queryClient.ensureQueryData(showProjectQueryOptions(id))
-    } catch (error) {
-      console.log('Loader error:', error)
-    }
+    return queryClient.ensureQueryData(showProjectQueryOptions(id))
   },
   head: ({ loaderData }) => ({
     meta: [
@@ -55,13 +51,7 @@ export const Route = createFileRoute('/_main/projects/$projectId/teams')({
       },
     ],
   }),
-  onError: (err) => {
-    const error = err as ApiError
-    console.log('Index error', error)
-    if (error.status == 404) {
-      throw notFound()
-    }
-  },
+  onError: handleRouteError,
   notFoundComponent: ProjectNotFoundComponent,
 })
 

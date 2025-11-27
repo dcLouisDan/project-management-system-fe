@@ -51,7 +51,6 @@ export default function ProjectTasksTableFilters({
         newFilterValues[filter.key] = popoverFilterValues[filter.key].join(',')
       }
     })
-    console.log('new filter values', newFilterValues)
     setParams({
       ...params,
       ...newFilterValues,

@@ -53,7 +53,6 @@ export default function TaskAssigneeDialog({}: TaskAssigneeDialogProps) {
   const form = useForm({
     defaultValues: DEFAULT_TASK_SUBMIT,
     onSubmit: async ({ value }) => {
-      console.log('Submit click')
       if (!task) return
       await submit(task?.id, value)
     },
@@ -74,8 +73,6 @@ export default function TaskAssigneeDialog({}: TaskAssigneeDialogProps) {
   if (!task || !task.assigned_to || task.assigned_to?.id !== user?.id) {
     return null
   }
-
-  console.log(review)
 
   if (task.status == 'not_started') {
     return (

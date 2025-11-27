@@ -34,7 +34,6 @@ export function RegistrationForm({
       await register(value)
     },
   })
-  console.log('Error', validationErrors)
 
   return (
     <div className={cn('flex flex-col gap-6', className)} {...props}>

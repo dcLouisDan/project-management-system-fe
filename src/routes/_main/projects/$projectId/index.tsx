@@ -1,5 +1,5 @@
-import type { ApiError } from '@/lib/handle-api-error'
-import { createFileRoute, Link, notFound } from '@tanstack/react-router'
+import { handleRouteError } from '@/lib/handle-api-error'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import MainInsetLayout from '../../-main-inset-layout'
 import { ArchiveRestore, Contact, Edit, Trash2, Users } from 'lucide-react'
 import { Button, buttonVariants } from '@/components/ui/button'
@@ -23,11 +23,7 @@ export const Route = createFileRoute('/_main/projects/$projectId/')({
   component: RouteComponent,
   loader: ({ context: { queryClient }, params: { projectId } }) => {
     const id = Number(projectId)
-    try {
-      return queryClient.ensureQueryData(showProjectQueryOptions(id))
-    } catch (error) {
-      console.log('Loader error:', error)
-    }
+    return queryClient.ensureQueryData(showProjectQueryOptions(id))
   },
   head: ({ loaderData }) => ({
     meta: [
@@ -42,13 +38,7 @@ export const Route = createFileRoute('/_main/projects/$projectId/')({
       },
     ],
   }),
-  onError: (err) => {
-    const error = err as ApiError
-    console.log('Index error', error)
-    if (error.status == 404) {
-      throw notFound()
-    }
-  },
+  onError: handleRouteError,
   notFoundComponent: ProjectNotFoundComponent,
 })
 
