@@ -95,17 +95,182 @@ Axios interceptor was using `window.location.href` for redirects instead of usin
 
 ### 4. Complete Dashboard Implementation
 **Priority:** P1  
-**Status:** Incomplete
+**Status:** Incomplete (Blocked - Waiting for Backend API)
 
 **Description:**
-Dashboard route (`src/routes/_main/dashboard.tsx`) only displays "Dashboard" text. Needs full implementation.
+Dashboard route (`src/routes/_main/dashboard.tsx`) only displays "Dashboard" text. Needs full implementation. This is an admin dashboard that displays an overview of the entire system including users, teams, projects, and tasks.
+
+**Backend Requirements:**
+> **Note:** Dashboard API routes do not exist in the backend yet. See `API_REFERENCE.md` → "Dashboard (Proposed)" section for suggested endpoints and response formats.
+
+**Suggested Dashboard Widgets:**
+1. **Summary Cards** - Total counts with trend indicators
+   - Total Users (active vs deleted)
+   - Total Teams (with/without leads)
+   - Total Projects (by status breakdown)
+   - Total Tasks (by status/priority)
+
+2. **Projects Overview**
+   - Projects by status (pie/donut chart)
+   - Recent projects list (last 5-10)
+   - Overdue projects count
+
+3. **Tasks Overview**
+   - Tasks by status (bar chart)
+   - Tasks by priority distribution
+   - Recent tasks list
+   - Overdue tasks count
+
+4. **Team Activity**
+   - Teams with most active projects
+   - Recent team assignments
+
+5. **User Activity**
+   - Users by role distribution
+   - Recently active users
 
 **Action Items:**
-- [ ] Design dashboard layout
-- [ ] Add dashboard widgets (project stats, recent tasks, etc.)
-- [ ] Implement data fetching for dashboard metrics
-- [ ] Add charts/visualizations if needed
-- [ ] Make dashboard responsive
+
+*Phase 1: Frontend Setup with Mock Data* ✅ **COMPLETE**
+- [x] Design dashboard layout with placeholder/skeleton components
+- [x] Create dashboard widget components structure in `src/routes/_main/dashboard/-components/`
+- [x] Set up responsive grid layout (2-4 columns based on viewport)
+- [x] Create mock data module (`src/lib/mock/dashboard-data.ts`)
+- [ ] Implement loading states and skeletons (deferred to Phase 2)
+- [x] Create summary stat cards with mock data (users, teams, projects, tasks)
+- [x] Implement charts using shadcn/recharts (`src/components/ui/chart.tsx`):
+  - [x] Projects by status - Pie/Donut chart (`ChartContainer` + `PieChart`)
+  - [x] Tasks by priority - Bar chart (`ChartContainer` + `BarChart`)
+  - [x] Tasks by status - Vertical bar chart
+  - [ ] Users by role - Pie chart (optional, deferred)
+- [x] Create recent items lists (recent projects, recent tasks) with mock data
+- [x] Add trend indicators (up/down arrows with percentages) using mock deltas
+
+**Phase 1 Files Created:**
+- `src/lib/mock/dashboard-data.ts` - Mock data and chart configs
+- `src/routes/_main/dashboard/-components/stat-card.tsx` - Summary stat card with trend indicator
+- `src/routes/_main/dashboard/-components/projects-status-chart.tsx` - Donut chart
+- `src/routes/_main/dashboard/-components/tasks-priority-chart.tsx` - Horizontal bar chart
+- `src/routes/_main/dashboard/-components/tasks-status-chart.tsx` - Vertical bar chart
+- `src/routes/_main/dashboard/-components/recent-projects.tsx` - Projects list with progress
+- `src/routes/_main/dashboard/-components/recent-tasks.tsx` - Tasks list with badges
+- `src/routes/_main/dashboard.tsx` - Updated with grid layout and all components
+
+*Phase 2: API Integration (After Backend Routes Available)*
+- [ ] Create `src/lib/api/dashboard.ts` with API functions
+- [ ] Create `src/lib/query-options/dashboard-query-options.ts`
+- [ ] Add dashboard route loader for data prefetching
+- [ ] Replace mock data with real API data in widgets
+- [ ] Implement error states for failed API calls
+
+*Phase 3: Polish & Enhancements*
+- [ ] Add click-through navigation to detail pages (cards → list pages)
+- [ ] Add date range filters if applicable
+- [ ] Add refresh button for manual data refresh
+- [ ] Optimize chart animations and transitions
+- [ ] Add empty states for zero-data scenarios
+
+**Mock Data Structure (for frontend development):**
+```typescript
+// src/lib/mock/dashboard-data.ts
+import type { ChartConfig } from '@/components/ui/chart'
+
+// Summary statistics for stat cards
+export const mockDashboardStats = {
+  users: { total: 24, active: 22, deleted: 2, trend: 8.2 },
+  teams: { total: 6, withLead: 5, withoutLead: 1, trend: 0 },
+  projects: { total: 12, active: 8, completed: 3, cancelled: 1, overdue: 2, trend: 12.5 },
+  tasks: { total: 87, pending: 23, inProgress: 31, completed: 28, overdue: 5, trend: -3.1 }
+}
+
+// Chart data - Projects by Status (for PieChart/DonutChart)
+export const mockProjectsByStatus = [
+  { status: 'not_started', count: 2, fill: 'var(--color-not_started)' },
+  { status: 'in_progress', count: 6, fill: 'var(--color-in_progress)' },
+  { status: 'completed', count: 3, fill: 'var(--color-completed)' },
+  { status: 'cancelled', count: 1, fill: 'var(--color-cancelled)' },
+]
+
+export const projectsChartConfig: ChartConfig = {
+  not_started: { label: 'Not Started', color: 'hsl(var(--chart-1))' },
+  in_progress: { label: 'In Progress', color: 'hsl(var(--chart-2))' },
+  completed: { label: 'Completed', color: 'hsl(var(--chart-3))' },
+  cancelled: { label: 'Cancelled', color: 'hsl(var(--chart-4))' },
+}
+
+// Chart data - Tasks by Priority (for BarChart)
+export const mockTasksByPriority = [
+  { priority: 'low', count: 18, fill: 'var(--color-low)' },
+  { priority: 'medium', count: 34, fill: 'var(--color-medium)' },
+  { priority: 'high', count: 25, fill: 'var(--color-high)' },
+  { priority: 'urgent', count: 10, fill: 'var(--color-urgent)' },
+]
+
+export const tasksPriorityChartConfig: ChartConfig = {
+  low: { label: 'Low', color: 'hsl(var(--chart-1))' },
+  medium: { label: 'Medium', color: 'hsl(var(--chart-2))' },
+  high: { label: 'High', color: 'hsl(var(--chart-3))' },
+  urgent: { label: 'Urgent', color: 'hsl(var(--chart-4))' },
+}
+
+// Chart data - Tasks by Status (for horizontal BarChart)
+export const mockTasksByStatus = [
+  { status: 'not_started', count: 23, fill: 'var(--color-not_started)' },
+  { status: 'in_progress', count: 31, fill: 'var(--color-in_progress)' },
+  { status: 'awaiting_review', count: 8, fill: 'var(--color-awaiting_review)' },
+  { status: 'completed', count: 25, fill: 'var(--color-completed)' },
+]
+
+export const tasksStatusChartConfig: ChartConfig = {
+  not_started: { label: 'Not Started', color: 'hsl(var(--chart-1))' },
+  in_progress: { label: 'In Progress', color: 'hsl(var(--chart-2))' },
+  awaiting_review: { label: 'Awaiting Review', color: 'hsl(var(--chart-3))' },
+  completed: { label: 'Completed', color: 'hsl(var(--chart-4))' },
+}
+
+// Recent items lists
+export const mockRecentProjects = [
+  { id: 1, name: 'Project Alpha', status: 'in_progress', manager: 'John Doe', tasksCount: 12, completedTasks: 5, dueDate: '2025-02-15', isOverdue: false },
+  { id: 2, name: 'Website Redesign', status: 'in_progress', manager: 'Jane Smith', tasksCount: 8, completedTasks: 3, dueDate: '2025-01-30', isOverdue: true },
+  { id: 3, name: 'Mobile App v2', status: 'not_started', manager: null, tasksCount: 0, completedTasks: 0, dueDate: '2025-03-01', isOverdue: false },
+  { id: 4, name: 'API Integration', status: 'completed', manager: 'Bob Wilson', tasksCount: 15, completedTasks: 15, dueDate: '2025-01-15', isOverdue: false },
+  { id: 5, name: 'Data Migration', status: 'in_progress', manager: 'Alice Brown', tasksCount: 6, completedTasks: 2, dueDate: '2025-02-28', isOverdue: false },
+]
+
+export const mockRecentTasks = [
+  { id: 1, title: 'Implement user authentication', priority: 'high', status: 'completed', projectName: 'Project Alpha', assignedTo: 'John Doe', dueDate: '2025-01-20', isOverdue: false },
+  { id: 2, title: 'Design landing page', priority: 'medium', status: 'in_progress', projectName: 'Website Redesign', assignedTo: 'Jane Smith', dueDate: '2025-01-25', isOverdue: true },
+  { id: 3, title: 'Setup CI/CD pipeline', priority: 'high', status: 'awaiting_review', projectName: 'Project Alpha', assignedTo: 'Bob Wilson', dueDate: '2025-01-28', isOverdue: false },
+  { id: 4, title: 'Write API documentation', priority: 'low', status: 'not_started', projectName: 'API Integration', assignedTo: null, dueDate: '2025-02-10', isOverdue: false },
+  { id: 5, title: 'Database optimization', priority: 'urgent', status: 'in_progress', projectName: 'Data Migration', assignedTo: 'Alice Brown', dueDate: '2025-01-22', isOverdue: true },
+]
+```
+
+**Example Chart Component Usage:**
+```tsx
+// src/routes/_main/dashboard/-components/projects-status-chart.tsx
+import { PieChart, Pie, Cell } from 'recharts'
+import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from '@/components/ui/chart'
+import { mockProjectsByStatus, projectsChartConfig } from '@/lib/mock/dashboard-data'
+
+export function ProjectsStatusChart() {
+  return (
+    <ChartContainer config={projectsChartConfig} className="min-h-[200px]">
+      <PieChart>
+        <ChartTooltip content={<ChartTooltipContent hideLabel />} />
+        <Pie
+          data={mockProjectsByStatus}
+          dataKey="count"
+          nameKey="status"
+          innerRadius={60}
+          outerRadius={80}
+        />
+        <ChartLegend content={<ChartLegendContent nameKey="status" />} />
+      </PieChart>
+    </ChartContainer>
+  )
+}
+```
 
 ---
 

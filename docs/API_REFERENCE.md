@@ -981,6 +981,321 @@ Submit a task review.
 
 ---
 
+## Dashboard (Proposed)
+
+> **⚠️ PROPOSED ENDPOINTS:** These endpoints do not exist in the backend yet. This section documents the suggested API contract for dashboard functionality. Backend implementation is required before frontend integration.
+
+### Get Dashboard Statistics
+
+**GET** `/dashboard/stats`
+
+Get aggregated statistics for the admin dashboard overview.
+
+**Response:** `200 OK`
+```typescript
+{
+  data: {
+    users: {
+      total: number
+      active: number
+      deleted: number
+      by_role: {
+        admin: number
+        project_manager: number
+        team_lead: number
+        team_member: number
+      }
+    }
+    teams: {
+      total: number
+      with_lead: number
+      without_lead: number
+      active: number      // teams with active projects
+    }
+    projects: {
+      total: number
+      active: number      // not_started + in_progress
+      completed: number
+      cancelled: number
+      overdue: number     // past due_date and not completed
+      by_status: {
+        not_started: number
+        in_progress: number
+        awaiting_review: number
+        under_review: number
+        completed: number
+        approved: number
+        rejected: number
+        cancelled: number
+      }
+    }
+    tasks: {
+      total: number
+      pending: number     // not_started
+      in_progress: number
+      awaiting_review: number
+      completed: number
+      overdue: number     // past due_date and not completed
+      by_priority: {
+        low: number
+        medium: number
+        high: number
+        urgent: number
+      }
+      by_status: {
+        not_started: number
+        in_progress: number
+        awaiting_review: number
+        under_review: number
+        completed: number
+        approved: number
+        rejected: number
+        cancelled: number
+      }
+    }
+  }
+}
+```
+
+---
+
+### Get Recent Projects
+
+**GET** `/dashboard/recent-projects`
+
+Get recently created or updated projects for dashboard display.
+
+**Query Parameters:**
+```typescript
+{
+  limit?: number  // Default: 5, Max: 10
+}
+```
+
+**Response:** `200 OK`
+```typescript
+{
+  data: Array<{
+    id: number
+    name: string
+    status: ProgressStatus
+    manager?: {
+      id: number
+      name: string
+    }
+    teams_count: number
+    tasks_count: number
+    completed_tasks_count: number
+    start_date: string
+    due_date?: string
+    is_overdue: boolean
+    created_at: string
+    updated_at: string
+  }>
+}
+```
+
+---
+
+### Get Recent Tasks
+
+**GET** `/dashboard/recent-tasks`
+
+Get recently created or updated tasks for dashboard display.
+
+**Query Parameters:**
+```typescript
+{
+  limit?: number  // Default: 5, Max: 10
+}
+```
+
+**Response:** `200 OK`
+```typescript
+{
+  data: Array<{
+    id: number
+    title: string
+    status: ProgressStatus
+    priority: PriorityLevel
+    project: {
+      id: number
+      name: string
+    }
+    assigned_to?: {
+      id: number
+      name: string
+    }
+    due_date?: string
+    is_overdue: boolean
+    created_at: string
+    updated_at: string
+  }>
+}
+```
+
+---
+
+### Get Overdue Items
+
+**GET** `/dashboard/overdue`
+
+Get counts and lists of overdue projects and tasks.
+
+**Query Parameters:**
+```typescript
+{
+  include_items?: boolean  // Default: false, if true includes item lists
+  limit?: number           // Default: 5, Max: 10 (for item lists)
+}
+```
+
+**Response:** `200 OK`
+```typescript
+{
+  data: {
+    projects: {
+      count: number
+      items?: Array<{
+        id: number
+        name: string
+        due_date: string
+        days_overdue: number
+      }>
+    }
+    tasks: {
+      count: number
+      items?: Array<{
+        id: number
+        title: string
+        project_name: string
+        due_date: string
+        days_overdue: number
+        priority: PriorityLevel
+      }>
+    }
+  }
+}
+```
+
+---
+
+### Get Team Activity
+
+**GET** `/dashboard/team-activity`
+
+Get team activity metrics for dashboard display.
+
+**Query Parameters:**
+```typescript
+{
+  limit?: number  // Default: 5, Max: 10
+}
+```
+
+**Response:** `200 OK`
+```typescript
+{
+  data: Array<{
+    id: number
+    name: string
+    lead?: {
+      id: number
+      name: string
+    }
+    members_count: number
+    active_projects_count: number
+    active_tasks_count: number
+    completed_tasks_this_month: number
+  }>
+}
+```
+
+---
+
+### Get Activity Timeline
+
+**GET** `/dashboard/activity`
+
+Get recent activity across the system (optional, for activity feed widget).
+
+**Query Parameters:**
+```typescript
+{
+  limit?: number  // Default: 10, Max: 20
+}
+```
+
+**Response:** `200 OK`
+```typescript
+{
+  data: Array<{
+    id: number
+    type: 'project_created' | 'project_completed' | 'task_created' | 'task_completed' | 'task_assigned' | 'team_created' | 'user_created'
+    subject: {
+      id: number
+      type: 'project' | 'task' | 'team' | 'user'
+      name: string
+    }
+    actor?: {
+      id: number
+      name: string
+    }
+    created_at: string
+  }>
+}
+```
+
+---
+
+### Dashboard Data Types
+
+```typescript
+// Summary for dashboard cards
+interface DashboardStats {
+  users: UserStats
+  teams: TeamStats
+  projects: ProjectStats
+  tasks: TaskStats
+}
+
+interface UserStats {
+  total: number
+  active: number
+  deleted: number
+  by_role: Record<Role, number>
+}
+
+interface TeamStats {
+  total: number
+  with_lead: number
+  without_lead: number
+  active: number
+}
+
+interface ProjectStats {
+  total: number
+  active: number
+  completed: number
+  cancelled: number
+  overdue: number
+  by_status: Record<ProgressStatus, number>
+}
+
+interface TaskStats {
+  total: number
+  pending: number
+  in_progress: number
+  awaiting_review: number
+  completed: number
+  overdue: number
+  by_priority: Record<PriorityLevel, number>
+  by_status: Record<ProgressStatus, number>
+}
+```
+
+---
+
 ## Data Types
 
 ### User
