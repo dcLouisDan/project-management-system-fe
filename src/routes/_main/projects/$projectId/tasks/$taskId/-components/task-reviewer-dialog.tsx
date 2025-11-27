@@ -32,7 +32,8 @@ import {
 import { Textarea } from '@/components/ui/textarea'
 import { type ProgressStatus } from '@/lib/types/status'
 import { snakeCaseToTitleCase } from '@/lib/string-utils'
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
+import useFormReset from '@/hooks/use-form-reset'
 import IconRadioGroup, {
   type IconSelectItem,
 } from '@/components/icon-radio-group'
@@ -109,12 +110,7 @@ export default function TaskReviewerDialog({}: TaskReviewerDialogProps) {
     )
   }
 
-  useEffect(() => {
-    if (requestProgress == 'completed') {
-      form.reset()
-      setRequestProgress('started')
-    }
-  }, [requestProgress, setRequestProgress])
+  useFormReset({ form, requestProgress, setRequestProgress })
 
   if (task.status == 'awaiting_review') {
     return (

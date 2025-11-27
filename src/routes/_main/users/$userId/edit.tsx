@@ -25,8 +25,9 @@ import { Input } from '@/components/ui/input'
 import { PasswordInput } from '@/components/ui/password-input'
 import RolesToggleSelect from '@/components/roles-toggle-select'
 import { UserPen } from 'lucide-react'
-import { useCallback, useEffect } from 'react'
+import { useCallback } from 'react'
 import type { Role } from '@/lib/types/role'
+import useFormReset from '@/hooks/use-form-reset'
 import useManageUsers from '@/hooks/use-manage-users'
 import { ValidationErrorsAlert } from '@/components/validation-errors-alert'
 import UserAvatar from '@/components/user-avatar'
@@ -75,12 +76,7 @@ function RouteComponent() {
     },
   })
 
-  useEffect(() => {
-    if (requestProgress == 'completed') {
-      form.reset()
-      setRequestProgress('started')
-    }
-  }, [requestProgress, setRequestProgress])
+  useFormReset({ form, requestProgress, setRequestProgress })
 
   const handleGeneratePasswordClick = useCallback(() => {
     const newPassword = generatePassword({

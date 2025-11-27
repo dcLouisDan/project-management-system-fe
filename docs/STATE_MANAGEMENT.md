@@ -77,6 +77,53 @@ const { uiMode, setUiMode } = useAppStore((state) => ({
 - Theme preferences (future)
 - UI state that needs to persist across sessions
 
+### Role-Based Permissions
+
+The `uiMode` state drives role-based UI permissions. Use the `usePermissions` hook to access permissions in components.
+
+**Hook:** `src/hooks/use-permissions.ts`
+
+**Usage:**
+```tsx
+import { usePermissions } from '@/hooks/use-permissions'
+
+function UserActions({ user }: { user: User }) {
+  const { canEditUsers, canDeleteUsers, canEdit, isOwner } = usePermissions()
+  
+  // Simple permission check
+  const showEditButton = canEditUsers
+  
+  // Contextual permission check (ownership-aware)
+  const canEditThisUser = canEdit('user', { ownerId: user.id })
+  
+  return (
+    <>
+      {canEditThisUser && <EditButton />}
+      {canDeleteUsers && <DeleteButton />}
+    </>
+  )
+}
+```
+
+**Available Permission Flags:**
+
+| Category | Permissions |
+|----------|-------------|
+| Users | `canViewAllUsers`, `canViewTeamUsers`, `canCreateUsers`, `canEditUsers`, `canDeleteUsers` |
+| Teams | `canViewAllTeams`, `canViewAssignedTeams`, `canCreateTeams`, `canEditTeams`, `canDeleteTeams` |
+| Projects | `canViewAllProjects`, `canViewTeamProjects`, `canCreateProjects`, `canEditProjects`, `canDeleteProjects` |
+| Tasks | `canViewAllTasks`, `canViewProjectTasks`, `canViewAssignedTasks`, `canCreateTasks`, `canEditTasks`, `canDeleteTasks`, `canReassignTasks` |
+
+**Contextual Helpers:**
+- `canEdit(resourceType, context)` - Check edit permission with ownership context
+- `canDelete(resourceType, context)` - Check delete permission with ownership context
+- `canAccessNav(section)` - Check navigation section visibility
+- `isOwner(ownerId)` - Check if current user owns a resource
+- `isManager(managerId)` - Check if current user is the manager
+- `isAssignedTo(assignedToId)` - Check if current user is assigned to a task
+
+**See Also:** `docs/features/ROLE_UI_PERMISSIONS.md` for full permission matrix
+
 ### Persistence
 
 - Store is persisted to localStorage using Zustand's `persist` middleware

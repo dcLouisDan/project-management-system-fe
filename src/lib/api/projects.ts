@@ -19,6 +19,7 @@ import {
   type PaginatedResponse,
   type SoftDeleteStatus,
 } from '../types/response'
+import type { ProgressStatus } from '../types/status'
 
 export interface FetchProjectsParams {
   page?: number
@@ -29,6 +30,14 @@ export interface FetchProjectsParams {
   sort?: string
   direction?: SortDirection
   delete_status?: SoftDeleteStatus
+  manager_id?: number
+  start_date_from?: string
+  start_date_to?: string
+  due_date_from?: string
+  due_date_to?: string
+  member_id?: number
+  team_id?: number
+  status?: ProgressStatus
 }
 
 export class ProjectNotFoundError extends Error {}

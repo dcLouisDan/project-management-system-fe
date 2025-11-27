@@ -332,6 +332,8 @@ Get paginated list of teams.
   sort?: string
   direction?: 'asc' | 'desc'
   delete_status?: 'all' | 'deleted' | 'active'
+  project_id?: number
+  member_id?: number
 }
 ```
 
@@ -568,6 +570,14 @@ Get paginated list of projects.
   sort?: string
   direction?: 'asc' | 'desc'
   delete_status?: 'all' | 'deleted' | 'active'
+  manager_id?: number
+  start_date_from?: string
+  start_date_to?: string
+  due_date_from?: string
+  due_date_to?: string
+  member_id?: number
+  team_id?: number
+  status?: ProgressStatus
 }
 ```
 

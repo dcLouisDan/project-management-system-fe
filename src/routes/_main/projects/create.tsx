@@ -18,8 +18,9 @@ import {
 import z from 'zod'
 import { Input } from '@/components/ui/input'
 import { BadgePlus } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import useManageProjects from '@/hooks/use-manage-projects'
+import useFormReset from '@/hooks/use-form-reset'
 import { ValidationErrorsAlert } from '@/components/validation-errors-alert'
 import { Textarea } from '@/components/ui/textarea'
 import {
@@ -73,12 +74,7 @@ function RouteComponent() {
     }
   }
 
-  useEffect(() => {
-    if (requestProgress == 'completed') {
-      form.reset()
-      setRequestProgress('started')
-    }
-  }, [requestProgress, setRequestProgress])
+  useFormReset({ form, requestProgress, setRequestProgress })
 
   return (
     <MainInsetLayout

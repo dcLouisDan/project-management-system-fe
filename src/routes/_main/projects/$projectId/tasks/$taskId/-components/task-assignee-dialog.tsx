@@ -24,8 +24,9 @@ import {
 } from '@/components/ui/field'
 import { Textarea } from '@/components/ui/textarea'
 import { type ProgressStatus } from '@/lib/types/status'
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import TaskReviewDialog from './task-review-dialog'
+import useFormReset from '@/hooks/use-form-reset'
 import { ValidationErrorsAlert } from '@/components/validation-errors-alert'
 
 interface TaskAssigneeDialogProps {}
@@ -63,12 +64,7 @@ export default function TaskAssigneeDialog({}: TaskAssigneeDialogProps) {
     'completed',
   ]
 
-  useEffect(() => {
-    if (requestProgress == 'completed') {
-      form.reset()
-      setRequestProgress('started')
-    }
-  }, [requestProgress, setRequestProgress])
+  useFormReset({ form, requestProgress, setRequestProgress })
 
   if (!task || !task.assigned_to || task.assigned_to?.id !== user?.id) {
     return null

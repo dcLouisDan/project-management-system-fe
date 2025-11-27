@@ -9,8 +9,8 @@ import TeamNotFoundComponent from './-not-found-component'
 import useManageTeams from '@/hooks/use-manage-teams'
 import { showTeamQueryOptions } from '@/lib/query-options/show-team-query-options'
 import { useForm } from '@tanstack/react-form'
-import { useEffect } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
+import useFormReset from '@/hooks/use-form-reset'
 import {
   Field,
   FieldDescription,
@@ -67,12 +67,7 @@ function RouteComponent() {
     },
   })
 
-  useEffect(() => {
-    if (requestProgress == 'completed') {
-      form.reset()
-      setRequestProgress('started')
-    }
-  }, [requestProgress, setRequestProgress])
+  useFormReset({ form, requestProgress, setRequestProgress })
 
   return (
     <MainInsetLayout

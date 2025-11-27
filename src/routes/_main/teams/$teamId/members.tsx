@@ -26,6 +26,7 @@ import { Button, buttonVariants } from '@/components/ui/button'
 import { Crown, Save, User as UserIcon, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import type { User } from '@/lib/types/user'
+import useFormReset from '@/hooks/use-form-reset'
 import { Toggle } from '@/components/ui/toggle'
 import { snakeCaseToTitleCase } from '@/lib/string-utils'
 
@@ -107,12 +108,7 @@ function RouteComponent() {
     setUsersMap(prevUsersMap)
   }, [team])
 
-  useEffect(() => {
-    if (requestProgress == 'completed') {
-      form.reset()
-      setRequestProgress('started')
-    }
-  }, [requestProgress, setRequestProgress])
+  useFormReset({ form, requestProgress, setRequestProgress })
 
   return (
     <MainInsetLayout

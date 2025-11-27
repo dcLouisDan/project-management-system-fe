@@ -64,7 +64,7 @@ function RouteComponent() {
           </div>
           <Separator />
           {/* <p className="font-bold text-sm">Roles</p> */}
-          <div className="flex flex-col items-center w-full">
+          <div className="flex flex-col gap-2 items-center w-full">
             {user.roles.map((role) => {
               const displayName = RoleDisplayNames[role as Role]
               return <Badge key={role}>{displayName}</Badge>

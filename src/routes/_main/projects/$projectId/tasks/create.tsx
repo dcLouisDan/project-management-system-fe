@@ -9,8 +9,9 @@ import PageHeader from '@/components/page-header'
 import useManageTasks from '@/hooks/use-manage-tasks'
 import { DEFAULT_TASK_CREATE } from '@/lib/types/task'
 import { useForm } from '@tanstack/react-form'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import type { CheckedState } from '@radix-ui/react-checkbox'
+import useFormReset from '@/hooks/use-form-reset'
 import dayjs from 'dayjs'
 import { Card, CardContent } from '@/components/ui/card'
 import {
@@ -87,12 +88,7 @@ function RouteComponent() {
     }
   }
 
-  useEffect(() => {
-    if (requestProgress == 'completed') {
-      form.reset()
-      setRequestProgress('started')
-    }
-  }, [requestProgress, setRequestProgress])
+  useFormReset({ form, requestProgress, setRequestProgress })
   return (
     <MainInsetLayout
       breadcrumbItems={[

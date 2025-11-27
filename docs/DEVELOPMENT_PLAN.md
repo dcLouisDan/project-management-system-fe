@@ -457,15 +457,34 @@ Loading indicators are inconsistent across pages.
 
 ### 15. Extract Duplicated Form Reset Logic
 **Priority:** P2  
-**Status:** Incomplete
+**Status:** ✅ Complete
 
 **Description:**
-Form reset logic is duplicated across create/edit pages.
+Form reset logic was duplicated across create/edit pages. Created a custom hook to handle form reset on successful submissions.
+
+**Files Created:**
+- `src/hooks/use-form-reset.ts` - Custom hook that handles form reset logic after successful form submissions
+
+**Files Updated (14 files):**
+- `src/routes/_main/projects/create.tsx`
+- `src/routes/_main/projects/$projectId/edit.tsx`
+- `src/routes/_main/projects/$projectId/teams.tsx`
+- `src/routes/_main/projects/$projectId/tasks/create.tsx`
+- `src/routes/_main/projects/$projectId/tasks/$taskId/edit.tsx`
+- `src/routes/_main/projects/$projectId/tasks/$taskId/-components/task-assignee-dialog.tsx`
+- `src/routes/_main/projects/$projectId/tasks/$taskId/-components/task-reviewer-dialog.tsx`
+- `src/routes/_main/projects/$projectId/tasks/$taskId/-components/assign-to-user-dialog.tsx`
+- `src/routes/_main/projects/$projectId/-components/assign-manager-dialog.tsx`
+- `src/routes/_main/teams/create.tsx`
+- `src/routes/_main/teams/$teamId/edit.tsx`
+- `src/routes/_main/teams/$teamId/members.tsx`
+- `src/routes/_main/users/create.tsx`
+- `src/routes/_main/users/$userId/edit.tsx`
 
 **Action Items:**
-- [ ] Create custom hook for form reset logic
-- [ ] Extract common form patterns
-- [ ] Reduce code duplication
+- [x] Create custom hook for form reset logic
+- [x] Extract common form patterns
+- [x] Reduce code duplication
 
 ---
 
@@ -485,6 +504,140 @@ Component file naming is inconsistent. `Header.tsx` uses PascalCase while all ot
 - [ ] If needed, rename to `header.tsx` to match convention
 - [ ] Update all imports if renamed
 - [ ] Verify all component files follow kebab-case convention
+
+---
+
+### 23. Implement Role-Based UI Permissions
+**Priority:** P1  
+**Status:** Not Started
+
+**Description:**
+Implement role-based UI permissions as defined in `docs/features/ROLE_UI_PERMISSIONS.md`. This feature controls what UI elements, routes, and actions are visible/accessible based on the user's role (Admin, Project Manager, Team Lead, Team Member).
+
+**Files to Create:**
+- `src/lib/permissions.ts` - Permission utilities and role-based access checks
+- `src/hooks/use-permissions.ts` - Hook for accessing permissions in components
+
+**Files to Update:**
+- `src/lib/nav-main-links.ts` - Add role-based visibility to navigation items
+- `src/routes/_main/route.tsx` - Add role-based route gating
+- Various route components - Add permission checks to action buttons
+
+**Implementation Details:**
+
+*Phase 1: Permission Utilities*
+- [x] Create `src/lib/permissions.ts` with permission maps for each role
+- [x] Define permission types: `canViewUsers`, `canCreateUsers`, `canEditUsers`, `canDeleteUsers`, etc.
+- [x] Create helper functions to check permissions based on `uiMode` from Zustand store
+- [x] Support ownership-based permissions (e.g., "can edit own tasks")
+
+*Phase 2: usePermissions Hook*
+- [x] Create `src/hooks/use-permissions.ts` hook
+- [x] Return permission flags based on current `uiMode`
+- [x] Support context-aware permissions (e.g., pass `ownerId` to check ownership)
+
+*Phase 3: Navigation Visibility*
+- [x] Update `src/lib/nav-main-links.ts` to support `allowedRoles` property
+- [x] Create `getNavLinksForRole()` function to filter navigation items
+- [x] Update `NavMain` component to use filtered navigation
+
+*Phase 4: Route-Level Gating*
+- [ ] Add `beforeLoad` checks in route files for role-based access
+- [ ] Use `uiMode` from Zustand store to validate access
+- [ ] Redirect unauthorized users to appropriate fallback route
+
+*Phase 5: Action Button Controls*
+- [ ] Update detail pages to show/hide Edit, Delete, Assign buttons based on role
+- [ ] Update list pages to show/hide Create buttons based on role
+- [ ] Add permission checks to mutation actions
+
+**Permission Matrix (from ROLE_UI_PERMISSIONS.md):**
+
+| Feature | Admin | Project Manager | Team Lead | Team Member |
+|---------|-------|-----------------|-----------|-------------|
+| View All Users | ✅ | ✅ (read-only) | ❌ (team only) | ❌ (self only) |
+| Create Users | ✅ | ❌ | ❌ | ❌ |
+| Edit Users | ✅ | ❌ | ❌ | ❌ |
+| Delete Users | ✅ | ❌ | ❌ | ❌ |
+| View All Teams | ✅ | ✅ | ❌ (assigned only) | ❌ (assigned only) |
+| Create Teams | ✅ | ❌ | ❌ | ❌ |
+| Edit Teams | ✅ | ❌ (managed only) | ❌ | ❌ |
+| Delete Teams | ✅ | ❌ | ❌ | ❌ |
+| View All Projects | ✅ | ✅ | ❌ (team's only) | ❌ (team's only) |
+| Create Projects | ✅ | ✅ | ❌ | ❌ |
+| Edit Projects | ✅ | ✅ (own only) | ❌ | ❌ |
+| Delete Projects | ✅ | ❌ | ❌ | ❌ |
+| View All Tasks | ✅ | ✅ (project scope) | ❌ (team's only) | ❌ (assigned only) |
+| Create Tasks | ✅ | ✅ (project scope) | ✅ (project scope) | ⚙️ (if allowed) |
+| Edit Tasks | ✅ | ✅ (project scope) | ✅ (team's/own) | ✅ (own only) |
+| Delete Tasks | ✅ | ⚙️ (own only) | ❌ | ❌ |
+| Reassign Tasks | ✅ | ✅ (project scope) | ✅ (team scope) | ❌ |
+
+**Data Filtering Using Existing API Params:**
+
+The existing API supports filtering data based on role context:
+
+```typescript
+// Users API - GET /users
+{
+  team_id?: number      // Filter by team (for Team Lead view)
+  project_id?: number   // Filter by project
+}
+
+// Tasks API - GET /tasks
+{
+  project_id?: number      // Filter by project (for PM view)
+  assigned_to_id?: number  // Filter by assignee (for Team Member view)
+  assigned_by_id?: number  // Filter by assigner
+}
+
+// Projects API - GET /projects
+// (Backend handles filtering based on user's teams)
+
+// Teams API - GET /teams
+// (Backend handles filtering based on user membership)
+```
+
+**Usage Example:**
+
+```tsx
+// In component
+import { usePermissions } from '@/hooks/use-permissions'
+
+function UserDetailPage({ user }: { user: User }) {
+  const { canEditUsers, canDeleteUsers } = usePermissions()
+  
+  return (
+    <div>
+      <h1>{user.name}</h1>
+      {canEditUsers && <Button>Edit User</Button>}
+      {canDeleteUsers && <Button variant="destructive">Delete User</Button>}
+    </div>
+  )
+}
+
+// In navigation
+import { getNavLinksForRole } from '@/lib/nav-main-links'
+
+function AppSidebar() {
+  const uiMode = useAppStore((state) => state.uiMode)
+  const navLinks = getNavLinksForRole(uiMode)
+  
+  return <NavMain items={navLinks} />
+}
+```
+
+**Action Items:**
+- [x] Create `src/lib/permissions.ts` with permission definitions
+- [x] Create `src/hooks/use-permissions.ts` hook
+- [x] Update `src/lib/nav-main-links.ts` with role-based filtering
+- [ ] Update `NavMain` component to use role-filtered navigation
+- [ ] Add permission checks to user management routes
+- [ ] Add permission checks to team management routes
+- [ ] Add permission checks to project management routes
+- [ ] Add permission checks to task management routes
+- [ ] Add route-level gating in `beforeLoad` hooks
+- [ ] Test all permission combinations
 
 ---
 
@@ -642,9 +795,9 @@ Add end-to-end tests for critical user flows.
 
 ## Summary
 
-**Total Issues:** 22+  
+**Total Issues:** 23+  
 **Critical (P0):** 3  
-**High (P1):** 6  
+**High (P1):** 7 (includes Role-Based UI Permissions)  
 **Medium (P2):** 6  
 **Low (P3):** 7
 
@@ -656,9 +809,15 @@ Add end-to-end tests for critical user flows.
 
 **Recommended Order:**
 1. **P0 - Critical** - Fix console.log, error handling, auth redirect (blocks production)
-2. **P1 - High** - Complete dashboard, remove demo code, fix inconsistencies (core features)
+2. **P1 - High** - Complete dashboard, remove demo code, fix inconsistencies, **implement role-based permissions** (core features)
 3. **P2 - Medium** - Standardize patterns, improve type safety (code quality)
 4. **P3 - Low** - Add tests, accessibility, optimizations (polish)
 
 **Note:** Focus on P0 and P1 items first as they impact core functionality and user experience.
+
+**Role-Based UI Permissions Status:**
+- ✅ Permission utilities created (`src/lib/permissions.ts`)
+- ✅ usePermissions hook created (`src/hooks/use-permissions.ts`)
+- ✅ Navigation filtering implemented (`src/lib/nav-main-links.ts`)
+- ⏳ Component integration pending (action buttons, route gating)
 

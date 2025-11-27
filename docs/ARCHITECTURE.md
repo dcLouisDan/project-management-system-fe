@@ -91,6 +91,13 @@ TanStack Router uses file-based routing where file structure maps directly to UR
 - Throws `redirect()` to `/auth/login` if not authenticated
 - All routes under `_main/` are protected
 
+**Authorization (Role-Based):**
+- `uiMode` in Zustand store determines current user's role
+- Use `usePermissions()` hook for permission checks in components
+- Navigation items filtered by role via `getNavLinksForRole()`
+- Action buttons conditionally rendered based on permissions
+- See `docs/features/ROLE_UI_PERMISSIONS.md` for permission matrix
+
 **Error Handling:**
 - `onError` handlers catch errors from loaders or components
 - Use `notFound()` to trigger 404 for missing resources

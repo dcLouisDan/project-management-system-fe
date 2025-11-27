@@ -16,6 +16,7 @@ import { Button, buttonVariants } from '@/components/ui/button'
 import { Save, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import type { Team } from '@/lib/types/team'
+import useFormReset from '@/hooks/use-form-reset'
 import ProjectNotFoundComponent from './-not-found-component'
 import { DEFAULT_PROJECT_SYNC_TEAMS } from '@/lib/types/project'
 import ProjectTeamsSelectTable from './-components/project-team-select-table'
@@ -92,12 +93,7 @@ function RouteComponent() {
     setTeamsMap(prevTeamsMap)
   }, [project])
 
-  useEffect(() => {
-    if (requestProgress == 'completed') {
-      form.reset()
-      setRequestProgress('started')
-    }
-  }, [requestProgress, setRequestProgress])
+  useFormReset({ form, requestProgress, setRequestProgress })
 
   return (
     <MainInsetLayout

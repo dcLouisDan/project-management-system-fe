@@ -21,6 +21,7 @@ import { useForm } from '@tanstack/react-form'
 import { useQuery } from '@tanstack/react-query'
 import { Check, Save } from 'lucide-react'
 import { useEffect, useState, type ReactNode } from 'react'
+import useFormReset from '@/hooks/use-form-reset'
 
 interface AssignManagerDialogProps {
   project: Project
@@ -59,11 +60,7 @@ export default function AssignManagerDialog({
       setUserData(project.manager)
     }
   }, [project])
-  useEffect(() => {
-    if (requestProgress == 'completed') {
-      setRequestProgress('started')
-    }
-  }, [requestProgress, setRequestProgress])
+  useFormReset({ requestProgress, setRequestProgress })
   return (
     <Dialog>
       <DialogTrigger asChild>{triggerComponent}</DialogTrigger>

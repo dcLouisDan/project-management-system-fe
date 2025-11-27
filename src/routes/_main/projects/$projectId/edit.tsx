@@ -9,8 +9,9 @@ import ProjectNotFoundComponent from './-not-found-component'
 import useManageProjects from '@/hooks/use-manage-projects'
 import { showProjectQueryOptions } from '@/lib/query-options/show-project-query-options'
 import { useForm } from '@tanstack/react-form'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
+import useFormReset from '@/hooks/use-form-reset'
 import {
   Field,
   FieldDescription,
@@ -98,12 +99,7 @@ function RouteComponent() {
     }
   }
 
-  useEffect(() => {
-    if (requestProgress == 'completed') {
-      form.reset()
-      setRequestProgress('started')
-    }
-  }, [requestProgress, setRequestProgress])
+  useFormReset({ form, requestProgress, setRequestProgress })
 
   return (
     <MainInsetLayout
