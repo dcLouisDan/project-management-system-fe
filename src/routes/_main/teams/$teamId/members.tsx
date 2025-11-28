@@ -98,6 +98,7 @@ function RouteComponent() {
     if (team.lead) {
       prevMembersValue.push({ user_id: team.lead.id, role: 'team lead' })
       prevUsersMap[team.lead.id] = team.lead
+      setHasLead(true)
     }
     team.members.forEach((member) => {
       prevMembersValue.push({ user_id: member.id, role: 'team member' })

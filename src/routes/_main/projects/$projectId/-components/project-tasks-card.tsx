@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import type { FetchTasksParams } from '@/lib/api/tasks'
-import { tasksQueryOptions } from '@/lib/query-options/project-tasks-query-options'
+import { tasksQueryOptions } from '@/lib/query-options/tasks-query-options'
 import { useQuery } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
 import { Plus } from 'lucide-react'

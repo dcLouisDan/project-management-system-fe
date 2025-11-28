@@ -33,6 +33,7 @@ export interface FetchTeamsParams {
   delete_status?: SoftDeleteStatus
   project_id?: number
   member_id?: number
+  lead_id?: number
 }
 
 export class TeamNotFoundError extends Error {}

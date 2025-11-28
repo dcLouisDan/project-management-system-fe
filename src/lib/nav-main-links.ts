@@ -1,4 +1,13 @@
-import { ClipboardList, LayoutDashboard, Settings2, Users } from 'lucide-react'
+import {
+  ClipboardCheck,
+  ClipboardList,
+  FolderKanban,
+  LayoutDashboard,
+  ListTodo,
+  Settings2,
+  Users,
+  UsersRound,
+} from 'lucide-react'
 import type { SidebarNavItem, SidebarNavSubItem } from './types/ui'
 import type { Role } from './types/role'
 
@@ -38,8 +47,35 @@ export const NAV_MAIN_LINKS: SidebarNavItem[] = [
       {
         title: 'Projects List',
         url: '/projects',
+    allowedRoles: ['admin', 'project manager'],
       },
     ],
+  },
+  {
+    title: 'Tasks',
+    url: '/tasks',
+    icon: ListTodo,
+    allowedRoles: ['admin'],
+  },
+  {
+    title: 'My Tasks',
+    url: '/my-tasks',
+    icon: ClipboardCheck,
+    // All roles can access their own tasks
+  },
+  {
+    title: 'My Projects',
+    url: '/my-projects',
+    icon: FolderKanban,
+    // Only project managers can access their managed projects
+    allowedRoles: ['project manager'],
+  },
+  {
+    title: 'My Teams',
+    url: '/my-teams',
+    icon: UsersRound,
+    // Only team leads can access their led teams
+    allowedRoles: ['team lead'],
   },
   {
     title: 'Users and Teams',
@@ -54,7 +90,6 @@ export const NAV_MAIN_LINKS: SidebarNavItem[] = [
         // Project Manager: read-only access
         // Team Lead: team members only
         // Team Member: no access (redirected to profile)
-        allowedRoles: ['admin', 'project manager'],
       },
       {
         title: 'Teams',
@@ -64,6 +99,7 @@ export const NAV_MAIN_LINKS: SidebarNavItem[] = [
         // We show the link to all but data is filtered by backend
       },
     ],
+    allowedRoles: ['admin', 'project manager'],
   },
   {
     title: 'Settings',

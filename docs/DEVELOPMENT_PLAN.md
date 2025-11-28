@@ -547,9 +547,10 @@ Implement role-based UI permissions as defined in `docs/features/ROLE_UI_PERMISS
 - [ ] Redirect unauthorized users to appropriate fallback route
 
 *Phase 5: Action Button Controls*
-- [ ] Update detail pages to show/hide Edit, Delete, Assign buttons based on role
-- [ ] Update list pages to show/hide Create buttons based on role
-- [ ] Add permission checks to mutation actions
+- [x] Update detail pages to show/hide Edit, Delete, Assign buttons based on role
+- [x] Update list pages to show/hide Create buttons based on role
+- [x] Hide Deleted tabs for users without delete permissions
+- [ ] Add permission checks to mutation actions (backend validation)
 
 **Permission Matrix (from ROLE_UI_PERMISSIONS.md):**
 
@@ -631,13 +632,173 @@ function AppSidebar() {
 - [x] Create `src/lib/permissions.ts` with permission definitions
 - [x] Create `src/hooks/use-permissions.ts` hook
 - [x] Update `src/lib/nav-main-links.ts` with role-based filtering
-- [ ] Update `NavMain` component to use role-filtered navigation
-- [ ] Add permission checks to user management routes
-- [ ] Add permission checks to team management routes
-- [ ] Add permission checks to project management routes
-- [ ] Add permission checks to task management routes
+- [x] Update `AppSidebar` component to use role-filtered navigation
+- [x] Add permission checks to user management routes
+- [x] Add permission checks to team management routes
+- [x] Add permission checks to project management routes
+- [x] Add permission checks to task management routes
 - [ ] Add route-level gating in `beforeLoad` hooks
 - [ ] Test all permission combinations
+
+---
+
+### 24. Create Global Tasks Index Page
+**Priority:** P1  
+**Status:** ✅ Complete
+
+**Description:**
+Create a dedicated global tasks index page (`/tasks`) that serves as the system-wide task list. Similar to the users index page, this page will display all tasks across all projects with filtering, sorting, and pagination capabilities.
+
+**Files to Create:**
+- `src/routes/_main/tasks/index.tsx` - Main tasks list page with tabs for Active/Deleted
+- `src/routes/_main/tasks/-table/columns.tsx` - Table columns for active tasks
+- `src/routes/_main/tasks/-table/columns-deleted.tsx` - Table columns for deleted tasks
+- `src/routes/_main/tasks/-table/task-table-filters.tsx` - Filters component using URL search params
+- `src/lib/query-options/tasks-query-options.ts` - Rename/move from `project-tasks-query-options.ts`
+
+**Files to Update:**
+- `src/lib/nav-main-links.ts` - Add Tasks link to navigation (if not present)
+
+**Implementation Details:**
+
+*Phase 1: Query Options Setup*
+- [x] Verify existing `tasksQueryOptions` in `project-tasks-query-options.ts` can be reused
+- [x] Rename file to `tasks-query-options.ts` for consistency with other query options
+
+*Phase 2: Route Structure*
+- [x] Create `src/routes/_main/tasks/index.tsx` with:
+  - Tabs for "Active" and "Deleted" tasks
+  - Search params for filtering (page, per_page, title, status, priority, sort, direction, delete_status, tab)
+  - DataTable with pagination
+  - PageHeader with title and description (no create button as per requirements)
+- [x] Create `-table/columns.tsx` with columns: ID, Title (linked), Project, Priority, Status, Assigned To, Due Date
+- [x] Create `-table/columns-deleted.tsx` with columns: ID, Title (linked), Project, Priority, Status, Deleted At
+- [x] Create `-table/task-table-filters.tsx` with:
+  - Title search (debounced input)
+  - Status filter (multi-select popover)
+  - Priority filter (multi-select popover)
+  - Sort popover (sortable fields from Task type)
+
+*Phase 3: Navigation Integration*
+- [x] Add Tasks link to sidebar navigation in `nav-main-links.ts`
+
+**Table Columns:**
+
+| Column | Active | Deleted |
+|--------|--------|---------|
+| ID | ✅ | ✅ |
+| Title | ✅ (linked to task detail) | ✅ (linked to task detail) |
+| Project | ✅ (linked to project) | ✅ |
+| Priority | ✅ (badge with color) | ✅ |
+| Status | ✅ (formatted) | ✅ |
+| Assigned To | ✅ (linked to user) | ❌ |
+| Due Date | ✅ | ❌ |
+| Deleted At | ❌ | ✅ |
+
+**Search Params Interface:**
+```typescript
+interface TasksIndexSearchParams {
+  page?: number
+  per_page?: number
+  title?: string
+  status?: string
+  priority?: string
+  sort?: string
+  direction?: SortDirection
+  tab?: 'active' | 'deleted'
+}
+```
+
+**Action Items:**
+- [x] Rename `project-tasks-query-options.ts` to `tasks-query-options.ts`
+- [x] Create tasks route folder with index.tsx
+- [x] Create table columns for active and deleted tasks
+- [x] Create task table filters component
+- [x] Add navigation link for tasks
+
+---
+
+### 25. Create My Tasks Page
+**Priority:** P1  
+**Status:** ✅ Complete
+
+**Description:**
+Create a "My Tasks" page (`/my-tasks`) that shows tasks related to the current authenticated user. This page has two tabs:
+1. **Assigned to Me** - Tasks where `assigned_to_id` matches the current user's ID
+2. **Assigned by Me** - Tasks where `assigned_by_id` matches the current user's ID
+
+**Files Created:**
+- `src/routes/_main/my-tasks/index.tsx` - My Tasks page with tabs
+- `src/routes/_main/my-tasks/-table/columns.tsx` - Reusable table columns (same as tasks)
+- `src/routes/_main/my-tasks/-table/task-table-filters.tsx` - Filters component
+
+**Files Updated:**
+- `src/lib/nav-main-links.ts` - Add My Tasks link to navigation
+
+**Implementation Details:**
+
+*Phase 1: Route Structure*
+- [x] Create `src/routes/_main/my-tasks/index.tsx` with:
+  - Tab 1: "Assigned to Me" (filters by `assigned_to_id`)
+  - Tab 2: "Assigned by Me" (filters by `assigned_by_id`)
+  - Uses current user ID from Zustand store
+  - DataTable with pagination
+  - PageHeader with title and description
+- [x] Create `-table/columns.tsx` with columns: ID, Title (linked), Project, Priority, Status, Assigned To, Due Date
+- [x] Create `-table/task-table-filters.tsx` with filters
+
+*Phase 2: Navigation Integration*
+- [x] Add My Tasks link to sidebar navigation in `nav-main-links.ts`
+
+**Action Items:**
+- [x] Create my-tasks route folder with index.tsx
+- [x] Create table columns component
+- [x] Create task table filters component
+- [x] Add navigation link for My Tasks
+
+---
+
+### 26. Create My Teams Page (Team Lead)
+**Priority:** P1  
+**Status:** ✅ Complete
+
+**Description:**
+Create a "My Teams" page (`/my-teams`) available only for the Team Lead role. Displays teams where `lead_id` matches the current user's ID.
+
+**Files Created:**
+- `src/routes/_main/my-teams/index.tsx` - My Teams page
+- `src/routes/_main/my-teams/-table/columns.tsx` - Table columns
+- `src/routes/_main/my-teams/-table/team-table-filters.tsx` - Filters component
+
+**Files Updated:**
+- `src/lib/nav-main-links.ts` - Add My Teams link (team lead only)
+
+**Implementation:**
+- [x] Create `src/routes/_main/my-teams/index.tsx` with `lead_id` filter
+- [x] Create table columns and filters (reuse existing patterns)
+- [x] Add navigation link with `allowedRoles: ['team lead']`
+
+---
+
+### 27. Create My Projects Page (Project Manager)
+**Priority:** P1  
+**Status:** ✅ Complete
+
+**Description:**
+Create a "My Projects" page (`/my-projects`) available only for the Project Manager role. Displays projects where `manager_id` matches the current user's ID.
+
+**Files Created:**
+- `src/routes/_main/my-projects/index.tsx` - My Projects page
+- `src/routes/_main/my-projects/-table/columns.tsx` - Table columns
+- `src/routes/_main/my-projects/-table/project-table-filters.tsx` - Filters component
+
+**Files Updated:**
+- `src/lib/nav-main-links.ts` - Add My Projects link (project manager only)
+
+**Implementation:**
+- [x] Create `src/routes/_main/my-projects/index.tsx` with `manager_id` filter
+- [x] Create table columns and filters (reuse existing patterns)
+- [x] Add navigation link with `allowedRoles: ['project manager']`
 
 ---
 
@@ -819,5 +980,8 @@ Add end-to-end tests for critical user flows.
 - ✅ Permission utilities created (`src/lib/permissions.ts`)
 - ✅ usePermissions hook created (`src/hooks/use-permissions.ts`)
 - ✅ Navigation filtering implemented (`src/lib/nav-main-links.ts`)
-- ⏳ Component integration pending (action buttons, route gating)
+- ✅ AppSidebar updated to use role-filtered navigation
+- ✅ Action buttons conditionally rendered on all pages
+- ✅ Deleted tabs hidden for non-admin users
+- ⏳ Route-level gating in `beforeLoad` hooks (pending)
 

@@ -1,36 +1,39 @@
-import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import MainInsetLayout from '../-main-inset-layout'
-import { projectsQueryOptions } from '@/lib/query-options/projects-query-options'
+import { tasksQueryOptions } from '@/lib/query-options/tasks-query-options'
 import { useQuery } from '@tanstack/react-query'
 import { DataTable } from '@/components/data-table'
 import { columns } from './-table/columns'
 import PaginationBar from '@/components/pagination-bar'
+import TaskTableFilters from './-table/task-table-filters'
 import type { SortDirection } from '@/lib/types/ui'
-import { buttonVariants } from '@/components/ui/button'
+import { ListTodo, Trash2 } from 'lucide-react'
 import PageHeader from '@/components/page-header'
 import { APP_NAME } from '@/lib/constants'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { columnsDeleted } from './-table/columns-deleted'
-import ProjectsTableFilters from './-table/project-table-filters'
+import type { ProgressStatus } from '@/lib/types/status'
+import type { PriorityLevel } from '@/lib/types/priority'
 import { usePermissions } from '@/hooks/use-permissions'
-import { ClipboardList, Trash2 } from 'lucide-react'
 
-const PAGE_TITLE = 'Manage Projects'
-const PAGE_DESCRIPTION = 'Create, view, update or delete project records'
+const PAGE_TITLE = 'Manage Tasks'
+const PAGE_DESCRIPTION = 'View and manage all tasks across projects'
 
 type TabValues = 'active' | 'deleted'
-export interface ProjectsIndexSearchParams {
+export interface TasksIndexSearchParams {
   page?: number
   per_page?: number
-  name?: string
+  title?: string
+  status?: ProgressStatus
+  priority?: PriorityLevel
   sort?: string
   direction?: SortDirection
   tab?: TabValues
 }
 
-export const Route = createFileRoute('/_main/projects/')({
+export const Route = createFileRoute('/_main/tasks/')({
   component: RouteComponent,
-  validateSearch: (search) => search as ProjectsIndexSearchParams,
+  validateSearch: (search) => search as TasksIndexSearchParams,
   head: () => ({
     meta: [
       {
@@ -47,19 +50,11 @@ export const Route = createFileRoute('/_main/projects/')({
 function RouteComponent() {
   const { tab } = Route.useSearch()
   const navigate = useNavigate()
-  const { canCreateProjects, canDeleteProjects } = usePermissions()
+  const { canDeleteTasks } = usePermissions()
 
   return (
-    <MainInsetLayout
-      breadcrumbItems={[{ label: 'Projects', href: '/projects' }]}
-    >
-      <PageHeader title={PAGE_TITLE} description={PAGE_DESCRIPTION}>
-        {canCreateProjects && (
-          <Link to="/projects/create" className={buttonVariants()}>
-            Add New Project
-          </Link>
-        )}
-      </PageHeader>
+    <MainInsetLayout breadcrumbItems={[{ label: 'Tasks', href: '/tasks' }]}>
+      <PageHeader title={PAGE_TITLE} description={PAGE_DESCRIPTION} />
       <Tabs
         defaultValue="active"
         value={tab}
@@ -70,20 +65,21 @@ function RouteComponent() {
       >
         <TabsList>
           <TabsTrigger value="active">
-            <ClipboardList /> Active
+            <ListTodo /> Active
           </TabsTrigger>
-          {canDeleteProjects && (
+          {canDeleteTasks && (
             <TabsTrigger value="deleted">
-              <Trash2 /> Deleted
+              <Trash2 />
+              Deleted
             </TabsTrigger>
           )}
         </TabsList>
         <TabsContent value="active">
-          <ActiveProjects />
+          <ActiveTasks />
         </TabsContent>
-        {canDeleteProjects && (
+        {canDeleteTasks && (
           <TabsContent value="deleted">
-            <DeletedProjects />
+            <DeletedTasks />
           </TabsContent>
         )}
       </Tabs>
@@ -91,13 +87,16 @@ function RouteComponent() {
   )
 }
 
-function DeletedProjects() {
-  const { page, per_page, name, sort, direction } = Route.useSearch()
+function DeletedTasks() {
+  const { page, per_page, title, status, priority, sort, direction } =
+    Route.useSearch()
   const { data, isFetching } = useQuery(
-    projectsQueryOptions({
+    tasksQueryOptions({
       page: page ?? 1,
       per_page: per_page ?? 10,
-      name: name ?? '',
+      title: title ?? '',
+      status: status,
+      priority: priority,
       sort: sort,
       direction: direction,
       delete_status: 'deleted',
@@ -105,7 +104,7 @@ function DeletedProjects() {
   )
   return (
     <>
-      <ProjectsTableFilters />
+      <TaskTableFilters />
       <DataTable
         columns={columnsDeleted}
         data={data?.data || []}
@@ -118,21 +117,23 @@ function DeletedProjects() {
   )
 }
 
-function ActiveProjects() {
-  const { page, per_page, name, sort, direction } = Route.useSearch()
+function ActiveTasks() {
+  const { page, per_page, title, status, priority, sort, direction } =
+    Route.useSearch()
   const { data, isFetching } = useQuery(
-    projectsQueryOptions({
+    tasksQueryOptions({
       page: page ?? 1,
       per_page: per_page ?? 10,
-      name: name ?? '',
-
+      title: title ?? '',
+      status: status,
+      priority: priority,
       sort: sort,
       direction: direction,
     }),
   )
   return (
     <>
-      <ProjectsTableFilters />
+      <TaskTableFilters />
       <DataTable
         columns={columns}
         data={data?.data || []}

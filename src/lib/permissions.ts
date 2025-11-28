@@ -158,7 +158,7 @@ const PROJECT_MANAGER_PERMISSIONS: Permissions = {
   canEditOwnTasks: true,
   canDeleteTasks: false,
   canDeleteOwnTasks: true,
-  canReassignTasks: false,
+  canReassignTasks: true,
   canReassignProjectTasks: true,
   canReassignTeamTasks: true,
 }
@@ -204,7 +204,7 @@ const TEAM_LEAD_PERMISSIONS: Permissions = {
   canEditOwnTasks: true,
   canDeleteTasks: false,
   canDeleteOwnTasks: false,
-  canReassignTasks: false,
+  canReassignTasks: true,
   canReassignProjectTasks: false,
   canReassignTeamTasks: true,
 }

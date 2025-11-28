@@ -15,6 +15,7 @@ import UserNotFoundComponent from './-not-found-component'
 import { ConfirmationDialog } from '@/components/confirmation-dialog'
 import useManageUsers from '@/hooks/use-manage-users'
 import { RestoreAlert } from '@/components/restore-alert'
+import { usePermissions } from '@/hooks/use-permissions'
 
 const PAGE_TITLE = 'User Details'
 const PAGE_DESCRIPTION = 'Show user information and other related data'
@@ -46,6 +47,11 @@ function RouteComponent() {
   const userId = Route.useParams().userId
   const { destroy, restore } = useManageUsers()
   const { data: user } = useSuspenseQuery(showUserQueryOptions(Number(userId)))
+  const { canEditUsers, canDeleteUsers } = usePermissions()
+
+  // Check if any actions are available
+  const hasActions = canEditUsers || canDeleteUsers
+
   return (
     <MainInsetLayout
       breadcrumbItems={[
@@ -53,7 +59,7 @@ function RouteComponent() {
         { label: user.name, href: `/users/${user.id}` },
       ]}
     >
-      {user.deleted_at && <RestoreAlert />}
+      {user.deleted_at && canDeleteUsers && <RestoreAlert />}
       <PageHeader title={PAGE_TITLE} description={PAGE_DESCRIPTION} />
       <div className="flex gap-4 items-center">
         <div className="flex flex-col text-center border rounded-lg p-4 gap-2 w-64">
@@ -70,50 +76,60 @@ function RouteComponent() {
               return <Badge key={role}>{displayName}</Badge>
             })}
           </div>
-          <Separator />
-          {user.deleted_at ? (
-            <ConfirmationDialog
-              description="This user will be reactivated and become accessible throughout the system again."
-              triggerComponent={
-                <Button variant="default">
-                  <ArchiveRestore />
-                  Restore
-                </Button>
-              }
-              submitButtonVariant={{ variant: 'default' }}
-              submitButtonContent={
-                <>
-                  <ArchiveRestore /> Restore User
-                </>
-              }
-              onSubmit={async () => await restore(user.id)}
-            />
-          ) : (
+          {hasActions && (
             <>
-              <Link
-                to="/users/$userId/edit"
-                params={{ userId }}
-                className={buttonVariants({ variant: 'secondary' })}
-              >
-                <Edit />
-                Edit
-              </Link>
-              <ConfirmationDialog
-                description="This will mark the user as deleted. You can restore this user later if you change your mind."
-                triggerComponent={
-                  <Button variant="outline">
-                    <Trash2 />
-                    Delete
-                  </Button>
-                }
-                submitButtonVariant={{ variant: 'destructive' }}
-                submitButtonContent={
-                  <>
-                    <Trash2 /> Delete User
-                  </>
-                }
-                onSubmit={async () => await destroy(user.id)}
-              />
+              <Separator />
+              {user.deleted_at ? (
+                canDeleteUsers && (
+                  <ConfirmationDialog
+                    description="This user will be reactivated and become accessible throughout the system again."
+                    triggerComponent={
+                      <Button variant="default">
+                        <ArchiveRestore />
+                        Restore
+                      </Button>
+                    }
+                    submitButtonVariant={{ variant: 'default' }}
+                    submitButtonContent={
+                      <>
+                        <ArchiveRestore /> Restore User
+                      </>
+                    }
+                    onSubmit={async () => await restore(user.id)}
+                  />
+                )
+              ) : (
+                <>
+                  {canEditUsers && (
+                    <Link
+                      to="/users/$userId/edit"
+                      params={{ userId }}
+                      className={buttonVariants({ variant: 'secondary' })}
+                    >
+                      <Edit />
+                      Edit
+                    </Link>
+                  )}
+                  {canDeleteUsers && (
+                    <ConfirmationDialog
+                      description="This will mark the user as deleted. You can restore this user later if you change your mind."
+                      triggerComponent={
+                        <Button variant="outline">
+                          <Trash2 />
+                          Delete
+                        </Button>
+                      }
+                      submitButtonVariant={{ variant: 'destructive' }}
+                      submitButtonContent={
+                        <>
+                          <Trash2 /> Delete User
+                        </>
+                      }
+                      onSubmit={async () => await destroy(user.id)}
+                    />
+                  )}
+                </>
+              )}
             </>
           )}
         </div>

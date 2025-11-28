@@ -15,6 +15,7 @@ import ProjectNotFoundComponent from './-not-found-component'
 import AssignManagerDialog from './-components/assign-manager-dialog'
 import UserAvatar from '@/components/user-avatar'
 import ProjectTasksCard from './-components/project-tasks-card'
+import { usePermissions } from '@/hooks/use-permissions'
 
 const PAGE_TITLE = 'Project Details'
 const PAGE_DESCRIPTION = 'Show project information and other related data'
@@ -48,6 +49,27 @@ function RouteComponent() {
   const { data: project } = useSuspenseQuery(
     showProjectQueryOptions(Number(projectId)),
   )
+  const {
+    canEditProjects,
+    canDeleteProjects,
+    canAssignTeamsToProjects,
+    canEdit,
+    isManager,
+  } = usePermissions()
+
+  // Check if user can edit this specific project (admin or project manager of this project)
+  const canEditThisProject =
+    canEditProjects || canEdit('project', { managerId: project.manager?.id })
+
+  // Check if user can assign teams to this project
+  const canAssignTeamsToThisProject =
+    canAssignTeamsToProjects ||
+    (isManager(project.manager?.id) && canEditThisProject)
+
+  // Check if any actions are available
+  const hasActions =
+    canEditThisProject || canDeleteProjects || canAssignTeamsToThisProject
+
   return (
     <MainInsetLayout
       breadcrumbItems={[
@@ -55,7 +77,7 @@ function RouteComponent() {
         { label: project.name, href: `/projects/${project.id}` },
       ]}
     >
-      {project.deleted_at && <RestoreAlert />}
+      {project.deleted_at && canDeleteProjects && <RestoreAlert />}
       <PageHeader title={PAGE_TITLE} description={PAGE_DESCRIPTION} />
       <div className="flex gap-4">
         <div className="flex flex-col text-left border rounded-xl p-4 gap-2 w-64">
@@ -110,68 +132,82 @@ function RouteComponent() {
             </p>
           )}
 
-          <Separator />
-          {project.deleted_at ? (
-            <ConfirmationDialog
-              description="This project will be reactivated and become accessible throughout the system again."
-              triggerComponent={
-                <Button variant="default">
-                  <ArchiveRestore />
-                  Restore
-                </Button>
-              }
-              submitButtonVariant={{ variant: 'default' }}
-              submitButtonContent={
-                <>
-                  <ArchiveRestore /> Restore Project
-                </>
-              }
-              onSubmit={async () => await restore(project.id)}
-            />
-          ) : (
+          {hasActions && (
             <>
-              <AssignManagerDialog
-                project={project}
-                triggerComponent={
-                  <Button variant={'default'}>
-                    <Contact /> Assign Manager
-                  </Button>
-                }
-              />
-              <Link
-                to="/projects/$projectId/teams"
-                params={{ projectId }}
-                className={buttonVariants({ variant: 'secondary' })}
-              >
-                <Users />
-                Assign Teams
-              </Link>
-              <div className="grid grid-cols-2 gap-2">
-                <Link
-                  to="/projects/$projectId/edit"
-                  params={{ projectId }}
-                  className={buttonVariants({ variant: 'outline' })}
-                >
-                  <Edit />
-                  Edit
-                </Link>
-                <ConfirmationDialog
-                  description="This will mark the project as deleted. You can restore this project later if you change your mind."
-                  triggerComponent={
-                    <Button variant="outline">
-                      <Trash2 />
-                      Delete
-                    </Button>
-                  }
-                  submitButtonVariant={{ variant: 'destructive' }}
-                  submitButtonContent={
-                    <>
-                      <Trash2 /> Delete Project
-                    </>
-                  }
-                  onSubmit={async () => await destroy(project.id)}
-                />
-              </div>
+              <Separator />
+              {project.deleted_at ? (
+                canDeleteProjects && (
+                  <ConfirmationDialog
+                    description="This project will be reactivated and become accessible throughout the system again."
+                    triggerComponent={
+                      <Button variant="default">
+                        <ArchiveRestore />
+                        Restore
+                      </Button>
+                    }
+                    submitButtonVariant={{ variant: 'default' }}
+                    submitButtonContent={
+                      <>
+                        <ArchiveRestore /> Restore Project
+                      </>
+                    }
+                    onSubmit={async () => await restore(project.id)}
+                  />
+                )
+              ) : (
+                <>
+                  {canEditThisProject && (
+                    <AssignManagerDialog
+                      project={project}
+                      triggerComponent={
+                        <Button variant={'default'}>
+                          <Contact /> Assign Manager
+                        </Button>
+                      }
+                    />
+                  )}
+                  {canAssignTeamsToThisProject && (
+                    <Link
+                      to="/projects/$projectId/teams"
+                      params={{ projectId }}
+                      className={buttonVariants({ variant: 'secondary' })}
+                    >
+                      <Users />
+                      Assign Teams
+                    </Link>
+                  )}
+                  <div className="grid grid-cols-2 gap-2">
+                    {canEditThisProject && (
+                      <Link
+                        to="/projects/$projectId/edit"
+                        params={{ projectId }}
+                        className={buttonVariants({ variant: 'outline' })}
+                      >
+                        <Edit />
+                        Edit
+                      </Link>
+                    )}
+                    {canDeleteProjects && (
+                      <ConfirmationDialog
+                        description="This will mark the project as deleted. You can restore this project later if you change your mind."
+                        triggerComponent={
+                          <Button variant="outline">
+                            <Trash2 />
+                            Delete
+                          </Button>
+                        }
+                        submitButtonVariant={{ variant: 'destructive' }}
+                        submitButtonContent={
+                          <>
+                            <Trash2 /> Delete Project
+                          </>
+                        }
+                        onSubmit={async () => await destroy(project.id)}
+                      />
+                    )}
+                  </div>
+                </>
+              )}
             </>
           )}
         </div>

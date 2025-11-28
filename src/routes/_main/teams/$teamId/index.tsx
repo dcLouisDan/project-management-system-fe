@@ -13,6 +13,7 @@ import useManageTeams from '@/hooks/use-manage-teams'
 import { RestoreAlert } from '@/components/restore-alert'
 import { showTeamQueryOptions } from '@/lib/query-options/show-team-query-options'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { usePermissions } from '@/hooks/use-permissions'
 
 const PAGE_TITLE = 'Team Details'
 const PAGE_DESCRIPTION = 'Show team information and other related data'
@@ -44,6 +45,11 @@ function RouteComponent() {
   const teamId = Route.useParams().teamId
   const { destroy, restore } = useManageTeams()
   const { data: team } = useSuspenseQuery(showTeamQueryOptions(Number(teamId)))
+  const { canEditTeams, canDeleteTeams, canManageTeamMembers } = usePermissions()
+
+  // Check if any actions are available
+  const hasActions = canEditTeams || canDeleteTeams || canManageTeamMembers
+
   return (
     <MainInsetLayout
       breadcrumbItems={[
@@ -51,7 +57,7 @@ function RouteComponent() {
         { label: team.name, href: `/teams/${team.id}` },
       ]}
     >
-      {team.deleted_at && <RestoreAlert />}
+      {team.deleted_at && canDeleteTeams && <RestoreAlert />}
       <PageHeader title={PAGE_TITLE} description={PAGE_DESCRIPTION} />
       <div className="flex gap-4">
         <div className="flex flex-col text-left border rounded-xl p-4 gap-2 w-64">
@@ -64,58 +70,70 @@ function RouteComponent() {
             <p className="text-sm text-muted-foreground">{team.description}</p>
           </div>
 
-          <Separator />
-          {team.deleted_at ? (
-            <ConfirmationDialog
-              description="This team will be reactivated and become accessible throughout the system again."
-              triggerComponent={
-                <Button variant="default">
-                  <ArchiveRestore />
-                  Restore
-                </Button>
-              }
-              submitButtonVariant={{ variant: 'default' }}
-              submitButtonContent={
-                <>
-                  <ArchiveRestore /> Restore Team
-                </>
-              }
-              onSubmit={async () => await restore(team.id)}
-            />
-          ) : (
+          {hasActions && (
             <>
-              <Link
-                to="/teams/$teamId/members"
-                params={{ teamId }}
-                className={buttonVariants({ variant: 'default' })}
-              >
-                <Users />
-                Assign Members
-              </Link>
-              <Link
-                to="/teams/$teamId/edit"
-                params={{ teamId }}
-                className={buttonVariants({ variant: 'secondary' })}
-              >
-                <Edit />
-                Edit
-              </Link>
-              <ConfirmationDialog
-                description="This will mark the team as deleted. You can restore this team later if you change your mind."
-                triggerComponent={
-                  <Button variant="outline">
-                    <Trash2 />
-                    Delete
-                  </Button>
-                }
-                submitButtonVariant={{ variant: 'destructive' }}
-                submitButtonContent={
-                  <>
-                    <Trash2 /> Delete Team
-                  </>
-                }
-                onSubmit={async () => await destroy(team.id)}
-              />
+              <Separator />
+              {team.deleted_at ? (
+                canDeleteTeams && (
+                  <ConfirmationDialog
+                    description="This team will be reactivated and become accessible throughout the system again."
+                    triggerComponent={
+                      <Button variant="default">
+                        <ArchiveRestore />
+                        Restore
+                      </Button>
+                    }
+                    submitButtonVariant={{ variant: 'default' }}
+                    submitButtonContent={
+                      <>
+                        <ArchiveRestore /> Restore Team
+                      </>
+                    }
+                    onSubmit={async () => await restore(team.id)}
+                  />
+                )
+              ) : (
+                <>
+                  {canManageTeamMembers && (
+                    <Link
+                      to="/teams/$teamId/members"
+                      params={{ teamId }}
+                      className={buttonVariants({ variant: 'default' })}
+                    >
+                      <Users />
+                      Assign Members
+                    </Link>
+                  )}
+                  {canEditTeams && (
+                    <Link
+                      to="/teams/$teamId/edit"
+                      params={{ teamId }}
+                      className={buttonVariants({ variant: 'secondary' })}
+                    >
+                      <Edit />
+                      Edit
+                    </Link>
+                  )}
+                  {canDeleteTeams && (
+                    <ConfirmationDialog
+                      description="This will mark the team as deleted. You can restore this team later if you change your mind."
+                      triggerComponent={
+                        <Button variant="outline">
+                          <Trash2 />
+                          Delete
+                        </Button>
+                      }
+                      submitButtonVariant={{ variant: 'destructive' }}
+                      submitButtonContent={
+                        <>
+                          <Trash2 /> Delete Team
+                        </>
+                      }
+                      onSubmit={async () => await destroy(team.id)}
+                    />
+                  )}
+                </>
+              )}
             </>
           )}
         </div>
@@ -130,7 +148,7 @@ function RouteComponent() {
               <p className="font-bold">Members</p>
               <ul className="list-disc px-4">
                 {team.members.map((member) => (
-                  <li>{member.name}</li>
+                  <li key={member.id}>{member.name}</li>
                 ))}
               </ul>
             </CardContent>

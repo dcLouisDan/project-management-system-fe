@@ -12,6 +12,8 @@ import PageHeader from '@/components/page-header'
 import { APP_NAME } from '@/lib/constants'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { columnsDeleted } from './-table/columns-deleted'
+import { usePermissions } from '@/hooks/use-permissions'
+import { Trash2, Users } from 'lucide-react'
 
 const PAGE_TITLE = 'Manage Teams'
 const PAGE_DESCRIPTION = 'Create, view, update or delete team records'
@@ -45,12 +47,16 @@ export const Route = createFileRoute('/_main/teams/')({
 function RouteComponent() {
   const { tab } = Route.useSearch()
   const navigate = useNavigate()
+  const { canCreateTeams, canDeleteTeams } = usePermissions()
+
   return (
     <MainInsetLayout breadcrumbItems={[{ label: 'Teams', href: '/teams' }]}>
       <PageHeader title={PAGE_TITLE} description={PAGE_DESCRIPTION}>
-        <Link to="/teams/create" className={buttonVariants()}>
-          Add New Team
-        </Link>
+        {canCreateTeams && (
+          <Link to="/teams/create" className={buttonVariants()}>
+            Add New Team
+          </Link>
+        )}
       </PageHeader>
       <Tabs
         defaultValue="active"
@@ -61,15 +67,23 @@ function RouteComponent() {
         className="w-full"
       >
         <TabsList>
-          <TabsTrigger value="active">Active</TabsTrigger>
-          <TabsTrigger value="deleted">Deleted</TabsTrigger>
+          <TabsTrigger value="active">
+            <Users /> Active
+          </TabsTrigger>
+          {canDeleteTeams && (
+            <TabsTrigger value="deleted">
+              <Trash2 /> Deleted
+            </TabsTrigger>
+          )}
         </TabsList>
         <TabsContent value="active">
           <ActiveTeams />
         </TabsContent>
-        <TabsContent value="deleted">
-          <DeletedTeams />
-        </TabsContent>
+        {canDeleteTeams && (
+          <TabsContent value="deleted">
+            <DeletedTeams />
+          </TabsContent>
+        )}
       </Tabs>
     </MainInsetLayout>
   )

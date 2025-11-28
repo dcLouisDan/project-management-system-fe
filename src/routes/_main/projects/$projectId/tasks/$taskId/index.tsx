@@ -19,6 +19,7 @@ import { Separator } from '@/components/ui/separator'
 import TaskAssigneeDialog from './-components/task-assignee-dialog'
 import useAppStore from '@/integrations/zustand/app-store'
 import TaskReviewerDialog from './-components/task-reviewer-dialog'
+import { usePermissions } from '@/hooks/use-permissions'
 
 const PAGE_TITLE = 'Task Details'
 const PAGE_DESCRIPTION = 'Show task information and other related data'
@@ -53,6 +54,30 @@ function RouteComponent() {
   const { user } = useAppStore((state) => state)
   const { destroy } = useManageTasks()
   const { data: task } = useSuspenseQuery(showTaskQueryOptions(Number(taskId)))
+  const {
+    canEditTasks,
+    canDeleteTasks,
+    canReassignTasks,
+    canEdit,
+    canDelete,
+    isAssignedTo,
+  } = usePermissions()
+
+  // Check if user can edit this specific task
+  // Admin/PM can edit any task, Team Lead can edit team tasks, Team Member can edit own tasks
+  const canEditThisTask =
+    canEditTasks || canEdit('task', { createdById: task.assigned_by?.id })
+
+  // Check if user can delete this task
+  const canDeleteThisTask =
+    canDeleteTasks || canDelete('task', { createdById: task.assigned_by?.id })
+
+  // Check if user can reassign this task
+  const canReassignThisTask = canReassignTasks
+
+  // Check if user is the assignee (for task workflow actions)
+  const isTaskAssignee = isAssignedTo(task.assigned_to?.id)
+
   return (
     <MainInsetLayout
       breadcrumbItems={[
@@ -68,38 +93,44 @@ function RouteComponent() {
       ]}
     >
       <PageHeader title={task.title}>
-        <AssignToUserDialog
-          task={task}
-          triggerComponent={
-            <Button disabled={task.status == 'completed'}>
-              <SquareUser /> Assign To User
-            </Button>
-          }
-        />
-        <Link
-          to="/projects/$projectId/tasks/$taskId/edit"
-          params={{ projectId, taskId }}
-          className={buttonVariants({ variant: 'outline' })}
-        >
-          <Edit />
-          Edit
-        </Link>
-        <ConfirmationDialog
-          description="This will permanently delete this record from the database. This action cannot be undone."
-          triggerComponent={
-            <Button variant="outline">
-              <Trash2 />
-              Delete
-            </Button>
-          }
-          submitButtonVariant={{ variant: 'destructive' }}
-          submitButtonContent={
-            <>
-              <Trash2 /> Delete Task
-            </>
-          }
-          onSubmit={async () => await destroy(task.id, task.project_id)}
-        />
+        {canReassignThisTask && (
+          <AssignToUserDialog
+            task={task}
+            triggerComponent={
+              <Button disabled={task.status === 'completed'}>
+                <SquareUser /> Assign To User
+              </Button>
+            }
+          />
+        )}
+        {canEditThisTask && (
+          <Link
+            to="/projects/$projectId/tasks/$taskId/edit"
+            params={{ projectId, taskId }}
+            className={buttonVariants({ variant: 'outline' })}
+          >
+            <Edit />
+            Edit
+          </Link>
+        )}
+        {canDeleteThisTask && (
+          <ConfirmationDialog
+            description="This will permanently delete this record from the database. This action cannot be undone."
+            triggerComponent={
+              <Button variant="outline">
+                <Trash2 />
+                Delete
+              </Button>
+            }
+            submitButtonVariant={{ variant: 'destructive' }}
+            submitButtonContent={
+              <>
+                <Trash2 /> Delete Task
+              </>
+            }
+            onSubmit={async () => await destroy(task.id, task.project_id)}
+          />
+        )}
       </PageHeader>
       <div className="flex flex-col sm:flex-row gap-4">
         <Card className="w-full sm:max-w-64">
