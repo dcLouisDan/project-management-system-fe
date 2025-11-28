@@ -16,6 +16,7 @@ export interface Task {
   status: ProgressStatus
   priority: PriorityLevel
   due_date?: string
+  is_overdue: boolean
   reviews: TaskReview[]
   created_at: string
   updated_at: string

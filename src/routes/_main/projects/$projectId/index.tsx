@@ -1,7 +1,17 @@
 import { handleRouteError } from '@/lib/handle-api-error'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import MainInsetLayout from '../../-main-inset-layout'
-import { ArchiveRestore, Contact, Edit, Trash2, Users } from 'lucide-react'
+import {
+  AlertTriangle,
+  ArchiveRestore,
+  Calendar,
+  Clock,
+  Contact,
+  Edit,
+  History,
+  Trash2,
+  Users,
+} from 'lucide-react'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import PageHeader from '@/components/page-header'
@@ -16,6 +26,15 @@ import AssignManagerDialog from './-components/assign-manager-dialog'
 import UserAvatar from '@/components/user-avatar'
 import ProjectTasksCard from './-components/project-tasks-card'
 import { usePermissions } from '@/hooks/use-permissions'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import StatusBadge from '@/components/status-badge'
+import { statusColorMap } from '@/lib/types/status'
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
+import { cn } from '@/lib/utils'
+import { Progress } from '@/components/ui/progress'
+
+dayjs.extend(relativeTime)
 
 const PAGE_TITLE = 'Project Details'
 const PAGE_DESCRIPTION = 'Show project information and other related data'
@@ -70,6 +89,11 @@ function RouteComponent() {
   const hasActions =
     canEditThisProject || canDeleteProjects || canAssignTeamsToThisProject
 
+  const completionPercentage =
+    project.tasks_count > 0
+      ? Math.round((project.completed_tasks_count / project.tasks_count) * 100)
+      : 0
+
   return (
     <MainInsetLayout
       breadcrumbItems={[
@@ -78,140 +102,307 @@ function RouteComponent() {
       ]}
     >
       {project.deleted_at && canDeleteProjects && <RestoreAlert />}
-      <PageHeader title={PAGE_TITLE} description={PAGE_DESCRIPTION} />
-      <div className="flex gap-4">
-        <div className="flex flex-col text-left border rounded-xl p-4 gap-2 w-64">
-          <h4>{project.name}</h4>
-          <Separator />
-          <div>
-            <p className="text-sm text-muted-foreground font-bold mb-1">
-              Description
-            </p>
-            <p className="text-sm">{project.description}</p>
-          </div>
-
-          <Separator />
-          <p className="font-bold text-muted-foreground text-sm">
-            Project Manager
-          </p>
-          <div className="text-sm space-y-2 border p-2 rounded-lg flex items-center justify-between">
-            {project.manager ? (
+      <PageHeader title={project.name} description={PAGE_DESCRIPTION}>
+        {canEditThisProject && (
+          <Link
+            to="/projects/$projectId/edit"
+            params={{ projectId }}
+            className={buttonVariants({ variant: 'outline' })}
+          >
+            <Edit />
+            Edit
+          </Link>
+        )}
+        {canDeleteProjects && (
+          <ConfirmationDialog
+            description="This will mark the project as deleted. You can restore this project later if you change your mind."
+            triggerComponent={
+              <Button variant="outline">
+                <Trash2 />
+                Delete
+              </Button>
+            }
+            submitButtonVariant={{ variant: 'destructive' }}
+            submitButtonContent={
               <>
-                <UserAvatar
-                  name={project.manager.name}
-                  className="size-8 mx-0 my-auto"
-                  textClassName="text-sm"
-                />
-                <Link
-                  className="border-b border-foreground/30 border-dotted hover:border-dashed hover:border-foreground/50"
-                  to="/users/$userId"
-                  params={{ userId: project.manager.id.toString() }}
-                >
-                  {project.manager.name}
-                </Link>
+                <Trash2 /> Delete Project
               </>
-            ) : (
-              <div>
-                <p>No manager assigned yet</p>
-              </div>
-            )}
-          </div>
-          <Separator />
-          <p className="font-bold text-muted-foreground text-sm">
-            Assigned Teams
-          </p>
-          {project.teams.length > 0 ? (
-            <ul className="list-disc ps-4">
-              {project.teams.map((team) => (
-                <li key={team.id}>{team.name}</li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-muted-foreground text-center text-sm">
-              No Teams are assigned to this project yet.
-            </p>
-          )}
+            }
+            onSubmit={async () => await destroy(project.id)}
+          />
+        )}
+      </PageHeader>
 
-          {hasActions && (
-            <>
+      {/* Status Badge Row */}
+      <div className="flex flex-wrap items-center gap-3 mb-6">
+        <StatusBadge
+          label={project.status}
+          colors={statusColorMap[project.status]}
+          className="text-sm"
+        />
+        {project.is_overdue && project.status !== 'completed' && (
+          <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-destructive/10 text-destructive text-sm font-medium">
+            <AlertTriangle className="size-4" />
+            Overdue
+          </div>
+        )}
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Left Sidebar - Project Info */}
+        <div className="lg:col-span-1 space-y-4">
+          {/* Stats Card */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base font-medium">
+                Project Statistics
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="grid gap-4">
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm text-muted-foreground">
+                    Task Completion
+                  </span>
+                  <span className="text-sm font-medium">
+                    {project.completed_tasks_count} / {project.tasks_count}
+                  </span>
+                </div>
+                <Progress value={completionPercentage} className="h-2" />
+                <p className="text-xs text-muted-foreground mt-1">
+                  {completionPercentage}% complete
+                </p>
+              </div>
               <Separator />
-              {project.deleted_at ? (
-                canDeleteProjects && (
-                  <ConfirmationDialog
-                    description="This project will be reactivated and become accessible throughout the system again."
+              <div className="grid grid-cols-2 gap-4 text-center">
+                <div>
+                  <p className="text-2xl font-bold">{project.tasks_count}</p>
+                  <p className="text-xs text-muted-foreground">Total Tasks</p>
+                </div>
+                <div>
+                  <p className="text-2xl font-bold">{project.teams_count}</p>
+                  <p className="text-xs text-muted-foreground">Teams</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* People Card */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base font-medium flex items-center gap-2">
+                <Users className="size-4" />
+                People
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="grid gap-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Contact className="size-4" />
+                  Manager
+                </div>
+                {project.manager ? (
+                  <Link
+                    to="/users/$userId"
+                    params={{ userId: project.manager.id.toString() }}
+                    className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+                  >
+                    <UserAvatar
+                      name={project.manager.name}
+                      className="size-6"
+                      textClassName="text-xs"
+                    />
+                    <span className="text-sm font-medium">
+                      {project.manager.name}
+                    </span>
+                  </Link>
+                ) : (
+                  <span className="text-sm text-muted-foreground">
+                    Unassigned
+                  </span>
+                )}
+              </div>
+              {canEditThisProject && (
+                <>
+                  <Separator />
+                  <AssignManagerDialog
+                    project={project}
                     triggerComponent={
-                      <Button variant="default">
-                        <ArchiveRestore />
-                        Restore
+                      <Button variant="outline" size="sm" className="w-full">
+                        <Contact className="size-4" />
+                        Assign Manager
                       </Button>
                     }
-                    submitButtonVariant={{ variant: 'default' }}
-                    submitButtonContent={
-                      <>
-                        <ArchiveRestore /> Restore Project
-                      </>
-                    }
-                    onSubmit={async () => await restore(project.id)}
                   />
-                )
-              ) : (
-                <>
-                  {canEditThisProject && (
-                    <AssignManagerDialog
-                      project={project}
-                      triggerComponent={
-                        <Button variant={'default'}>
-                          <Contact /> Assign Manager
-                        </Button>
-                      }
-                    />
-                  )}
-                  {canAssignTeamsToThisProject && (
-                    <Link
-                      to="/projects/$projectId/teams"
-                      params={{ projectId }}
-                      className={buttonVariants({ variant: 'secondary' })}
-                    >
-                      <Users />
-                      Assign Teams
-                    </Link>
-                  )}
-                  <div className="grid grid-cols-2 gap-2">
-                    {canEditThisProject && (
-                      <Link
-                        to="/projects/$projectId/edit"
-                        params={{ projectId }}
-                        className={buttonVariants({ variant: 'outline' })}
-                      >
-                        <Edit />
-                        Edit
-                      </Link>
-                    )}
-                    {canDeleteProjects && (
-                      <ConfirmationDialog
-                        description="This will mark the project as deleted. You can restore this project later if you change your mind."
-                        triggerComponent={
-                          <Button variant="outline">
-                            <Trash2 />
-                            Delete
-                          </Button>
-                        }
-                        submitButtonVariant={{ variant: 'destructive' }}
-                        submitButtonContent={
-                          <>
-                            <Trash2 /> Delete Project
-                          </>
-                        }
-                        onSubmit={async () => await destroy(project.id)}
-                      />
-                    )}
-                  </div>
                 </>
               )}
-            </>
+            </CardContent>
+          </Card>
+
+          {/* Teams Card */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base font-medium flex items-center gap-2">
+                <Users className="size-4" />
+                Assigned Teams
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="grid gap-3">
+              {project.teams.length > 0 ? (
+                <div className="space-y-2">
+                  {project.teams.map((team) => (
+                    <div
+                      key={team.id}
+                      className="flex items-center justify-between p-2 border rounded-lg"
+                    >
+                      <span className="text-sm font-medium">{team.name}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-muted-foreground text-center py-2">
+                  No teams assigned yet
+                </p>
+              )}
+              {canAssignTeamsToThisProject && (
+                <>
+                  <Separator />
+                  <Link
+                    to="/projects/$projectId/teams"
+                    params={{ projectId }}
+                    className={buttonVariants({
+                      variant: 'outline',
+                      size: 'sm',
+                      className: 'w-full',
+                    })}
+                  >
+                    <Users className="size-4" />
+                    Manage Teams
+                  </Link>
+                </>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Dates Card */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base font-medium flex items-center gap-2">
+                <Calendar className="size-4" />
+                Dates
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="grid gap-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Calendar className="size-4" />
+                  Start date
+                </div>
+                <span className="text-sm font-medium">
+                  {dayjs(project.start_date).format('MMM D, YYYY')}
+                </span>
+              </div>
+              {project.due_date && (
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <AlertTriangle className="size-4" />
+                    Due date
+                  </div>
+                  <span
+                    className={cn(
+                      'text-sm font-medium',
+                      project.is_overdue &&
+                        project.status !== 'completed' &&
+                        'text-destructive',
+                    )}
+                  >
+                    {dayjs(project.due_date).format('MMM D, YYYY')}
+                  </span>
+                </div>
+              )}
+              <Separator />
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Clock className="size-4" />
+                  Created
+                </div>
+                <span
+                  className="text-sm"
+                  title={dayjs(project.created_at).format('MMM D, YYYY h:mm A')}
+                >
+                  {dayjs(project.created_at).fromNow()}
+                </span>
+              </div>
+              {project.updated_at && (
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <History className="size-4" />
+                    Updated
+                  </div>
+                  <span
+                    className="text-sm"
+                    title={dayjs(project.updated_at).format(
+                      'MMM D, YYYY h:mm A',
+                    )}
+                  >
+                    {dayjs(project.updated_at).fromNow()}
+                  </span>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Actions Card */}
+          {hasActions && project.deleted_at && canDeleteProjects && (
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base font-medium">Actions</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ConfirmationDialog
+                  description="This project will be reactivated and become accessible throughout the system again."
+                  triggerComponent={
+                    <Button variant="default" className="w-full">
+                      <ArchiveRestore />
+                      Restore Project
+                    </Button>
+                  }
+                  submitButtonVariant={{ variant: 'default' }}
+                  submitButtonContent={
+                    <>
+                      <ArchiveRestore /> Restore Project
+                    </>
+                  }
+                  onSubmit={async () => await restore(project.id)}
+                />
+              </CardContent>
+            </Card>
           )}
         </div>
-        <div className="flex flex-col gap-2 flex-1">
+
+        {/* Main Content - Description & Tasks */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* Description Card */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base font-medium">
+                Description
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {project.description ? (
+                <p className="text-sm leading-relaxed whitespace-pre-wrap">
+                  {project.description}
+                </p>
+              ) : (
+                <p className="text-sm text-muted-foreground italic">
+                  No description provided for this project.
+                </p>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Tasks Card */}
           <ProjectTasksCard projectId={projectId} />
         </div>
       </div>

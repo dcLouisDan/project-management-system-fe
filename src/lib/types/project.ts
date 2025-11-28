@@ -13,6 +13,10 @@ export interface Project {
   status: ProgressStatus
   start_date: string
   due_date?: string | null
+  is_overdue: boolean
+  tasks_count: number
+  completed_tasks_count: number
+  teams_count: number
   created_at: string
   updated_at?: string
   deleted_at?: string | null

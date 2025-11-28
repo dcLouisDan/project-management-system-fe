@@ -5,12 +5,25 @@ import {
   ChartTooltipContent,
 } from '@/components/ui/chart'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import {
-  mockTasksByPriority,
-  tasksPriorityChartConfig,
-} from '@/lib/mock/dashboard-data'
+import { tasksPriorityChartConfig } from '@/lib/mock/dashboard-data'
+import { useMemo } from 'react'
+import type { PriorityLevel } from '@/lib/types/priority'
 
-export function TasksPriorityChart() {
+interface TasksPriorityChartProps {
+  data: Record<PriorityLevel, number>
+}
+
+export function TasksPriorityChart({ data }: TasksPriorityChartProps) {
+  const chartData = useMemo(() => {
+    const priorities: PriorityLevel[] = ['low', 'medium', 'high', 'urgent']
+
+    return priorities.map((priority) => ({
+      priority,
+      count: data[priority] || 0,
+      fill: `var(--color-${priority})`,
+    }))
+  }, [data])
+
   return (
     <Card>
       <CardHeader className="pb-2">
@@ -22,7 +35,7 @@ export function TasksPriorityChart() {
           className="max-h-[250px] w-full"
         >
           <BarChart
-            data={mockTasksByPriority}
+            data={chartData}
             layout="vertical"
             margin={{ left: 0 }}
           >
@@ -48,4 +61,3 @@ export function TasksPriorityChart() {
     </Card>
   )
 }
-

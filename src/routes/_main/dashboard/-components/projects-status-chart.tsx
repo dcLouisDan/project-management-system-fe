@@ -7,13 +7,35 @@ import {
   ChartLegendContent,
 } from '@/components/ui/chart'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { mockProjectsByStatus, projectsChartConfig } from '@/lib/mock/dashboard-data'
+import { projectsChartConfig } from '@/lib/mock/dashboard-data'
 import { useMemo } from 'react'
+import type { ProgressStatus } from '@/lib/types/status'
 
-export function ProjectsStatusChart() {
+interface ProjectsStatusChartProps {
+  data: Record<ProgressStatus, number>
+}
+
+export function ProjectsStatusChart({ data }: ProjectsStatusChartProps) {
+  const chartData = useMemo(() => {
+    const statusesToShow: ProgressStatus[] = [
+      'not_started',
+      'in_progress',
+      'completed',
+      'cancelled',
+    ]
+
+    return statusesToShow
+      .map((status) => ({
+        status,
+        count: data[status] || 0,
+        fill: `var(--color-${status})`,
+      }))
+      .filter((item) => item.count > 0)
+  }, [data])
+
   const totalProjects = useMemo(() => {
-    return mockProjectsByStatus.reduce((acc, curr) => acc + curr.count, 0)
-  }, [])
+    return chartData.reduce((acc, curr) => acc + curr.count, 0)
+  }, [chartData])
 
   return (
     <Card>
@@ -31,14 +53,14 @@ export function ProjectsStatusChart() {
               content={<ChartTooltipContent hideLabel />}
             />
             <Pie
-              data={mockProjectsByStatus}
+              data={chartData}
               dataKey="count"
               nameKey="status"
               innerRadius={60}
               outerRadius={80}
               strokeWidth={5}
             >
-              {mockProjectsByStatus.map((entry) => (
+              {chartData.map((entry) => (
                 <Cell key={entry.status} fill={entry.fill} />
               ))}
               <Label
@@ -81,4 +103,3 @@ export function ProjectsStatusChart() {
     </Card>
   )
 }
-

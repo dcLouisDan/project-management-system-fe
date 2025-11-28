@@ -70,7 +70,7 @@ export default function TaskAssigneeDialog({}: TaskAssigneeDialogProps) {
     return null
   }
 
-  if (task.status == 'not_started') {
+  if (['not_started', 'assigned'].includes(task.status)) {
     return (
       <ConfirmationDialog
         description="This action will mark the task as 'In Progress'. This action cannot be undone."

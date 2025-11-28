@@ -5,12 +5,30 @@ import {
   ChartTooltipContent,
 } from '@/components/ui/chart'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import {
-  mockTasksByStatus,
-  tasksStatusChartConfig,
-} from '@/lib/mock/dashboard-data'
+import { tasksStatusChartConfig } from '@/lib/mock/dashboard-data'
+import { useMemo } from 'react'
+import type { ProgressStatus } from '@/lib/types/status'
 
-export function TasksStatusChart() {
+interface TasksStatusChartProps {
+  data: Record<ProgressStatus, number>
+}
+
+export function TasksStatusChart({ data }: TasksStatusChartProps) {
+  const chartData = useMemo(() => {
+    const statusesToShow: ProgressStatus[] = [
+      'not_started',
+      'in_progress',
+      'awaiting_review',
+      'completed',
+    ]
+
+    return statusesToShow.map((status) => ({
+      status,
+      count: data[status] || 0,
+      fill: `var(--color-${status})`,
+    }))
+  }, [data])
+
   return (
     <Card>
       <CardHeader className="pb-2">
@@ -21,14 +39,18 @@ export function TasksStatusChart() {
           config={tasksStatusChartConfig}
           className="max-h-[250px] w-full"
         >
-          <BarChart data={mockTasksByStatus}>
+          <BarChart data={chartData}>
             <XAxis
               dataKey="status"
               tickLine={false}
               tickMargin={10}
               axisLine={false}
               tickFormatter={(value) =>
-                tasksStatusChartConfig[value as keyof typeof tasksStatusChartConfig]?.label?.toString().split(' ')[0] || value
+                tasksStatusChartConfig[
+                  value as keyof typeof tasksStatusChartConfig
+                ]?.label
+                  ?.toString()
+                  .split('_')[0] || value
               }
             />
             <YAxis hide />
@@ -43,4 +65,3 @@ export function TasksStatusChart() {
     </Card>
   )
 }
-

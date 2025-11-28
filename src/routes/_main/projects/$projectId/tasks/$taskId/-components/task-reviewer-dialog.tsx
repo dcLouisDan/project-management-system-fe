@@ -90,6 +90,7 @@ export default function TaskReviewerDialog({}: TaskReviewerDialogProps) {
     },
   })
   const reviewStatusArr: ProgressStatus[] = ['awaiting_review', 'under_review']
+  useFormReset({ form, requestProgress, setRequestProgress })
 
   if (!task || !task.assigned_by || task.assigned_by?.id !== user?.id) {
     return null
@@ -109,8 +110,6 @@ export default function TaskReviewerDialog({}: TaskReviewerDialogProps) {
       </Button>
     )
   }
-
-  useFormReset({ form, requestProgress, setRequestProgress })
 
   if (task.status == 'awaiting_review') {
     return (
