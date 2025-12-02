@@ -5,10 +5,17 @@ import type {
   DashboardRecentProjectsResponse,
   DashboardRecentTasksResponse,
 } from '../types/dashboard'
+import type { Role } from '../types/role'
 
-export async function fetchDashboardStats() {
+export interface FetchDashboardStatsParams {
+  force_role?: Role
+}
+
+export async function fetchDashboardStats(params?: FetchDashboardStatsParams) {
   return api
-    .get<DashboardStatsResponse>('/dashboard/stats')
+    .get<DashboardStatsResponse>('/dashboard/stats', {
+      params,
+    })
     .then((response) => response.data.data)
     .catch((error) => {
       throw handleApiError(error)
@@ -17,6 +24,7 @@ export async function fetchDashboardStats() {
 
 export interface FetchRecentProjectsParams {
   limit?: number
+  force_role?: Role
 }
 
 export async function fetchRecentProjects(params?: FetchRecentProjectsParams) {
@@ -32,6 +40,7 @@ export async function fetchRecentProjects(params?: FetchRecentProjectsParams) {
 
 export interface FetchRecentTasksParams {
   limit?: number
+  force_role?: Role
 }
 
 export async function fetchRecentTasks(params?: FetchRecentTasksParams) {

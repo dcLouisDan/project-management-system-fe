@@ -14,7 +14,6 @@ import { Route as MainRouteRouteImport } from './routes/_main/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthRegisterRouteImport } from './routes/auth/register'
 import { Route as AuthLoginRouteImport } from './routes/auth/login'
-import { Route as MainDashboardRouteImport } from './routes/_main/dashboard'
 import { Route as MainSettingsRouteRouteImport } from './routes/_main/settings/route'
 import { Route as MainUsersIndexRouteImport } from './routes/_main/users/index'
 import { Route as MainTeamsIndexRouteImport } from './routes/_main/teams/index'
@@ -23,6 +22,7 @@ import { Route as MainProjectsIndexRouteImport } from './routes/_main/projects/i
 import { Route as MainMyTeamsIndexRouteImport } from './routes/_main/my-teams/index'
 import { Route as MainMyTasksIndexRouteImport } from './routes/_main/my-tasks/index'
 import { Route as MainMyProjectsIndexRouteImport } from './routes/_main/my-projects/index'
+import { Route as MainDashboardIndexRouteImport } from './routes/_main/dashboard/index'
 import { Route as MainUsersCreateRouteImport } from './routes/_main/users/create'
 import { Route as MainTeamsCreateRouteImport } from './routes/_main/teams/create'
 import { Route as MainSettingsProfileRouteImport } from './routes/_main/settings/profile'
@@ -63,11 +63,6 @@ const AuthLoginRoute = AuthLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => AuthRouteRoute,
 } as any)
-const MainDashboardRoute = MainDashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => MainRouteRoute,
-} as any)
 const MainSettingsRouteRoute = MainSettingsRouteRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -106,6 +101,11 @@ const MainMyTasksIndexRoute = MainMyTasksIndexRouteImport.update({
 const MainMyProjectsIndexRoute = MainMyProjectsIndexRouteImport.update({
   id: '/my-projects/',
   path: '/my-projects/',
+  getParentRoute: () => MainRouteRoute,
+} as any)
+const MainDashboardIndexRoute = MainDashboardIndexRouteImport.update({
+  id: '/dashboard/',
+  path: '/dashboard/',
   getParentRoute: () => MainRouteRoute,
 } as any)
 const MainUsersCreateRoute = MainUsersCreateRouteImport.update({
@@ -194,13 +194,13 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteRouteWithChildren
   '/settings': typeof MainSettingsRouteRouteWithChildren
-  '/dashboard': typeof MainDashboardRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/projects/create': typeof MainProjectsCreateRoute
   '/settings/profile': typeof MainSettingsProfileRoute
   '/teams/create': typeof MainTeamsCreateRoute
   '/users/create': typeof MainUsersCreateRoute
+  '/dashboard': typeof MainDashboardIndexRoute
   '/my-projects': typeof MainMyProjectsIndexRoute
   '/my-tasks': typeof MainMyTasksIndexRoute
   '/my-teams': typeof MainMyTeamsIndexRoute
@@ -224,13 +224,13 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteRouteWithChildren
   '/settings': typeof MainSettingsRouteRouteWithChildren
-  '/dashboard': typeof MainDashboardRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/projects/create': typeof MainProjectsCreateRoute
   '/settings/profile': typeof MainSettingsProfileRoute
   '/teams/create': typeof MainTeamsCreateRoute
   '/users/create': typeof MainUsersCreateRoute
+  '/dashboard': typeof MainDashboardIndexRoute
   '/my-projects': typeof MainMyProjectsIndexRoute
   '/my-tasks': typeof MainMyTasksIndexRoute
   '/my-teams': typeof MainMyTeamsIndexRoute
@@ -256,13 +256,13 @@ export interface FileRoutesById {
   '/_main': typeof MainRouteRouteWithChildren
   '/auth': typeof AuthRouteRouteWithChildren
   '/_main/settings': typeof MainSettingsRouteRouteWithChildren
-  '/_main/dashboard': typeof MainDashboardRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/_main/projects/create': typeof MainProjectsCreateRoute
   '/_main/settings/profile': typeof MainSettingsProfileRoute
   '/_main/teams/create': typeof MainTeamsCreateRoute
   '/_main/users/create': typeof MainUsersCreateRoute
+  '/_main/dashboard/': typeof MainDashboardIndexRoute
   '/_main/my-projects/': typeof MainMyProjectsIndexRoute
   '/_main/my-tasks/': typeof MainMyTasksIndexRoute
   '/_main/my-teams/': typeof MainMyTeamsIndexRoute
@@ -288,13 +288,13 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/settings'
-    | '/dashboard'
     | '/auth/login'
     | '/auth/register'
     | '/projects/create'
     | '/settings/profile'
     | '/teams/create'
     | '/users/create'
+    | '/dashboard'
     | '/my-projects'
     | '/my-tasks'
     | '/my-teams'
@@ -318,13 +318,13 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/settings'
-    | '/dashboard'
     | '/auth/login'
     | '/auth/register'
     | '/projects/create'
     | '/settings/profile'
     | '/teams/create'
     | '/users/create'
+    | '/dashboard'
     | '/my-projects'
     | '/my-tasks'
     | '/my-teams'
@@ -349,13 +349,13 @@ export interface FileRouteTypes {
     | '/_main'
     | '/auth'
     | '/_main/settings'
-    | '/_main/dashboard'
     | '/auth/login'
     | '/auth/register'
     | '/_main/projects/create'
     | '/_main/settings/profile'
     | '/_main/teams/create'
     | '/_main/users/create'
+    | '/_main/dashboard/'
     | '/_main/my-projects/'
     | '/_main/my-tasks/'
     | '/_main/my-teams/'
@@ -419,13 +419,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLoginRouteImport
       parentRoute: typeof AuthRouteRoute
     }
-    '/_main/dashboard': {
-      id: '/_main/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof MainDashboardRouteImport
-      parentRoute: typeof MainRouteRoute
-    }
     '/_main/settings': {
       id: '/_main/settings'
       path: '/settings'
@@ -480,6 +473,13 @@ declare module '@tanstack/react-router' {
       path: '/my-projects'
       fullPath: '/my-projects'
       preLoaderRoute: typeof MainMyProjectsIndexRouteImport
+      parentRoute: typeof MainRouteRoute
+    }
+    '/_main/dashboard/': {
+      id: '/_main/dashboard/'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof MainDashboardIndexRouteImport
       parentRoute: typeof MainRouteRoute
     }
     '/_main/users/create': {
@@ -603,10 +603,10 @@ const MainSettingsRouteRouteWithChildren =
 
 interface MainRouteRouteChildren {
   MainSettingsRouteRoute: typeof MainSettingsRouteRouteWithChildren
-  MainDashboardRoute: typeof MainDashboardRoute
   MainProjectsCreateRoute: typeof MainProjectsCreateRoute
   MainTeamsCreateRoute: typeof MainTeamsCreateRoute
   MainUsersCreateRoute: typeof MainUsersCreateRoute
+  MainDashboardIndexRoute: typeof MainDashboardIndexRoute
   MainMyProjectsIndexRoute: typeof MainMyProjectsIndexRoute
   MainMyTasksIndexRoute: typeof MainMyTasksIndexRoute
   MainMyTeamsIndexRoute: typeof MainMyTeamsIndexRoute
@@ -629,10 +629,10 @@ interface MainRouteRouteChildren {
 
 const MainRouteRouteChildren: MainRouteRouteChildren = {
   MainSettingsRouteRoute: MainSettingsRouteRouteWithChildren,
-  MainDashboardRoute: MainDashboardRoute,
   MainProjectsCreateRoute: MainProjectsCreateRoute,
   MainTeamsCreateRoute: MainTeamsCreateRoute,
   MainUsersCreateRoute: MainUsersCreateRoute,
+  MainDashboardIndexRoute: MainDashboardIndexRoute,
   MainMyProjectsIndexRoute: MainMyProjectsIndexRoute,
   MainMyTasksIndexRoute: MainMyTasksIndexRoute,
   MainMyTeamsIndexRoute: MainMyTeamsIndexRoute,

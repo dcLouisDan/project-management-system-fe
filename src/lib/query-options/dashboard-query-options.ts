@@ -4,25 +4,37 @@ import {
   fetchDashboardStats,
   fetchRecentProjects,
   fetchRecentTasks,
+  type FetchDashboardStatsParams,
   type FetchRecentProjectsParams,
   type FetchRecentTasksParams,
 } from '../api/dashboard'
+import { DEFAULT_DASHBOARD_STATS } from '../types/dashboard'
 
-export const dashboardStatsQueryOptions = () =>
+export const dashboardStatsQueryOptions = (
+  params?: FetchDashboardStatsParams,
+) =>
   queryOptions({
-    queryKey: [QUERY_KEYS.DASHBOARD, 'stats'],
-    queryFn: fetchDashboardStats,
+    queryKey: [QUERY_KEYS.DASHBOARD, 'stats'].concat(
+      Object.values(params ?? {}),
+    ),
+    queryFn: () => fetchDashboardStats(params),
+    placeholderData: DEFAULT_DASHBOARD_STATS,
   })
 
-export const recentProjectsQueryOptions = (params?: FetchRecentProjectsParams) =>
+export const recentProjectsQueryOptions = (
+  params?: FetchRecentProjectsParams,
+) =>
   queryOptions({
-    queryKey: [QUERY_KEYS.DASHBOARD, 'recent-projects', params?.limit ?? 5],
+    queryKey: [QUERY_KEYS.DASHBOARD, 'recent-projects'].concat(
+      Object.values(params ?? {}),
+    ),
     queryFn: () => fetchRecentProjects(params),
   })
 
 export const recentTasksQueryOptions = (params?: FetchRecentTasksParams) =>
   queryOptions({
-    queryKey: [QUERY_KEYS.DASHBOARD, 'recent-tasks', params?.limit ?? 5],
+    queryKey: [QUERY_KEYS.DASHBOARD, 'recent-tasks'].concat(
+      Object.values(params ?? {}),
+    ),
     queryFn: () => fetchRecentTasks(params),
   })
-

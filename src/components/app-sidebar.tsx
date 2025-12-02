@@ -1,10 +1,8 @@
 'use client'
 
 import * as React from 'react'
-import { Frame, Map, PieChart } from 'lucide-react'
 
 import { NavMain } from '@/components/nav-main'
-import { NavProjects } from '@/components/nav-projects'
 import { NavUser } from '@/components/nav-user'
 import { TeamSwitcher } from '@/components/team-switcher'
 import {
@@ -16,26 +14,6 @@ import {
 } from '@/components/ui/sidebar'
 import useAppStore from '@/integrations/zustand/app-store'
 import { getNavLinksForRole } from '@/lib/nav-main-links'
-
-// This is sample data for projects sidebar section.
-// TODO: Replace with real data from API (Issue #6 in DEVELOPMENT_PLAN.md)
-const sampleProjects = [
-  {
-    name: 'Design Engineering',
-    url: '#',
-    icon: Frame,
-  },
-  {
-    name: 'Sales & Marketing',
-    url: '#',
-    icon: PieChart,
-  },
-  {
-    name: 'Travel',
-    url: '#',
-    icon: Map,
-  },
-]
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const user = useAppStore((state) => state.user)
@@ -55,7 +33,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={navLinks} />
-        <NavProjects projects={sampleProjects} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={user} />
