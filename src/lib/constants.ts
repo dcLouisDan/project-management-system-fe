@@ -11,4 +11,5 @@ export const QUERY_KEYS = {
   PROJECTS: 'projects',
   TASKS: 'tasks',
   DASHBOARD: 'dashboard',
+  ACTIVITY_LOGS: 'activity-logs',
 }

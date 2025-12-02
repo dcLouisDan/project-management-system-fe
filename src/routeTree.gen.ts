@@ -23,6 +23,7 @@ import { Route as MainMyTeamsIndexRouteImport } from './routes/_main/my-teams/in
 import { Route as MainMyTasksIndexRouteImport } from './routes/_main/my-tasks/index'
 import { Route as MainMyProjectsIndexRouteImport } from './routes/_main/my-projects/index'
 import { Route as MainDashboardIndexRouteImport } from './routes/_main/dashboard/index'
+import { Route as MainActivityLogsIndexRouteImport } from './routes/_main/activity-logs/index'
 import { Route as MainUsersCreateRouteImport } from './routes/_main/users/create'
 import { Route as MainTeamsCreateRouteImport } from './routes/_main/teams/create'
 import { Route as MainSettingsProfileRouteImport } from './routes/_main/settings/profile'
@@ -106,6 +107,11 @@ const MainMyProjectsIndexRoute = MainMyProjectsIndexRouteImport.update({
 const MainDashboardIndexRoute = MainDashboardIndexRouteImport.update({
   id: '/dashboard/',
   path: '/dashboard/',
+  getParentRoute: () => MainRouteRoute,
+} as any)
+const MainActivityLogsIndexRoute = MainActivityLogsIndexRouteImport.update({
+  id: '/activity-logs/',
+  path: '/activity-logs/',
   getParentRoute: () => MainRouteRoute,
 } as any)
 const MainUsersCreateRoute = MainUsersCreateRouteImport.update({
@@ -200,6 +206,7 @@ export interface FileRoutesByFullPath {
   '/settings/profile': typeof MainSettingsProfileRoute
   '/teams/create': typeof MainTeamsCreateRoute
   '/users/create': typeof MainUsersCreateRoute
+  '/activity-logs': typeof MainActivityLogsIndexRoute
   '/dashboard': typeof MainDashboardIndexRoute
   '/my-projects': typeof MainMyProjectsIndexRoute
   '/my-tasks': typeof MainMyTasksIndexRoute
@@ -230,6 +237,7 @@ export interface FileRoutesByTo {
   '/settings/profile': typeof MainSettingsProfileRoute
   '/teams/create': typeof MainTeamsCreateRoute
   '/users/create': typeof MainUsersCreateRoute
+  '/activity-logs': typeof MainActivityLogsIndexRoute
   '/dashboard': typeof MainDashboardIndexRoute
   '/my-projects': typeof MainMyProjectsIndexRoute
   '/my-tasks': typeof MainMyTasksIndexRoute
@@ -262,6 +270,7 @@ export interface FileRoutesById {
   '/_main/settings/profile': typeof MainSettingsProfileRoute
   '/_main/teams/create': typeof MainTeamsCreateRoute
   '/_main/users/create': typeof MainUsersCreateRoute
+  '/_main/activity-logs/': typeof MainActivityLogsIndexRoute
   '/_main/dashboard/': typeof MainDashboardIndexRoute
   '/_main/my-projects/': typeof MainMyProjectsIndexRoute
   '/_main/my-tasks/': typeof MainMyTasksIndexRoute
@@ -294,6 +303,7 @@ export interface FileRouteTypes {
     | '/settings/profile'
     | '/teams/create'
     | '/users/create'
+    | '/activity-logs'
     | '/dashboard'
     | '/my-projects'
     | '/my-tasks'
@@ -324,6 +334,7 @@ export interface FileRouteTypes {
     | '/settings/profile'
     | '/teams/create'
     | '/users/create'
+    | '/activity-logs'
     | '/dashboard'
     | '/my-projects'
     | '/my-tasks'
@@ -355,6 +366,7 @@ export interface FileRouteTypes {
     | '/_main/settings/profile'
     | '/_main/teams/create'
     | '/_main/users/create'
+    | '/_main/activity-logs/'
     | '/_main/dashboard/'
     | '/_main/my-projects/'
     | '/_main/my-tasks/'
@@ -482,6 +494,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainDashboardIndexRouteImport
       parentRoute: typeof MainRouteRoute
     }
+    '/_main/activity-logs/': {
+      id: '/_main/activity-logs/'
+      path: '/activity-logs'
+      fullPath: '/activity-logs'
+      preLoaderRoute: typeof MainActivityLogsIndexRouteImport
+      parentRoute: typeof MainRouteRoute
+    }
     '/_main/users/create': {
       id: '/_main/users/create'
       path: '/users/create'
@@ -606,6 +625,7 @@ interface MainRouteRouteChildren {
   MainProjectsCreateRoute: typeof MainProjectsCreateRoute
   MainTeamsCreateRoute: typeof MainTeamsCreateRoute
   MainUsersCreateRoute: typeof MainUsersCreateRoute
+  MainActivityLogsIndexRoute: typeof MainActivityLogsIndexRoute
   MainDashboardIndexRoute: typeof MainDashboardIndexRoute
   MainMyProjectsIndexRoute: typeof MainMyProjectsIndexRoute
   MainMyTasksIndexRoute: typeof MainMyTasksIndexRoute
@@ -632,6 +652,7 @@ const MainRouteRouteChildren: MainRouteRouteChildren = {
   MainProjectsCreateRoute: MainProjectsCreateRoute,
   MainTeamsCreateRoute: MainTeamsCreateRoute,
   MainUsersCreateRoute: MainUsersCreateRoute,
+  MainActivityLogsIndexRoute: MainActivityLogsIndexRoute,
   MainDashboardIndexRoute: MainDashboardIndexRoute,
   MainMyProjectsIndexRoute: MainMyProjectsIndexRoute,
   MainMyTasksIndexRoute: MainMyTasksIndexRoute,

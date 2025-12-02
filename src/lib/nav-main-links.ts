@@ -2,6 +2,7 @@ import {
   ClipboardCheck,
   ClipboardList,
   FolderKanban,
+  History,
   LayoutDashboard,
   ListTodo,
   Settings2,
@@ -47,7 +48,7 @@ export const NAV_MAIN_LINKS: SidebarNavItem[] = [
       {
         title: 'Projects List',
         url: '/projects',
-    allowedRoles: ['admin', 'project manager'],
+        allowedRoles: ['admin', 'project manager'],
       },
     ],
   },
@@ -57,6 +58,7 @@ export const NAV_MAIN_LINKS: SidebarNavItem[] = [
     icon: ListTodo,
     allowedRoles: ['admin'],
   },
+
   {
     title: 'My Tasks',
     url: '/my-tasks',
@@ -106,6 +108,12 @@ export const NAV_MAIN_LINKS: SidebarNavItem[] = [
     url: '#',
     icon: Settings2,
     items: SETTING_LINKS,
+  },
+  {
+    title: 'Activity Logs',
+    url: '/activity-logs',
+    icon: History,
+    allowedRoles: ['admin'],
   },
 ]
 

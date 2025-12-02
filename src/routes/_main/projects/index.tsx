@@ -125,7 +125,6 @@ function ActiveProjects() {
       page: page ?? 1,
       per_page: per_page ?? 10,
       name: name ?? '',
-
       sort: sort,
       direction: direction,
     }),

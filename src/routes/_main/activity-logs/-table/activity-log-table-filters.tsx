@@ -1,25 +1,25 @@
 import DebouncedInput from '@/components/debounced-input'
 import SortPopover from '@/components/sort-popover'
 import type { SortDirection } from '@/lib/types/ui'
-import { SORTABLE_PROJECT_FIELDS } from '@/lib/types/project'
+import { SORTABLE_ACTIVITY_LOG_FIELDS } from '@/lib/types/activity-log'
 import { useNavigate, useSearch } from '@tanstack/react-router'
-import { useState } from 'react'
-import type { MyProjectsIndexSearchParams } from '..'
+import { useState, useEffect } from 'react'
+import type { ActivityLogsIndexSearchParams } from '..'
 
-export default function ProjectTableFilters() {
-  const { name } = useSearch({
-    from: '/_main/my-projects/',
+export default function ActivityLogTableFilters() {
+  const { description, sort, direction } = useSearch({
+    from: '/_main/activity-logs/',
   })
 
   const navigate = useNavigate()
-  const setName = (newName: string | number) => {
+  const setDescription = (newDescription: string | number) => {
     navigate({
       to: '.',
       replace: true,
-      search: (prev: MyProjectsIndexSearchParams) => ({
+      search: (prev: ActivityLogsIndexSearchParams) => ({
         ...prev,
-        name: newName.toString(),
-        page: 1,
+        description: newDescription.toString(),
+        page: 1, // Reset to first page when description filter changes
       }),
     })
   }
@@ -28,9 +28,17 @@ export default function ProjectTableFilters() {
     sort?: string
     direction?: SortDirection
   }>({
-    sort: 'id',
-    direction: 'asc',
+    sort: sort ?? 'id',
+    direction: direction ?? 'desc',
   })
+
+  // Sync sort values when URL params change
+  useEffect(() => {
+    setPopoverSortValues({
+      sort: sort ?? 'id',
+      direction: direction ?? 'desc',
+    })
+  }, [sort, direction])
 
   const onSortValueChange = (value: string | undefined) =>
     setPopoverSortValues((prev) => ({ ...prev, sort: value }))
@@ -44,11 +52,11 @@ export default function ProjectTableFilters() {
     navigate({
       to: '.',
       replace: true,
-      search: (prev: MyProjectsIndexSearchParams) => ({
+      search: (prev: ActivityLogsIndexSearchParams) => ({
         ...prev,
         sort,
         direction,
-        page: 1,
+        page: 1, // Reset to first page when sort changes
       }),
     })
   }
@@ -57,11 +65,11 @@ export default function ProjectTableFilters() {
     navigate({
       to: '.',
       replace: true,
-      search: (prev: MyProjectsIndexSearchParams) => {
+      search: (prev: ActivityLogsIndexSearchParams) => {
         const { sort, direction, ...rest } = prev
         return {
           ...rest,
-          page: 1,
+          page: 1, // Reset to first page when sort is cleared
         }
       },
     })
@@ -70,18 +78,17 @@ export default function ProjectTableFilters() {
   return (
     <div className="flex flex-col sm:flex-row gap-4 mb-4">
       <DebouncedInput
-        value={name ?? ''}
-        onChange={setName}
-        placeholder="Search projects..."
+        value={description ?? ''}
+        onChange={setDescription}
+        placeholder="Search by description..."
         debounce={500}
       />
-
       <SortPopover
         onSortValueChange={onSortValueChange}
         onDirectionValueChange={onDirectionValueChange}
         sortValue={popoverSortValues.sort}
         directionValue={popoverSortValues.direction}
-        sortableFields={SORTABLE_PROJECT_FIELDS}
+        sortableFields={SORTABLE_ACTIVITY_LOG_FIELDS}
         onSubmit={() =>
           onPopoverSortSubmit(
             popoverSortValues.sort,
@@ -93,7 +100,4 @@ export default function ProjectTableFilters() {
     </div>
   )
 }
-
-
-
 
