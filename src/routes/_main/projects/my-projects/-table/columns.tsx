@@ -17,7 +17,7 @@ export const columns: ColumnDef<Project>[] = [
       return (
         <Link
           className="border-b border-foreground/30 border-dotted hover:border-dashed hover:border-foreground/50"
-          to="/projects/$projectId"
+          to="/projects/my-projects/$projectId"
           params={{ projectId: project.id.toString() }}
         >
           {project.name}
@@ -58,8 +58,4 @@ export const columns: ColumnDef<Project>[] = [
         : 'No Due Date',
   },
 ]
-
-
-
-
 

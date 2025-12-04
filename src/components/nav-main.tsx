@@ -15,22 +15,26 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from '@/components/ui/sidebar'
-import { Link } from '@tanstack/react-router'
+import { Link, useLocation } from '@tanstack/react-router'
 import type { SidebarNavItem } from '@/lib/types/ui'
 
 export function NavMain({ items }: { items: SidebarNavItem[] }) {
+  const pathname = useLocation().pathname
+  const lastPath = pathname.split('/').pop()
+
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Project Management</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => {
           if (!item.items) {
+            const isActive = lastPath ? item.url.includes(lastPath) : false
             return (
               <SidebarMenuItem key={item.title}>
                 <SidebarMenuButton asChild tooltip={item.title}>
                   <Link
                     activeProps={{
-                      className: 'bg-foreground/10',
+                      className: isActive ? 'bg-foreground/10' : '',
                     }}
                     to={item.url}
                   >

@@ -26,7 +26,7 @@ const popoverFilters: FilterOptions[] = [
 
 export default function TaskTableFilters() {
   const { title, status, priority } = useSearch({
-    from: '/_main/my-tasks/',
+    from: '/_main/tasks/my-tasks/',
   })
 
   const navigate = useNavigate()

@@ -17,7 +17,7 @@ export const columns: ColumnDef<Team>[] = [
       return (
         <Link
           className="border-b border-foreground/30 border-dotted hover:border-dashed hover:border-foreground/50"
-          to="/teams/$teamId"
+          to="/teams/my-teams/$teamId"
           params={{ teamId: team.id.toString() }}
         >
           {team.name}
@@ -46,8 +46,4 @@ export const columns: ColumnDef<Team>[] = [
     },
   },
 ]
-
-
-
-
 

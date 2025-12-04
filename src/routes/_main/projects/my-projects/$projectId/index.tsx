@@ -1,16 +1,16 @@
-import { handleRouteError } from '@/lib/handle-api-error'
-import { createFileRoute } from '@tanstack/react-router'
-import MainInsetLayout from '../../-main-inset-layout'
-import { useSuspenseQuery } from '@tanstack/react-query'
 import { APP_NAME } from '@/lib/constants'
+import { handleRouteError } from '@/lib/handle-api-error'
 import { showProjectQueryOptions } from '@/lib/query-options/show-project-query-options'
+import { createFileRoute } from '@tanstack/react-router'
 import ProjectNotFoundComponent from './-not-found-component'
-import ProjectDetailContent from '../-components/project-detail-content'
+import { useSuspenseQuery } from '@tanstack/react-query'
+import MainInsetLayout from '@/routes/_main/-main-inset-layout'
+import ProjectDetailContent from '../../-components/project-detail-content'
 
 const PAGE_TITLE = 'Project Details'
 const PAGE_DESCRIPTION = 'Show project information and other related data'
 
-export const Route = createFileRoute('/_main/projects/$projectId/')({
+export const Route = createFileRoute('/_main/projects/my-projects/$projectId/')({
   component: RouteComponent,
   loader: ({ context: { queryClient }, params: { projectId } }) => {
     const id = Number(projectId)
@@ -34,7 +34,7 @@ export const Route = createFileRoute('/_main/projects/$projectId/')({
 })
 
 function RouteComponent() {
-  const projectId = Route.useParams().projectId
+  const { projectId } = Route.useParams()
   const { data: project } = useSuspenseQuery(
     showProjectQueryOptions(Number(projectId)),
   )
@@ -42,16 +42,16 @@ function RouteComponent() {
   return (
     <MainInsetLayout
       breadcrumbItems={[
-        { label: 'Projects', href: '/projects' },
-        { label: project.name, href: `/projects/${project.id}` },
+        { label: 'My Projects', href: '/projects/my-projects' },
+        { label: project.name, href: `/projects/my-projects/${project.id}` },
       ]}
     >
       <ProjectDetailContent
         project={project}
         projectId={projectId}
         breadcrumbItems={[
-          { label: 'Projects', href: '/projects' },
-          { label: project.name, href: `/projects/${project.id}` },
+          { label: 'My Projects', href: '/projects/my-projects' },
+          { label: project.name, href: `/projects/my-projects/${project.id}` },
         ]}
       />
     </MainInsetLayout>

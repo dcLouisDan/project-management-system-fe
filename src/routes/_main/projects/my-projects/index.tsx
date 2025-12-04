@@ -1,20 +1,20 @@
 import { createFileRoute } from '@tanstack/react-router'
-import MainInsetLayout from '../-main-inset-layout'
-import { teamsQueryOptions } from '@/lib/query-options/teams-query-options'
+import MainInsetLayout from '../../-main-inset-layout'
+import { projectsQueryOptions } from '@/lib/query-options/projects-query-options'
 import { useQuery } from '@tanstack/react-query'
 import { DataTable } from '@/components/data-table'
 import { columns } from './-table/columns'
 import PaginationBar from '@/components/pagination-bar'
-import TeamTableFilters from './-table/team-table-filters'
+import ProjectTableFilters from './-table/project-table-filters'
 import type { SortDirection } from '@/lib/types/ui'
 import PageHeader from '@/components/page-header'
 import { APP_NAME } from '@/lib/constants'
 import useAppStore from '@/integrations/zustand/app-store'
 
-const PAGE_TITLE = 'My Teams'
-const PAGE_DESCRIPTION = 'View and manage teams you lead'
+const PAGE_TITLE = 'My Projects'
+const PAGE_DESCRIPTION = 'View and manage projects you are a member of'
 
-export interface MyTeamsIndexSearchParams {
+export interface MyProjectsIndexSearchParams {
   page?: number
   per_page?: number
   name?: string
@@ -22,9 +22,9 @@ export interface MyTeamsIndexSearchParams {
   direction?: SortDirection
 }
 
-export const Route = createFileRoute('/_main/my-teams/')({
+export const Route = createFileRoute('/_main/projects/my-projects/')({
   component: RouteComponent,
-  validateSearch: (search) => search as MyTeamsIndexSearchParams,
+  validateSearch: (search) => search as MyProjectsIndexSearchParams,
   head: () => ({
     meta: [
       {
@@ -40,25 +40,28 @@ export const Route = createFileRoute('/_main/my-teams/')({
 
 function RouteComponent() {
   const { page, per_page, name, sort, direction } = Route.useSearch()
-  const { user } = useAppStore((state) => state)
+  const { user, uiMode } = useAppStore((state) => state)
 
   const { data, isFetching } = useQuery(
-    teamsQueryOptions({
+    projectsQueryOptions({
       page: page ?? 1,
       per_page: per_page ?? 10,
       name: name ?? '',
       sort: sort,
       direction: direction,
-      lead_id: user?.id,
+      member_id: uiMode === 'team member' ? user?.id : undefined,
+      manager_id: uiMode === 'project manager' ? user?.id : undefined,
     }),
   )
 
   return (
     <MainInsetLayout
-      breadcrumbItems={[{ label: 'My Teams', href: '/my-teams' }]}
+      breadcrumbItems={[
+        { label: 'My Projects', href: '/projects/my-projects' },
+      ]}
     >
       <PageHeader title={PAGE_TITLE} description={PAGE_DESCRIPTION} />
-      <TeamTableFilters />
+      <ProjectTableFilters />
       <DataTable
         columns={columns}
         data={data?.data || []}

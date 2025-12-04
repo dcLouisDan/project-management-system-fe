@@ -59,14 +59,16 @@ const reviewStatusOptions: IconSelectItem[] = [
   },
 ]
 
-interface TaskReviewerDialogProps {}
+interface TaskReviewerDialogProps {
+  taskId: number
+}
 
-export default function TaskReviewerDialog({}: TaskReviewerDialogProps) {
+export default function TaskReviewerDialog({
+  taskId,
+}: TaskReviewerDialogProps) {
   const { user } = useAppStore((state) => state)
-  const { taskId } = useParams({
-    from: '/_main/projects/$projectId/tasks/$taskId/',
-  })
-  const { data: task } = useQuery(showTaskQueryOptions(Number(taskId)))
+
+  const { data: task } = useQuery(showTaskQueryOptions(taskId))
   const review: TaskReview | null = useMemo(() => {
     if (!task) return null
 

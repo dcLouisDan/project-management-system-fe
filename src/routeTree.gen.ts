@@ -19,9 +19,6 @@ import { Route as MainUsersIndexRouteImport } from './routes/_main/users/index'
 import { Route as MainTeamsIndexRouteImport } from './routes/_main/teams/index'
 import { Route as MainTasksIndexRouteImport } from './routes/_main/tasks/index'
 import { Route as MainProjectsIndexRouteImport } from './routes/_main/projects/index'
-import { Route as MainMyTeamsIndexRouteImport } from './routes/_main/my-teams/index'
-import { Route as MainMyTasksIndexRouteImport } from './routes/_main/my-tasks/index'
-import { Route as MainMyProjectsIndexRouteImport } from './routes/_main/my-projects/index'
 import { Route as MainDashboardIndexRouteImport } from './routes/_main/dashboard/index'
 import { Route as MainActivityLogsIndexRouteImport } from './routes/_main/activity-logs/index'
 import { Route as MainUsersCreateRouteImport } from './routes/_main/users/create'
@@ -29,13 +26,19 @@ import { Route as MainTeamsCreateRouteImport } from './routes/_main/teams/create
 import { Route as MainSettingsProfileRouteImport } from './routes/_main/settings/profile'
 import { Route as MainProjectsCreateRouteImport } from './routes/_main/projects/create'
 import { Route as MainUsersUserIdIndexRouteImport } from './routes/_main/users/$userId/index'
+import { Route as MainTeamsMyTeamsIndexRouteImport } from './routes/_main/teams/my-teams/index'
 import { Route as MainTeamsTeamIdIndexRouteImport } from './routes/_main/teams/$teamId/index'
+import { Route as MainTasksMyTasksIndexRouteImport } from './routes/_main/tasks/my-tasks/index'
+import { Route as MainProjectsMyProjectsIndexRouteImport } from './routes/_main/projects/my-projects/index'
 import { Route as MainProjectsProjectIdIndexRouteImport } from './routes/_main/projects/$projectId/index'
 import { Route as MainUsersUserIdEditRouteImport } from './routes/_main/users/$userId/edit'
 import { Route as MainTeamsTeamIdMembersRouteImport } from './routes/_main/teams/$teamId/members'
 import { Route as MainTeamsTeamIdEditRouteImport } from './routes/_main/teams/$teamId/edit'
 import { Route as MainProjectsProjectIdTeamsRouteImport } from './routes/_main/projects/$projectId/teams'
 import { Route as MainProjectsProjectIdEditRouteImport } from './routes/_main/projects/$projectId/edit'
+import { Route as MainTeamsMyTeamsTeamIdIndexRouteImport } from './routes/_main/teams/my-teams/$teamId/index'
+import { Route as MainTasksMyTasksTaskIdIndexRouteImport } from './routes/_main/tasks/my-tasks/$taskId/index'
+import { Route as MainProjectsMyProjectsProjectIdIndexRouteImport } from './routes/_main/projects/my-projects/$projectId/index'
 import { Route as MainProjectsProjectIdTasksCreateRouteImport } from './routes/_main/projects/$projectId/tasks/create'
 import { Route as MainProjectsProjectIdTasksTaskIdIndexRouteImport } from './routes/_main/projects/$projectId/tasks/$taskId/index'
 import { Route as MainProjectsProjectIdTasksTaskIdEditRouteImport } from './routes/_main/projects/$projectId/tasks/$taskId/edit'
@@ -89,21 +92,6 @@ const MainProjectsIndexRoute = MainProjectsIndexRouteImport.update({
   path: '/projects/',
   getParentRoute: () => MainRouteRoute,
 } as any)
-const MainMyTeamsIndexRoute = MainMyTeamsIndexRouteImport.update({
-  id: '/my-teams/',
-  path: '/my-teams/',
-  getParentRoute: () => MainRouteRoute,
-} as any)
-const MainMyTasksIndexRoute = MainMyTasksIndexRouteImport.update({
-  id: '/my-tasks/',
-  path: '/my-tasks/',
-  getParentRoute: () => MainRouteRoute,
-} as any)
-const MainMyProjectsIndexRoute = MainMyProjectsIndexRouteImport.update({
-  id: '/my-projects/',
-  path: '/my-projects/',
-  getParentRoute: () => MainRouteRoute,
-} as any)
 const MainDashboardIndexRoute = MainDashboardIndexRouteImport.update({
   id: '/dashboard/',
   path: '/dashboard/',
@@ -139,11 +127,27 @@ const MainUsersUserIdIndexRoute = MainUsersUserIdIndexRouteImport.update({
   path: '/users/$userId/',
   getParentRoute: () => MainRouteRoute,
 } as any)
+const MainTeamsMyTeamsIndexRoute = MainTeamsMyTeamsIndexRouteImport.update({
+  id: '/teams/my-teams/',
+  path: '/teams/my-teams/',
+  getParentRoute: () => MainRouteRoute,
+} as any)
 const MainTeamsTeamIdIndexRoute = MainTeamsTeamIdIndexRouteImport.update({
   id: '/teams/$teamId/',
   path: '/teams/$teamId/',
   getParentRoute: () => MainRouteRoute,
 } as any)
+const MainTasksMyTasksIndexRoute = MainTasksMyTasksIndexRouteImport.update({
+  id: '/tasks/my-tasks/',
+  path: '/tasks/my-tasks/',
+  getParentRoute: () => MainRouteRoute,
+} as any)
+const MainProjectsMyProjectsIndexRoute =
+  MainProjectsMyProjectsIndexRouteImport.update({
+    id: '/projects/my-projects/',
+    path: '/projects/my-projects/',
+    getParentRoute: () => MainRouteRoute,
+  } as any)
 const MainProjectsProjectIdIndexRoute =
   MainProjectsProjectIdIndexRouteImport.update({
     id: '/projects/$projectId/',
@@ -177,6 +181,24 @@ const MainProjectsProjectIdEditRoute =
     path: '/projects/$projectId/edit',
     getParentRoute: () => MainRouteRoute,
   } as any)
+const MainTeamsMyTeamsTeamIdIndexRoute =
+  MainTeamsMyTeamsTeamIdIndexRouteImport.update({
+    id: '/teams/my-teams/$teamId/',
+    path: '/teams/my-teams/$teamId/',
+    getParentRoute: () => MainRouteRoute,
+  } as any)
+const MainTasksMyTasksTaskIdIndexRoute =
+  MainTasksMyTasksTaskIdIndexRouteImport.update({
+    id: '/tasks/my-tasks/$taskId/',
+    path: '/tasks/my-tasks/$taskId/',
+    getParentRoute: () => MainRouteRoute,
+  } as any)
+const MainProjectsMyProjectsProjectIdIndexRoute =
+  MainProjectsMyProjectsProjectIdIndexRouteImport.update({
+    id: '/projects/my-projects/$projectId/',
+    path: '/projects/my-projects/$projectId/',
+    getParentRoute: () => MainRouteRoute,
+  } as any)
 const MainProjectsProjectIdTasksCreateRoute =
   MainProjectsProjectIdTasksCreateRouteImport.update({
     id: '/projects/$projectId/tasks/create',
@@ -208,9 +230,6 @@ export interface FileRoutesByFullPath {
   '/users/create': typeof MainUsersCreateRoute
   '/activity-logs': typeof MainActivityLogsIndexRoute
   '/dashboard': typeof MainDashboardIndexRoute
-  '/my-projects': typeof MainMyProjectsIndexRoute
-  '/my-tasks': typeof MainMyTasksIndexRoute
-  '/my-teams': typeof MainMyTeamsIndexRoute
   '/projects': typeof MainProjectsIndexRoute
   '/tasks': typeof MainTasksIndexRoute
   '/teams': typeof MainTeamsIndexRoute
@@ -221,9 +240,15 @@ export interface FileRoutesByFullPath {
   '/teams/$teamId/members': typeof MainTeamsTeamIdMembersRoute
   '/users/$userId/edit': typeof MainUsersUserIdEditRoute
   '/projects/$projectId': typeof MainProjectsProjectIdIndexRoute
+  '/projects/my-projects': typeof MainProjectsMyProjectsIndexRoute
+  '/tasks/my-tasks': typeof MainTasksMyTasksIndexRoute
   '/teams/$teamId': typeof MainTeamsTeamIdIndexRoute
+  '/teams/my-teams': typeof MainTeamsMyTeamsIndexRoute
   '/users/$userId': typeof MainUsersUserIdIndexRoute
   '/projects/$projectId/tasks/create': typeof MainProjectsProjectIdTasksCreateRoute
+  '/projects/my-projects/$projectId': typeof MainProjectsMyProjectsProjectIdIndexRoute
+  '/tasks/my-tasks/$taskId': typeof MainTasksMyTasksTaskIdIndexRoute
+  '/teams/my-teams/$teamId': typeof MainTeamsMyTeamsTeamIdIndexRoute
   '/projects/$projectId/tasks/$taskId/edit': typeof MainProjectsProjectIdTasksTaskIdEditRoute
   '/projects/$projectId/tasks/$taskId': typeof MainProjectsProjectIdTasksTaskIdIndexRoute
 }
@@ -239,9 +264,6 @@ export interface FileRoutesByTo {
   '/users/create': typeof MainUsersCreateRoute
   '/activity-logs': typeof MainActivityLogsIndexRoute
   '/dashboard': typeof MainDashboardIndexRoute
-  '/my-projects': typeof MainMyProjectsIndexRoute
-  '/my-tasks': typeof MainMyTasksIndexRoute
-  '/my-teams': typeof MainMyTeamsIndexRoute
   '/projects': typeof MainProjectsIndexRoute
   '/tasks': typeof MainTasksIndexRoute
   '/teams': typeof MainTeamsIndexRoute
@@ -252,9 +274,15 @@ export interface FileRoutesByTo {
   '/teams/$teamId/members': typeof MainTeamsTeamIdMembersRoute
   '/users/$userId/edit': typeof MainUsersUserIdEditRoute
   '/projects/$projectId': typeof MainProjectsProjectIdIndexRoute
+  '/projects/my-projects': typeof MainProjectsMyProjectsIndexRoute
+  '/tasks/my-tasks': typeof MainTasksMyTasksIndexRoute
   '/teams/$teamId': typeof MainTeamsTeamIdIndexRoute
+  '/teams/my-teams': typeof MainTeamsMyTeamsIndexRoute
   '/users/$userId': typeof MainUsersUserIdIndexRoute
   '/projects/$projectId/tasks/create': typeof MainProjectsProjectIdTasksCreateRoute
+  '/projects/my-projects/$projectId': typeof MainProjectsMyProjectsProjectIdIndexRoute
+  '/tasks/my-tasks/$taskId': typeof MainTasksMyTasksTaskIdIndexRoute
+  '/teams/my-teams/$teamId': typeof MainTeamsMyTeamsTeamIdIndexRoute
   '/projects/$projectId/tasks/$taskId/edit': typeof MainProjectsProjectIdTasksTaskIdEditRoute
   '/projects/$projectId/tasks/$taskId': typeof MainProjectsProjectIdTasksTaskIdIndexRoute
 }
@@ -272,9 +300,6 @@ export interface FileRoutesById {
   '/_main/users/create': typeof MainUsersCreateRoute
   '/_main/activity-logs/': typeof MainActivityLogsIndexRoute
   '/_main/dashboard/': typeof MainDashboardIndexRoute
-  '/_main/my-projects/': typeof MainMyProjectsIndexRoute
-  '/_main/my-tasks/': typeof MainMyTasksIndexRoute
-  '/_main/my-teams/': typeof MainMyTeamsIndexRoute
   '/_main/projects/': typeof MainProjectsIndexRoute
   '/_main/tasks/': typeof MainTasksIndexRoute
   '/_main/teams/': typeof MainTeamsIndexRoute
@@ -285,9 +310,15 @@ export interface FileRoutesById {
   '/_main/teams/$teamId/members': typeof MainTeamsTeamIdMembersRoute
   '/_main/users/$userId/edit': typeof MainUsersUserIdEditRoute
   '/_main/projects/$projectId/': typeof MainProjectsProjectIdIndexRoute
+  '/_main/projects/my-projects/': typeof MainProjectsMyProjectsIndexRoute
+  '/_main/tasks/my-tasks/': typeof MainTasksMyTasksIndexRoute
   '/_main/teams/$teamId/': typeof MainTeamsTeamIdIndexRoute
+  '/_main/teams/my-teams/': typeof MainTeamsMyTeamsIndexRoute
   '/_main/users/$userId/': typeof MainUsersUserIdIndexRoute
   '/_main/projects/$projectId/tasks/create': typeof MainProjectsProjectIdTasksCreateRoute
+  '/_main/projects/my-projects/$projectId/': typeof MainProjectsMyProjectsProjectIdIndexRoute
+  '/_main/tasks/my-tasks/$taskId/': typeof MainTasksMyTasksTaskIdIndexRoute
+  '/_main/teams/my-teams/$teamId/': typeof MainTeamsMyTeamsTeamIdIndexRoute
   '/_main/projects/$projectId/tasks/$taskId/edit': typeof MainProjectsProjectIdTasksTaskIdEditRoute
   '/_main/projects/$projectId/tasks/$taskId/': typeof MainProjectsProjectIdTasksTaskIdIndexRoute
 }
@@ -305,9 +336,6 @@ export interface FileRouteTypes {
     | '/users/create'
     | '/activity-logs'
     | '/dashboard'
-    | '/my-projects'
-    | '/my-tasks'
-    | '/my-teams'
     | '/projects'
     | '/tasks'
     | '/teams'
@@ -318,9 +346,15 @@ export interface FileRouteTypes {
     | '/teams/$teamId/members'
     | '/users/$userId/edit'
     | '/projects/$projectId'
+    | '/projects/my-projects'
+    | '/tasks/my-tasks'
     | '/teams/$teamId'
+    | '/teams/my-teams'
     | '/users/$userId'
     | '/projects/$projectId/tasks/create'
+    | '/projects/my-projects/$projectId'
+    | '/tasks/my-tasks/$taskId'
+    | '/teams/my-teams/$teamId'
     | '/projects/$projectId/tasks/$taskId/edit'
     | '/projects/$projectId/tasks/$taskId'
   fileRoutesByTo: FileRoutesByTo
@@ -336,9 +370,6 @@ export interface FileRouteTypes {
     | '/users/create'
     | '/activity-logs'
     | '/dashboard'
-    | '/my-projects'
-    | '/my-tasks'
-    | '/my-teams'
     | '/projects'
     | '/tasks'
     | '/teams'
@@ -349,9 +380,15 @@ export interface FileRouteTypes {
     | '/teams/$teamId/members'
     | '/users/$userId/edit'
     | '/projects/$projectId'
+    | '/projects/my-projects'
+    | '/tasks/my-tasks'
     | '/teams/$teamId'
+    | '/teams/my-teams'
     | '/users/$userId'
     | '/projects/$projectId/tasks/create'
+    | '/projects/my-projects/$projectId'
+    | '/tasks/my-tasks/$taskId'
+    | '/teams/my-teams/$teamId'
     | '/projects/$projectId/tasks/$taskId/edit'
     | '/projects/$projectId/tasks/$taskId'
   id:
@@ -368,9 +405,6 @@ export interface FileRouteTypes {
     | '/_main/users/create'
     | '/_main/activity-logs/'
     | '/_main/dashboard/'
-    | '/_main/my-projects/'
-    | '/_main/my-tasks/'
-    | '/_main/my-teams/'
     | '/_main/projects/'
     | '/_main/tasks/'
     | '/_main/teams/'
@@ -381,9 +415,15 @@ export interface FileRouteTypes {
     | '/_main/teams/$teamId/members'
     | '/_main/users/$userId/edit'
     | '/_main/projects/$projectId/'
+    | '/_main/projects/my-projects/'
+    | '/_main/tasks/my-tasks/'
     | '/_main/teams/$teamId/'
+    | '/_main/teams/my-teams/'
     | '/_main/users/$userId/'
     | '/_main/projects/$projectId/tasks/create'
+    | '/_main/projects/my-projects/$projectId/'
+    | '/_main/tasks/my-tasks/$taskId/'
+    | '/_main/teams/my-teams/$teamId/'
     | '/_main/projects/$projectId/tasks/$taskId/edit'
     | '/_main/projects/$projectId/tasks/$taskId/'
   fileRoutesById: FileRoutesById
@@ -466,27 +506,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainProjectsIndexRouteImport
       parentRoute: typeof MainRouteRoute
     }
-    '/_main/my-teams/': {
-      id: '/_main/my-teams/'
-      path: '/my-teams'
-      fullPath: '/my-teams'
-      preLoaderRoute: typeof MainMyTeamsIndexRouteImport
-      parentRoute: typeof MainRouteRoute
-    }
-    '/_main/my-tasks/': {
-      id: '/_main/my-tasks/'
-      path: '/my-tasks'
-      fullPath: '/my-tasks'
-      preLoaderRoute: typeof MainMyTasksIndexRouteImport
-      parentRoute: typeof MainRouteRoute
-    }
-    '/_main/my-projects/': {
-      id: '/_main/my-projects/'
-      path: '/my-projects'
-      fullPath: '/my-projects'
-      preLoaderRoute: typeof MainMyProjectsIndexRouteImport
-      parentRoute: typeof MainRouteRoute
-    }
     '/_main/dashboard/': {
       id: '/_main/dashboard/'
       path: '/dashboard'
@@ -536,11 +555,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainUsersUserIdIndexRouteImport
       parentRoute: typeof MainRouteRoute
     }
+    '/_main/teams/my-teams/': {
+      id: '/_main/teams/my-teams/'
+      path: '/teams/my-teams'
+      fullPath: '/teams/my-teams'
+      preLoaderRoute: typeof MainTeamsMyTeamsIndexRouteImport
+      parentRoute: typeof MainRouteRoute
+    }
     '/_main/teams/$teamId/': {
       id: '/_main/teams/$teamId/'
       path: '/teams/$teamId'
       fullPath: '/teams/$teamId'
       preLoaderRoute: typeof MainTeamsTeamIdIndexRouteImport
+      parentRoute: typeof MainRouteRoute
+    }
+    '/_main/tasks/my-tasks/': {
+      id: '/_main/tasks/my-tasks/'
+      path: '/tasks/my-tasks'
+      fullPath: '/tasks/my-tasks'
+      preLoaderRoute: typeof MainTasksMyTasksIndexRouteImport
+      parentRoute: typeof MainRouteRoute
+    }
+    '/_main/projects/my-projects/': {
+      id: '/_main/projects/my-projects/'
+      path: '/projects/my-projects'
+      fullPath: '/projects/my-projects'
+      preLoaderRoute: typeof MainProjectsMyProjectsIndexRouteImport
       parentRoute: typeof MainRouteRoute
     }
     '/_main/projects/$projectId/': {
@@ -585,6 +625,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainProjectsProjectIdEditRouteImport
       parentRoute: typeof MainRouteRoute
     }
+    '/_main/teams/my-teams/$teamId/': {
+      id: '/_main/teams/my-teams/$teamId/'
+      path: '/teams/my-teams/$teamId'
+      fullPath: '/teams/my-teams/$teamId'
+      preLoaderRoute: typeof MainTeamsMyTeamsTeamIdIndexRouteImport
+      parentRoute: typeof MainRouteRoute
+    }
+    '/_main/tasks/my-tasks/$taskId/': {
+      id: '/_main/tasks/my-tasks/$taskId/'
+      path: '/tasks/my-tasks/$taskId'
+      fullPath: '/tasks/my-tasks/$taskId'
+      preLoaderRoute: typeof MainTasksMyTasksTaskIdIndexRouteImport
+      parentRoute: typeof MainRouteRoute
+    }
+    '/_main/projects/my-projects/$projectId/': {
+      id: '/_main/projects/my-projects/$projectId/'
+      path: '/projects/my-projects/$projectId'
+      fullPath: '/projects/my-projects/$projectId'
+      preLoaderRoute: typeof MainProjectsMyProjectsProjectIdIndexRouteImport
+      parentRoute: typeof MainRouteRoute
+    }
     '/_main/projects/$projectId/tasks/create': {
       id: '/_main/projects/$projectId/tasks/create'
       path: '/projects/$projectId/tasks/create'
@@ -627,9 +688,6 @@ interface MainRouteRouteChildren {
   MainUsersCreateRoute: typeof MainUsersCreateRoute
   MainActivityLogsIndexRoute: typeof MainActivityLogsIndexRoute
   MainDashboardIndexRoute: typeof MainDashboardIndexRoute
-  MainMyProjectsIndexRoute: typeof MainMyProjectsIndexRoute
-  MainMyTasksIndexRoute: typeof MainMyTasksIndexRoute
-  MainMyTeamsIndexRoute: typeof MainMyTeamsIndexRoute
   MainProjectsIndexRoute: typeof MainProjectsIndexRoute
   MainTasksIndexRoute: typeof MainTasksIndexRoute
   MainTeamsIndexRoute: typeof MainTeamsIndexRoute
@@ -640,9 +698,15 @@ interface MainRouteRouteChildren {
   MainTeamsTeamIdMembersRoute: typeof MainTeamsTeamIdMembersRoute
   MainUsersUserIdEditRoute: typeof MainUsersUserIdEditRoute
   MainProjectsProjectIdIndexRoute: typeof MainProjectsProjectIdIndexRoute
+  MainProjectsMyProjectsIndexRoute: typeof MainProjectsMyProjectsIndexRoute
+  MainTasksMyTasksIndexRoute: typeof MainTasksMyTasksIndexRoute
   MainTeamsTeamIdIndexRoute: typeof MainTeamsTeamIdIndexRoute
+  MainTeamsMyTeamsIndexRoute: typeof MainTeamsMyTeamsIndexRoute
   MainUsersUserIdIndexRoute: typeof MainUsersUserIdIndexRoute
   MainProjectsProjectIdTasksCreateRoute: typeof MainProjectsProjectIdTasksCreateRoute
+  MainProjectsMyProjectsProjectIdIndexRoute: typeof MainProjectsMyProjectsProjectIdIndexRoute
+  MainTasksMyTasksTaskIdIndexRoute: typeof MainTasksMyTasksTaskIdIndexRoute
+  MainTeamsMyTeamsTeamIdIndexRoute: typeof MainTeamsMyTeamsTeamIdIndexRoute
   MainProjectsProjectIdTasksTaskIdEditRoute: typeof MainProjectsProjectIdTasksTaskIdEditRoute
   MainProjectsProjectIdTasksTaskIdIndexRoute: typeof MainProjectsProjectIdTasksTaskIdIndexRoute
 }
@@ -654,9 +718,6 @@ const MainRouteRouteChildren: MainRouteRouteChildren = {
   MainUsersCreateRoute: MainUsersCreateRoute,
   MainActivityLogsIndexRoute: MainActivityLogsIndexRoute,
   MainDashboardIndexRoute: MainDashboardIndexRoute,
-  MainMyProjectsIndexRoute: MainMyProjectsIndexRoute,
-  MainMyTasksIndexRoute: MainMyTasksIndexRoute,
-  MainMyTeamsIndexRoute: MainMyTeamsIndexRoute,
   MainProjectsIndexRoute: MainProjectsIndexRoute,
   MainTasksIndexRoute: MainTasksIndexRoute,
   MainTeamsIndexRoute: MainTeamsIndexRoute,
@@ -667,9 +728,16 @@ const MainRouteRouteChildren: MainRouteRouteChildren = {
   MainTeamsTeamIdMembersRoute: MainTeamsTeamIdMembersRoute,
   MainUsersUserIdEditRoute: MainUsersUserIdEditRoute,
   MainProjectsProjectIdIndexRoute: MainProjectsProjectIdIndexRoute,
+  MainProjectsMyProjectsIndexRoute: MainProjectsMyProjectsIndexRoute,
+  MainTasksMyTasksIndexRoute: MainTasksMyTasksIndexRoute,
   MainTeamsTeamIdIndexRoute: MainTeamsTeamIdIndexRoute,
+  MainTeamsMyTeamsIndexRoute: MainTeamsMyTeamsIndexRoute,
   MainUsersUserIdIndexRoute: MainUsersUserIdIndexRoute,
   MainProjectsProjectIdTasksCreateRoute: MainProjectsProjectIdTasksCreateRoute,
+  MainProjectsMyProjectsProjectIdIndexRoute:
+    MainProjectsMyProjectsProjectIdIndexRoute,
+  MainTasksMyTasksTaskIdIndexRoute: MainTasksMyTasksTaskIdIndexRoute,
+  MainTeamsMyTeamsTeamIdIndexRoute: MainTeamsMyTeamsTeamIdIndexRoute,
   MainProjectsProjectIdTasksTaskIdEditRoute:
     MainProjectsProjectIdTasksTaskIdEditRoute,
   MainProjectsProjectIdTasksTaskIdIndexRoute:

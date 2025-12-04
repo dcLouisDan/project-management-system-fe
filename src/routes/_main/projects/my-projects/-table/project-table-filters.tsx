@@ -1,14 +1,14 @@
 import DebouncedInput from '@/components/debounced-input'
 import SortPopover from '@/components/sort-popover'
 import type { SortDirection } from '@/lib/types/ui'
-import { SORTABLE_TEAM_FIELDS } from '@/lib/types/team'
+import { SORTABLE_PROJECT_FIELDS } from '@/lib/types/project'
 import { useNavigate, useSearch } from '@tanstack/react-router'
 import { useState } from 'react'
-import type { MyTeamsIndexSearchParams } from '..'
+import type { MyProjectsIndexSearchParams } from '..'
 
-export default function TeamTableFilters() {
+export default function ProjectTableFilters() {
   const { name } = useSearch({
-    from: '/_main/my-teams/',
+    from: '/_main/projects/my-projects/',
   })
 
   const navigate = useNavigate()
@@ -16,7 +16,7 @@ export default function TeamTableFilters() {
     navigate({
       to: '.',
       replace: true,
-      search: (prev: MyTeamsIndexSearchParams) => ({
+      search: (prev: MyProjectsIndexSearchParams) => ({
         ...prev,
         name: newName.toString(),
         page: 1,
@@ -44,7 +44,7 @@ export default function TeamTableFilters() {
     navigate({
       to: '.',
       replace: true,
-      search: (prev: MyTeamsIndexSearchParams) => ({
+      search: (prev: MyProjectsIndexSearchParams) => ({
         ...prev,
         sort,
         direction,
@@ -57,7 +57,7 @@ export default function TeamTableFilters() {
     navigate({
       to: '.',
       replace: true,
-      search: (prev: MyTeamsIndexSearchParams) => {
+      search: (prev: MyProjectsIndexSearchParams) => {
         const { sort, direction, ...rest } = prev
         return {
           ...rest,
@@ -72,7 +72,7 @@ export default function TeamTableFilters() {
       <DebouncedInput
         value={name ?? ''}
         onChange={setName}
-        placeholder="Search teams..."
+        placeholder="Search projects..."
         debounce={500}
       />
 
@@ -81,7 +81,7 @@ export default function TeamTableFilters() {
         onDirectionValueChange={onDirectionValueChange}
         sortValue={popoverSortValues.sort}
         directionValue={popoverSortValues.direction}
-        sortableFields={SORTABLE_TEAM_FIELDS}
+        sortableFields={SORTABLE_PROJECT_FIELDS}
         onSubmit={() =>
           onPopoverSortSubmit(
             popoverSortValues.sort,
@@ -93,8 +93,4 @@ export default function TeamTableFilters() {
     </div>
   )
 }
-
-
-
-
 

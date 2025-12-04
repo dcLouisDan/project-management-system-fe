@@ -20,10 +20,9 @@ export const columns: ColumnDef<Task>[] = [
       return (
         <Link
           className="border-b border-foreground/30 border-dotted hover:border-dashed hover:border-foreground/50"
-          to="/projects/$projectId/tasks/$taskId"
+          to="/tasks/my-tasks/$taskId"
           params={{
             taskId: task.id.toString(),
-            projectId: task.project_id.toString(),
           }}
         >
           {task.title}
@@ -91,10 +90,9 @@ export const columnsAssignedByMe: ColumnDef<Task>[] = [
       return (
         <Link
           className="border-b border-foreground/30 border-dotted hover:border-dashed hover:border-foreground/50"
-          to="/projects/$projectId/tasks/$taskId"
+          to="/tasks/my-tasks/$taskId"
           params={{
             taskId: task.id.toString(),
-            projectId: task.project_id.toString(),
           }}
         >
           {task.title}

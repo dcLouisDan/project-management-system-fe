@@ -19,7 +19,7 @@ export interface Task {
   is_overdue: boolean
   reviews: TaskReview[]
   created_at: string
-  updated_at: string
+  updated_at?: string
   deleted_at?: string
 }
 

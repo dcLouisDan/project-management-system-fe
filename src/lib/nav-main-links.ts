@@ -40,17 +40,23 @@ export const NAV_MAIN_LINKS: SidebarNavItem[] = [
     // All roles can access dashboard
   },
   {
-    title: 'Projects',
-    url: '#',
-    icon: ClipboardList,
-    // All roles can access projects (backend filters based on access)
-    items: [
-      {
-        title: 'Projects List',
-        url: '/projects',
-        allowedRoles: ['admin', 'project manager'],
-      },
-    ],
+    title: 'My Tasks',
+    url: '/tasks/my-tasks',
+    icon: ClipboardCheck,
+    // All roles can access their own tasks
+  },
+  {
+    title: 'My Projects',
+    url: '/projects/my-projects',
+    icon: FolderKanban,
+    // Only project managers can access their managed projects
+  },
+  {
+    title: 'My Teams',
+    url: '/teams/my-teams',
+    icon: UsersRound,
+    // Only team leads can access their led teams
+    allowedRoles: ['team lead'],
   },
   {
     title: 'Tasks',
@@ -58,26 +64,12 @@ export const NAV_MAIN_LINKS: SidebarNavItem[] = [
     icon: ListTodo,
     allowedRoles: ['admin'],
   },
-
   {
-    title: 'My Tasks',
-    url: '/my-tasks',
-    icon: ClipboardCheck,
-    // All roles can access their own tasks
-  },
-  {
-    title: 'My Projects',
-    url: '/my-projects',
-    icon: FolderKanban,
-    // Only project managers can access their managed projects
-    allowedRoles: ['project manager'],
-  },
-  {
-    title: 'My Teams',
-    url: '/my-teams',
-    icon: UsersRound,
-    // Only team leads can access their led teams
-    allowedRoles: ['team lead'],
+    title: 'Projects',
+    url: '/projects',
+    icon: ClipboardList,
+    // All roles can access projects (backend filters based on access)
+    allowedRoles: ['admin'],
   },
   {
     title: 'Users and Teams',

@@ -12,12 +12,14 @@ import {
 import type { FetchTasksParams } from '@/lib/api/tasks'
 import { tasksQueryOptions } from '@/lib/query-options/tasks-query-options'
 import { useQuery } from '@tanstack/react-query'
-import { Link } from '@tanstack/react-router'
+import { Link, useLocation } from '@tanstack/react-router'
 import { Plus } from 'lucide-react'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { taskColumns } from './task-columns'
+import { myProjectTaskColumns } from '@/routes/_main/projects/my-projects/-table/my-project-task-columns'
 import StatePaginationBar from '@/components/state-pagination-bar'
 import ProjectTasksTableFilters from './project-tasks-table-filters'
+import usePermissions from '@/hooks/use-permissions'
 
 interface ProjectTasksCardProps {
   projectId: string
@@ -30,6 +32,14 @@ export default function ProjectTasksCard({ projectId }: ProjectTasksCardProps) {
     per_page: 10,
   })
   const { data: tasks, isFetching } = useQuery(tasksQueryOptions(fetchParams))
+  const { canCreateTasks } = usePermissions()
+  const currentPath = useLocation().pathname
+  const columnsDef = useMemo(() => {
+    if (currentPath.includes('/my-projects/')) {
+      return myProjectTaskColumns
+    }
+    return taskColumns
+  }, [])
   return (
     <Card>
       <CardHeader>
@@ -37,15 +47,17 @@ export default function ProjectTasksCard({ projectId }: ProjectTasksCardProps) {
         <CardDescription>
           Manage tasks required to finish this project.
         </CardDescription>
-        <CardAction>
-          <Link
-            to="/projects/$projectId/tasks/create"
-            params={{ projectId }}
-            className={buttonVariants()}
-          >
-            <Plus /> Create Task
-          </Link>
-        </CardAction>
+        {canCreateTasks && (
+          <CardAction>
+            <Link
+              to="/projects/$projectId/tasks/create"
+              params={{ projectId }}
+              className={buttonVariants()}
+            >
+              <Plus /> Create Task
+            </Link>
+          </CardAction>
+        )}
       </CardHeader>
       <CardContent>
         <ProjectTasksTableFilters
@@ -54,7 +66,7 @@ export default function ProjectTasksCard({ projectId }: ProjectTasksCardProps) {
         />
         <DataTable
           data={tasks?.data || []}
-          columns={taskColumns}
+          columns={columnsDef}
           isFetching={isFetching}
         />
       </CardContent>

@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import MainInsetLayout from '../-main-inset-layout'
+import MainInsetLayout from '../../-main-inset-layout'
 import { tasksQueryOptions } from '@/lib/query-options/tasks-query-options'
 import { useQuery } from '@tanstack/react-query'
 import { DataTable } from '@/components/data-table'
@@ -31,7 +31,7 @@ export interface MyTasksIndexSearchParams {
   tab?: TabValues
 }
 
-export const Route = createFileRoute('/_main/my-tasks/')({
+export const Route = createFileRoute('/_main/tasks/my-tasks/')({
   component: RouteComponent,
   validateSearch: (search) => search as MyTasksIndexSearchParams,
   head: () => ({
@@ -50,10 +50,10 @@ export const Route = createFileRoute('/_main/my-tasks/')({
 function RouteComponent() {
   const { tab } = Route.useSearch()
   const navigate = useNavigate()
-  const {canReassignTasks} = usePermissions()
+  const { canReassignTasks } = usePermissions()
   return (
     <MainInsetLayout
-      breadcrumbItems={[{ label: 'My Tasks', href: '/my-tasks' }]}
+      breadcrumbItems={[{ label: 'My Tasks', href: '/tasks/my-tasks' }]}
     >
       <PageHeader title={PAGE_TITLE} description={PAGE_DESCRIPTION} />
       <Tabs
@@ -70,8 +70,8 @@ function RouteComponent() {
           </TabsTrigger>
           {canReassignTasks && (
             <TabsTrigger value="assigned_by_me">
-            <Send />
-            Assigned by Me
+              <Send />
+              Assigned by Me
             </TabsTrigger>
           )}
         </TabsList>

@@ -247,7 +247,7 @@ const TEAM_MEMBER_PERMISSIONS: Permissions = {
   canEditTasks: false,
   canEditProjectTasks: false,
   canEditTeamTasks: false,
-  canEditOwnTasks: true,
+  canEditOwnTasks: false,
   canDeleteTasks: false,
   canDeleteOwnTasks: false,
   canReassignTasks: false,
@@ -437,4 +437,3 @@ export function getAllowedRolesForSection(section: NavSection): Role[] {
   const roles: Role[] = ['admin', 'project manager', 'team lead', 'team member']
   return roles.filter((role) => canAccessNavSection(role, section))
 }
-
