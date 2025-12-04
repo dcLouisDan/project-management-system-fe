@@ -12,4 +12,5 @@ export const QUERY_KEYS = {
   TASKS: 'tasks',
   DASHBOARD: 'dashboard',
   ACTIVITY_LOGS: 'activity-logs',
+  CHECK_ADMIN_EXISTS: 'check-admin-exists',
 }

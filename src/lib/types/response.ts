@@ -41,6 +41,7 @@ export interface PaginatedResponse<T> {
 }
 
 // User Responses
+export type CheckAdminExistsResponse = ApiResponse<{ exists: boolean }>
 export type GetAuthUserResponse = ApiResponse<{ user: User }>
 export type ShowUserResponse = { data: User }
 export type UserCreateResponse = ApiResponse<User>

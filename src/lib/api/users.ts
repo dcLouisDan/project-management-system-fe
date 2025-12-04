@@ -3,6 +3,7 @@ import { handleApiError } from '../handle-api-error'
 import type { SortDirection } from '../types/ui'
 import type { User, UserCreate, UserUpdate } from '../types/user'
 import {
+  type CheckAdminExistsResponse,
   type PaginatedResponse,
   type ShowUserResponse,
   type SoftDeleteStatus,
@@ -23,6 +24,15 @@ export interface FetchUsersParams {
   team_id?: number
   direction?: SortDirection
   delete_status?: SoftDeleteStatus
+}
+
+export async function checkAdminExists() {
+  return api
+    .get<CheckAdminExistsResponse>('/check-admin-exists')
+    .then((response) => response.data.data.exists)
+    .catch((error) => {
+      throw handleApiError(error)
+    })
 }
 
 export class UserNotFoundError extends Error {}

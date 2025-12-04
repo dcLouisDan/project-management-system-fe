@@ -1,6 +1,6 @@
 import { keepPreviousData, queryOptions } from '@tanstack/react-query'
 import { QUERY_KEYS } from '../constants'
-import { fetchUsers, type FetchUsersParams } from '../api/users'
+import { checkAdminExists, fetchUsers, type FetchUsersParams } from '../api/users'
 
 export const usersQueryOptions = (params: FetchUsersParams) =>
   queryOptions({
@@ -10,4 +10,12 @@ export const usersQueryOptions = (params: FetchUsersParams) =>
       return response.data
     },
     placeholderData: keepPreviousData,
+  })
+
+export const checkAdminExistsQueryOptions = () =>
+  queryOptions({
+    queryKey: [QUERY_KEYS.CHECK_ADMIN_EXISTS],
+    queryFn: async () => {
+      return await checkAdminExists()
+    },
   })
