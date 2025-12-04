@@ -991,9 +991,9 @@ Submit a task review.
 
 ---
 
-## Dashboard (Proposed)
+## Dashboard
 
-> **⚠️ PROPOSED ENDPOINTS:** These endpoints do not exist in the backend yet. This section documents the suggested API contract for dashboard functionality. Backend implementation is required before frontend integration.
+> **✅ IMPLEMENTED:** Dashboard endpoints are fully implemented and integrated in the frontend.
 
 ### Get Dashboard Statistics
 
@@ -1253,6 +1253,60 @@ Get recent activity across the system (optional, for activity feed widget).
     }
     created_at: string
   }>
+}
+```
+
+---
+
+## Activity Logs
+
+### List Activity Logs
+
+**GET** `/activity-logs`
+
+Get paginated list of activity logs (admin only).
+
+**Query Parameters:**
+```typescript
+{
+  page?: number
+  per_page?: number
+  user_id?: number
+  action?: string
+  auditable_type?: string
+  auditable_id?: number
+  description?: string
+  sort?: string
+  direction?: 'asc' | 'desc'
+  date_from?: string
+  date_to?: string
+}
+```
+
+**Response:** `200 OK`
+```typescript
+{
+  data: ActivityLog[]
+  links: PaginationLinks
+  meta: PaginationMeta
+}
+```
+
+---
+
+### ActivityLog
+
+```typescript
+interface ActivityLog {
+  id: number
+  user_id: number
+  user_name: string
+  action: string
+  auditable_type: string
+  auditable_id: number
+  description: string
+  metadata: Record<string, any>
+  created_at: string
 }
 ```
 

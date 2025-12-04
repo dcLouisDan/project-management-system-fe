@@ -23,7 +23,7 @@
 - Use kebab-case: `user.ts`, `project.ts`, `task.ts`, `team.ts`
 
 **API Files:**
-- Use kebab-case: `auth.ts`, `projects.ts`, `profile.settings.ts`
+- Use kebab-case: `auth.ts`, `projects.ts`, `profile.settings.ts`, `dashboard.ts`, `activity-logs.ts`
 
 ### Components
 
@@ -107,16 +107,16 @@ src/
 
 **API Functions:**
 - Location: `lib/api/`
-- One file per resource: `projects.ts`, `tasks.ts`, `users.ts`, `teams.ts`, `auth.ts`
+- One file per resource: `projects.ts`, `tasks.ts`, `users.ts`, `teams.ts`, `auth.ts`, `dashboard.ts`, `activity-logs.ts`, `profile.settings.ts`
 
 **Query Options:**
 - Location: `lib/query-options/`
 - Naming: `*-query-options.ts`
-- Examples: `projects-query-options.ts`, `show-project-query-options.ts`
+- Examples: `projects-query-options.ts`, `show-project-query-options.ts`, `dashboard-query-options.ts`, `activity-logs-query-options.ts`
 
 **Types:**
 - Location: `lib/types/`
-- One file per domain: `user.ts`, `project.ts`, `task.ts`, `team.ts`
+- One file per domain: `user.ts`, `project.ts`, `task.ts`, `team.ts`, `dashboard.ts`, `activity-log.ts`, `role.ts`, `status.ts`, `priority.ts`
 
 **Utilities:**
 - Location: `lib/`

@@ -95,13 +95,16 @@ Axios interceptor was using `window.location.href` for redirects instead of usin
 
 ### 4. Complete Dashboard Implementation
 **Priority:** P1  
-**Status:** Incomplete (Blocked - Waiting for Backend API)
+**Status:** ✅ Complete
 
 **Description:**
-Dashboard route (`src/routes/_main/dashboard.tsx`) only displays "Dashboard" text. Needs full implementation. This is an admin dashboard that displays an overview of the entire system including users, teams, projects, and tasks.
+Dashboard route (`src/routes/_main/dashboard/index.tsx`) is fully implemented with role-based layouts. The dashboard displays an overview of the system including users, teams, projects, and tasks, with different views for each role (Admin, Project Manager, Team Lead, Team Member).
 
-**Backend Requirements:**
-> **Note:** Dashboard API routes do not exist in the backend yet. See `API_REFERENCE.md` → "Dashboard (Proposed)" section for suggested endpoints and response formats.
+**Implementation:**
+- Role-based dashboard layouts for each user role
+- Dashboard stats API integration
+- Recent projects and tasks widgets
+- Responsive grid layout
 
 **Suggested Dashboard Widgets:**
 1. **Summary Cards** - Total counts with trend indicators
@@ -136,32 +139,32 @@ Dashboard route (`src/routes/_main/dashboard.tsx`) only displays "Dashboard" tex
 - [x] Create dashboard widget components structure in `src/routes/_main/dashboard/-components/`
 - [x] Set up responsive grid layout (2-4 columns based on viewport)
 - [x] Create mock data module (`src/lib/mock/dashboard-data.ts`)
-- [ ] Implement loading states and skeletons (deferred to Phase 2)
-- [x] Create summary stat cards with mock data (users, teams, projects, tasks)
-- [x] Implement charts using shadcn/recharts (`src/components/ui/chart.tsx`):
-  - [x] Projects by status - Pie/Donut chart (`ChartContainer` + `PieChart`)
-  - [x] Tasks by priority - Bar chart (`ChartContainer` + `BarChart`)
-  - [x] Tasks by status - Vertical bar chart
-  - [ ] Users by role - Pie chart (optional, deferred)
-- [x] Create recent items lists (recent projects, recent tasks) with mock data
-- [x] Add trend indicators (up/down arrows with percentages) using mock deltas
+- [x] Implement loading states
+- [x] Create summary stat cards with API data (users, teams, projects, tasks)
+- [x] Implement charts using shadcn/recharts (`src/components/ui/chart.tsx`)
+- [x] Create recent items lists (recent projects, recent tasks) with API data
+- [x] Add trend indicators (up/down arrows with percentages)
 
 **Phase 1 Files Created:**
-- `src/lib/mock/dashboard-data.ts` - Mock data and chart configs
+- `src/lib/mock/dashboard-data.ts` - Mock data and chart configs (legacy, replaced by API)
 - `src/routes/_main/dashboard/-components/stat-card.tsx` - Summary stat card with trend indicator
 - `src/routes/_main/dashboard/-components/projects-status-chart.tsx` - Donut chart
 - `src/routes/_main/dashboard/-components/tasks-priority-chart.tsx` - Horizontal bar chart
 - `src/routes/_main/dashboard/-components/tasks-status-chart.tsx` - Vertical bar chart
 - `src/routes/_main/dashboard/-components/recent-projects.tsx` - Projects list with progress
 - `src/routes/_main/dashboard/-components/recent-tasks.tsx` - Tasks list with badges
-- `src/routes/_main/dashboard.tsx` - Updated with grid layout and all components
+- `src/routes/_main/dashboard/-components/admin-dashboard-layout.tsx` - Admin layout
+- `src/routes/_main/dashboard/-components/project-manager-dashboard-layout.tsx` - PM layout
+- `src/routes/_main/dashboard/-components/team-lead-dashboard-layout.tsx` - Team Lead layout
+- `src/routes/_main/dashboard/-components/team-member-dashboard-layout.tsx` - Team Member layout
+- `src/routes/_main/dashboard/index.tsx` - Main dashboard route with role-based rendering
 
-*Phase 2: API Integration (After Backend Routes Available)*
-- [ ] Create `src/lib/api/dashboard.ts` with API functions
-- [ ] Create `src/lib/query-options/dashboard-query-options.ts`
-- [ ] Add dashboard route loader for data prefetching
-- [ ] Replace mock data with real API data in widgets
-- [ ] Implement error states for failed API calls
+*Phase 2: API Integration* ✅ **COMPLETE**
+- [x] Create `src/lib/api/dashboard.ts` with API functions
+- [x] Create `src/lib/query-options/dashboard-query-options.ts`
+- [x] Replace mock data with real API data in widgets
+- [x] Implement error states for failed API calls
+- [x] Implement role-based data filtering via `force_role` parameter
 
 *Phase 3: Polish & Enhancements*
 - [ ] Add click-through navigation to detail pages (cards → list pages)
@@ -646,6 +649,8 @@ function AppSidebar() {
 **Priority:** P1  
 **Status:** ✅ Complete
 
+**Note:** Implemented at `/tasks` (admin only).
+
 **Description:**
 Create a dedicated global tasks index page (`/tasks`) that serves as the system-wide task list. Similar to the users index page, this page will display all tasks across all projects with filtering, sorting, and pagination capabilities.
 
@@ -785,20 +790,55 @@ Create a "My Teams" page (`/my-teams`) available only for the Team Lead role. Di
 **Status:** ✅ Complete
 
 **Description:**
-Create a "My Projects" page (`/my-projects`) available only for the Project Manager role. Displays projects where `manager_id` matches the current user's ID.
+Create a "My Projects" page (`/projects/my-projects`) available only for the Project Manager role. Displays projects where `manager_id` matches the current user's ID.
 
 **Files Created:**
-- `src/routes/_main/my-projects/index.tsx` - My Projects page
-- `src/routes/_main/my-projects/-table/columns.tsx` - Table columns
-- `src/routes/_main/my-projects/-table/project-table-filters.tsx` - Filters component
+- `src/routes/_main/projects/my-projects/index.tsx` - My Projects page
+- `src/routes/_main/projects/my-projects/-table/columns.tsx` - Table columns
+- `src/routes/_main/projects/my-projects/-table/project-table-filters.tsx` - Filters component
+- `src/routes/_main/projects/my-projects/$projectId/index.tsx` - Project detail page
+- `src/routes/_main/projects/my-projects/$projectId/-not-found-component.tsx` - 404 component
 
 **Files Updated:**
 - `src/lib/nav-main-links.ts` - Add My Projects link (project manager only)
 
 **Implementation:**
-- [x] Create `src/routes/_main/my-projects/index.tsx` with `manager_id` filter
+- [x] Create `src/routes/_main/projects/my-projects/index.tsx` with `manager_id` filter
 - [x] Create table columns and filters (reuse existing patterns)
 - [x] Add navigation link with `allowedRoles: ['project manager']`
+
+---
+
+### 28. Create Activity Logs Page
+**Priority:** P1  
+**Status:** ✅ Complete
+
+**Description:**
+Create an Activity Logs page (`/activity-logs`) available only for Admin role. Displays system-wide audit logs with filtering and pagination.
+
+**Files Created:**
+- `src/routes/_main/activity-logs/index.tsx` - Activity Logs page
+- `src/routes/_main/activity-logs/-table/columns.tsx` - Table columns
+- `src/routes/_main/activity-logs/-table/activity-log-table-filters.tsx` - Filters component
+- `src/lib/api/activity-logs.ts` - API functions
+- `src/lib/query-options/activity-logs-query-options.ts` - Query options
+- `src/lib/types/activity-log.ts` - Type definitions
+
+**Files Updated:**
+- `src/lib/nav-main-links.ts` - Add Activity Logs link (admin only)
+
+**Implementation:**
+- [x] Create `src/routes/_main/activity-logs/index.tsx` with admin-only access
+- [x] Implement `beforeLoad` hook to restrict access to admin role
+- [x] Create table columns and filters
+- [x] Add API integration
+- [x] Add navigation link with `allowedRoles: ['admin']`
+
+**Features:**
+- Filter by user, action, auditable type, date range
+- Pagination support
+- Sortable columns
+- Admin-only access enforcement
 
 ---
 
@@ -956,9 +996,9 @@ Add end-to-end tests for critical user flows.
 
 ## Summary
 
-**Total Issues:** 23+  
-**Critical (P0):** 3  
-**High (P1):** 7 (includes Role-Based UI Permissions)  
+**Total Issues:** 28+  
+**Critical (P0):** 3 (all complete)  
+**High (P1):** 8 (includes Role-Based UI Permissions, Dashboard, My Tasks/Projects/Teams, Activity Logs)  
 **Medium (P2):** 6  
 **Low (P3):** 7
 
@@ -969,8 +1009,9 @@ Add end-to-end tests for critical user flows.
 - Low: 2-4 weeks
 
 **Recommended Order:**
-1. **P0 - Critical** - Fix console.log, error handling, auth redirect (blocks production)
-2. **P1 - High** - Complete dashboard, remove demo code, fix inconsistencies, **implement role-based permissions** (core features)
+1. **P0 - Critical** - ✅ All complete (console.log, error handling, auth redirect)
+2. **P1 - High** - ✅ Most complete (dashboard, role-based permissions, My Tasks/Projects/Teams, Activity Logs)
+   - ⏳ Remaining: Fix hardcoded sidebar data, complete settings routes
 3. **P2 - Medium** - Standardize patterns, improve type safety (code quality)
 4. **P3 - Low** - Add tests, accessibility, optimizations (polish)
 
@@ -983,5 +1024,6 @@ Add end-to-end tests for critical user flows.
 - ✅ AppSidebar updated to use role-filtered navigation
 - ✅ Action buttons conditionally rendered on all pages
 - ✅ Deleted tabs hidden for non-admin users
-- ⏳ Route-level gating in `beforeLoad` hooks (pending)
+- ✅ Route-level gating in `beforeLoad` hooks (Activity Logs, My Projects, My Teams)
+- ✅ Role-based dashboard layouts implemented
 

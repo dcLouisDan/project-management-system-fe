@@ -41,6 +41,13 @@ src/
 ├── routes/             # TanStack Router file-based routes
 │   ├── __root.tsx     # Root route
 │   ├── _main/         # Protected main layout routes
+│   │   ├── dashboard/ # Dashboard with role-based layouts
+│   │   ├── projects/  # Projects routes (list, detail, create, edit, my-projects)
+│   │   ├── tasks/     # Tasks routes (list, my-tasks)
+│   │   ├── teams/     # Teams routes (list, detail, create, edit, my-teams)
+│   │   ├── users/     # Users routes (list, detail, create, edit)
+│   │   ├── activity-logs/ # Activity logs (admin only)
+│   │   └── settings/  # Settings routes (profile)
 │   └── auth/          # Authentication routes
 └── styles.css         # Global styles and theme
 ```
@@ -53,10 +60,15 @@ TanStack Router uses file-based routing where file structure maps directly to UR
 
 - `src/routes/__root.tsx` → `/` (root layout)
 - `src/routes/_main/route.tsx` → Layout wrapper for protected routes
-- `src/routes/_main/dashboard.tsx` → `/dashboard`
+- `src/routes/_main/dashboard/index.tsx` → `/dashboard` (role-based layouts)
 - `src/routes/_main/projects/index.tsx` → `/projects`
+- `src/routes/_main/projects/my-projects/index.tsx` → `/projects/my-projects` (project manager only)
 - `src/routes/_main/projects/$projectId/index.tsx` → `/projects/:projectId`
 - `src/routes/_main/projects/$projectId/edit.tsx` → `/projects/:projectId/edit`
+- `src/routes/_main/tasks/index.tsx` → `/tasks` (admin only)
+- `src/routes/_main/tasks/my-tasks/index.tsx` → `/tasks/my-tasks` (all roles)
+- `src/routes/_main/teams/my-teams/index.tsx` → `/teams/my-teams` (team lead only)
+- `src/routes/_main/activity-logs/index.tsx` → `/activity-logs` (admin only)
 - `src/routes/auth/login.tsx` → `/auth/login`
 
 ### Route Organization Patterns
@@ -96,6 +108,8 @@ TanStack Router uses file-based routing where file structure maps directly to UR
 - Use `usePermissions()` hook for permission checks in components
 - Navigation items filtered by role via `getNavLinksForRole()`
 - Action buttons conditionally rendered based on permissions
+- Route-level gating via `beforeLoad` hooks (e.g., Activity Logs admin-only)
+- Dashboard renders role-specific layouts (Admin, Project Manager, Team Lead, Team Member)
 - See `docs/features/ROLE_UI_PERMISSIONS.md` for permission matrix
 
 **Error Handling:**
@@ -282,6 +296,8 @@ function RouteComponent() {
 - `use-manage-users.ts` - User CRUD operations
 - `use-manage-teams.ts` - Team CRUD operations and member management
 - `use-profile-settings.ts` - Authenticated user profile and password updates
+- `use-permissions.ts` - Role-based permission checks
+- `use-form-reset.ts` - Form reset logic after successful submissions
 
 **Utility Hooks:**
 - `use-appearance.ts` - Theme management
@@ -333,7 +349,7 @@ export default function useManageResource() {
 - `withCredentials: true` for session cookie support
 
 **API Organization:**
-- One file per resource: `auth.ts`, `projects.ts`, `tasks.ts`, `users.ts`, `teams.ts`, `profile.settings.ts`
+- One file per resource: `auth.ts`, `projects.ts`, `tasks.ts`, `users.ts`, `teams.ts`, `profile.settings.ts`, `dashboard.ts`, `activity-logs.ts`
 - Functions return axios responses
 - Error handling via `handleApiError()` utility
 
@@ -403,4 +419,38 @@ export default function useManageResource() {
 2. **React Query** - Server state (cached API data)
 3. **Local State** - Component-specific UI state (useState)
 4. **TanStack Form** - Form state (managed by form library)
+
+## Feature-Specific Routes
+
+### Dashboard
+- **Route:** `/dashboard`
+- **Access:** All authenticated users
+- **Implementation:** Role-based dashboard layouts
+  - `AdminDashboardLayout` - Full system overview
+  - `ProjectManagerDashboardLayout` - Project manager view
+  - `TeamLeadDashboardLayout` - Team lead view
+  - `TeamMemberDashboardLayout` - Team member view
+- **Data:** Dashboard stats, recent projects, recent tasks (filtered by role)
+
+### My Tasks
+- **Route:** `/tasks/my-tasks`
+- **Access:** All authenticated users
+- **Features:** Tabs for "Assigned to Me" and "Assigned by Me"
+- **Filtering:** Uses `assigned_to_id` and `assigned_by_id` query parameters
+
+### My Projects
+- **Route:** `/projects/my-projects`
+- **Access:** Project Manager role only
+- **Filtering:** Uses `manager_id` query parameter
+
+### My Teams
+- **Route:** `/teams/my-teams`
+- **Access:** Team Lead role only
+- **Filtering:** Uses `lead_id` query parameter
+
+### Activity Logs
+- **Route:** `/activity-logs`
+- **Access:** Admin role only (enforced via `beforeLoad` hook)
+- **Features:** System-wide audit log with filtering and pagination
+- **Filters:** User, action, auditable type, date range
 
