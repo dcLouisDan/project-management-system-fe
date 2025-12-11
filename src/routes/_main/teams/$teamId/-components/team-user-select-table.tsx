@@ -2,7 +2,7 @@ import { usersQueryOptions } from '@/lib/query-options/users-query-options'
 import { RoleDisplayNames, validateRoleString } from '@/lib/types/role'
 import type { User } from '@/lib/types/user'
 import { useQuery } from '@tanstack/react-query'
-import { Link, useSearch } from '@tanstack/react-router'
+import { Link, useNavigate, useSearch } from '@tanstack/react-router'
 import { type ColumnDef } from '@tanstack/react-table'
 import { DataTable } from '@/components/data-table'
 import PaginationBar from '@/components/pagination-bar'
@@ -10,6 +10,7 @@ import TeamUsersTableFilters from './team-user-table-filters'
 import { Button } from '@/components/ui/button'
 import { Check, Plus } from 'lucide-react'
 import { useMemo } from 'react'
+import type { TeamUsersSelectSearchParams } from '../members'
 
 interface TeamUserSelectTableProps {
   selectedIds?: number[]
@@ -23,6 +24,7 @@ export default function TeamUserSelectTable({
   const { page, per_page, name, role, roles, sort, direction } = useSearch({
     from: '/_main/teams/$teamId/members',
   })
+  const navigate = useNavigate({ from: '/_main/teams/$teamId/members' })
   const { data, isFetching } = useQuery(
     usersQueryOptions({
       page: page ?? 1,
@@ -34,6 +36,22 @@ export default function TeamUserSelectTable({
       direction: direction,
     }),
   )
+
+  const handlePerPageChange = (perPage: number) => {
+    navigate({
+      to: '.',
+      search: (prev: TeamUsersSelectSearchParams) => ({
+        ...prev,
+        per_page: perPage,
+        page: 1,
+      }),
+    })
+  }
+
+  const getPageSearchParams = (page: number) => (prev: TeamUsersSelectSearchParams) => ({
+    ...prev,
+    page,
+  })
 
   const columns: ColumnDef<User>[] = useMemo(() => {
     return [
@@ -96,7 +114,12 @@ export default function TeamUserSelectTable({
         isFetching={isFetching}
       />
       {data?.meta && (
-        <PaginationBar className="mt-2" pagination={data?.meta!} />
+        <PaginationBar
+          className="mt-2"
+          pagination={data?.meta!}
+          onPerPageChange={handlePerPageChange}
+          getPageSearchParams={getPageSearchParams}
+        />
       )}
     </div>
   )

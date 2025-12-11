@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import MainInsetLayout from '../../-main-inset-layout'
 import { teamsQueryOptions } from '@/lib/query-options/teams-query-options'
 import { useQuery } from '@tanstack/react-query'
@@ -40,6 +40,7 @@ export const Route = createFileRoute('/_main/teams/my-teams/')({
 
 function RouteComponent() {
   const { page, per_page, name, sort, direction } = Route.useSearch()
+  const navigate = useNavigate()
   const { user } = useAppStore((state) => state)
 
   const { data, isFetching } = useQuery(
@@ -53,6 +54,22 @@ function RouteComponent() {
     }),
   )
 
+  const handlePerPageChange = (perPage: number) => {
+    navigate({
+      to: '.',
+      search: (prev: MyTeamsIndexSearchParams) => ({
+        ...prev,
+        per_page: perPage,
+        page: 1,
+      }),
+    })
+  }
+
+  const getPageSearchParams = (page: number) => (prev: MyTeamsIndexSearchParams) => ({
+    ...prev,
+    page,
+  })
+
   return (
     <MainInsetLayout
       breadcrumbItems={[{ label: 'My Teams', href: '/teams/my-teams' }]}
@@ -65,7 +82,12 @@ function RouteComponent() {
         isFetching={isFetching}
       />
       {data?.meta && (
-        <PaginationBar className="mt-2" pagination={data?.meta!} />
+        <PaginationBar
+          className="mt-2"
+          pagination={data?.meta!}
+          onPerPageChange={handlePerPageChange}
+          getPageSearchParams={getPageSearchParams}
+        />
       )}
     </MainInsetLayout>
   )

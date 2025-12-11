@@ -91,6 +91,7 @@ function RouteComponent() {
 
 function DeletedTeams() {
   const { page, per_page, name, sort, direction } = Route.useSearch()
+  const navigate = useNavigate()
   const { data, isFetching } = useQuery(
     teamsQueryOptions({
       page: page ?? 1,
@@ -101,6 +102,23 @@ function DeletedTeams() {
       delete_status: 'deleted',
     }),
   )
+
+  const handlePerPageChange = (perPage: number) => {
+    navigate({
+      to: '.',
+      search: (prev: TeamsIndexSearchParams) => ({
+        ...prev,
+        per_page: perPage,
+        page: 1,
+      }),
+    })
+  }
+
+  const getPageSearchParams = (page: number) => (prev: TeamsIndexSearchParams) => ({
+    ...prev,
+    page,
+  })
+
   return (
     <>
       <TeamsTableFilters />
@@ -110,7 +128,12 @@ function DeletedTeams() {
         isFetching={isFetching}
       />
       {data?.meta && (
-        <PaginationBar className="mt-2" pagination={data?.meta!} />
+        <PaginationBar
+          className="mt-2"
+          pagination={data?.meta!}
+          onPerPageChange={handlePerPageChange}
+          getPageSearchParams={getPageSearchParams}
+        />
       )}
     </>
   )
@@ -118,16 +141,33 @@ function DeletedTeams() {
 
 function ActiveTeams() {
   const { page, per_page, name, sort, direction } = Route.useSearch()
+  const navigate = useNavigate()
   const { data, isFetching } = useQuery(
     teamsQueryOptions({
       page: page ?? 1,
       per_page: per_page ?? 10,
       name: name ?? '',
-
       sort: sort,
       direction: direction,
     }),
   )
+
+  const handlePerPageChange = (perPage: number) => {
+    navigate({
+      to: '.',
+      search: (prev: TeamsIndexSearchParams) => ({
+        ...prev,
+        per_page: perPage,
+        page: 1,
+      }),
+    })
+  }
+
+  const getPageSearchParams = (page: number) => (prev: TeamsIndexSearchParams) => ({
+    ...prev,
+    page,
+  })
+
   return (
     <>
       <TeamsTableFilters />
@@ -137,7 +177,12 @@ function ActiveTeams() {
         isFetching={isFetching}
       />
       {data?.meta && (
-        <PaginationBar className="mt-2" pagination={data?.meta!} />
+        <PaginationBar
+          className="mt-2"
+          pagination={data?.meta!}
+          onPerPageChange={handlePerPageChange}
+          getPageSearchParams={getPageSearchParams}
+        />
       )}
     </>
   )

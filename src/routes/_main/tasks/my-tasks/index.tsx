@@ -91,6 +91,7 @@ function RouteComponent() {
 function AssignedToMeTasks() {
   const { page, per_page, title, status, priority, sort, direction } =
     Route.useSearch()
+  const navigate = useNavigate()
   const { user } = useAppStore((state) => state)
 
   const { data, isFetching } = useQuery(
@@ -105,6 +106,23 @@ function AssignedToMeTasks() {
       assigned_to_id: user?.id,
     }),
   )
+
+  const handlePerPageChange = (perPage: number) => {
+    navigate({
+      to: '.',
+      search: (prev: MyTasksIndexSearchParams) => ({
+        ...prev,
+        per_page: perPage,
+        page: 1,
+      }),
+    })
+  }
+
+  const getPageSearchParams = (page: number) => (prev: MyTasksIndexSearchParams) => ({
+    ...prev,
+    page,
+  })
+
   return (
     <>
       <TaskTableFilters />
@@ -114,7 +132,12 @@ function AssignedToMeTasks() {
         isFetching={isFetching}
       />
       {data?.meta && (
-        <PaginationBar className="mt-2" pagination={data?.meta!} />
+        <PaginationBar
+          className="mt-2"
+          pagination={data?.meta!}
+          onPerPageChange={handlePerPageChange}
+          getPageSearchParams={getPageSearchParams}
+        />
       )}
     </>
   )
@@ -123,6 +146,7 @@ function AssignedToMeTasks() {
 function AssignedByMeTasks() {
   const { page, per_page, title, status, priority, sort, direction } =
     Route.useSearch()
+  const navigate = useNavigate()
   const { user } = useAppStore((state) => state)
 
   const { data, isFetching } = useQuery(
@@ -137,6 +161,23 @@ function AssignedByMeTasks() {
       assigned_by_id: user?.id,
     }),
   )
+
+  const handlePerPageChange = (perPage: number) => {
+    navigate({
+      to: '.',
+      search: (prev: MyTasksIndexSearchParams) => ({
+        ...prev,
+        per_page: perPage,
+        page: 1,
+      }),
+    })
+  }
+
+  const getPageSearchParams = (page: number) => (prev: MyTasksIndexSearchParams) => ({
+    ...prev,
+    page,
+  })
+
   return (
     <>
       <TaskTableFilters />
@@ -146,7 +187,12 @@ function AssignedByMeTasks() {
         isFetching={isFetching}
       />
       {data?.meta && (
-        <PaginationBar className="mt-2" pagination={data?.meta!} />
+        <PaginationBar
+          className="mt-2"
+          pagination={data?.meta!}
+          onPerPageChange={handlePerPageChange}
+          getPageSearchParams={getPageSearchParams}
+        />
       )}
     </>
   )

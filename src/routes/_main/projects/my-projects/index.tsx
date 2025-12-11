@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import MainInsetLayout from '../../-main-inset-layout'
 import { projectsQueryOptions } from '@/lib/query-options/projects-query-options'
 import { useQuery } from '@tanstack/react-query'
@@ -40,6 +40,7 @@ export const Route = createFileRoute('/_main/projects/my-projects/')({
 
 function RouteComponent() {
   const { page, per_page, name, sort, direction } = Route.useSearch()
+  const navigate = useNavigate()
   const { user, uiMode } = useAppStore((state) => state)
 
   const { data, isFetching } = useQuery(
@@ -53,6 +54,22 @@ function RouteComponent() {
       manager_id: uiMode === 'project manager' ? user?.id : undefined,
     }),
   )
+
+  const handlePerPageChange = (perPage: number) => {
+    navigate({
+      to: '.',
+      search: (prev: MyProjectsIndexSearchParams) => ({
+        ...prev,
+        per_page: perPage,
+        page: 1,
+      }),
+    })
+  }
+
+  const getPageSearchParams = (page: number) => (prev: MyProjectsIndexSearchParams) => ({
+    ...prev,
+    page,
+  })
 
   return (
     <MainInsetLayout
@@ -68,7 +85,12 @@ function RouteComponent() {
         isFetching={isFetching}
       />
       {data?.meta && (
-        <PaginationBar className="mt-2" pagination={data?.meta!} />
+        <PaginationBar
+          className="mt-2"
+          pagination={data?.meta!}
+          onPerPageChange={handlePerPageChange}
+          getPageSearchParams={getPageSearchParams}
+        />
       )}
     </MainInsetLayout>
   )

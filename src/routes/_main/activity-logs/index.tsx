@@ -1,4 +1,4 @@
-import { createFileRoute, redirect } from '@tanstack/react-router'
+import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router'
 import MainInsetLayout from '../-main-inset-layout'
 import { activityLogsQueryOptions } from '@/lib/query-options/activity-logs-query-options'
 import { useQuery } from '@tanstack/react-query'
@@ -53,6 +53,7 @@ export const Route = createFileRoute('/_main/activity-logs/')({
 function RouteComponent() {
   const { page, per_page, user_id, action, auditable_type, auditable_id, description, sort, direction } =
     Route.useSearch()
+  const navigate = useNavigate()
 
   const { data, isFetching } = useQuery(
     activityLogsQueryOptions({
@@ -68,6 +69,22 @@ function RouteComponent() {
     }),
   )
 
+  const handlePerPageChange = (perPage: number) => {
+    navigate({
+      to: '.',
+      search: (prev: ActivityLogsIndexSearchParams) => ({
+        ...prev,
+        per_page: perPage,
+        page: 1,
+      }),
+    })
+  }
+
+  const getPageSearchParams = (page: number) => (prev: ActivityLogsIndexSearchParams) => ({
+    ...prev,
+    page,
+  })
+
   return (
     <MainInsetLayout breadcrumbItems={[{ label: 'Activity Logs', href: '/activity-logs' }]}>
       <PageHeader title={PAGE_TITLE} description={PAGE_DESCRIPTION} />
@@ -78,7 +95,12 @@ function RouteComponent() {
         isFetching={isFetching}
       />
       {data?.meta && (
-        <PaginationBar className="mt-2" pagination={data?.meta!} />
+        <PaginationBar
+          className="mt-2"
+          pagination={data?.meta!}
+          onPerPageChange={handlePerPageChange}
+          getPageSearchParams={getPageSearchParams}
+        />
       )}
     </MainInsetLayout>
   )

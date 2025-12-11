@@ -1,6 +1,6 @@
 import type { Team } from '@/lib/types/team'
 import { useQuery } from '@tanstack/react-query'
-import { Link, useSearch } from '@tanstack/react-router'
+import { Link, useNavigate, useSearch } from '@tanstack/react-router'
 import { type ColumnDef } from '@tanstack/react-table'
 import { DataTable } from '@/components/data-table'
 import PaginationBar from '@/components/pagination-bar'
@@ -9,6 +9,7 @@ import { Check, Plus } from 'lucide-react'
 import { useMemo } from 'react'
 import ProjectTeamTableFilters from './project-team-table-filters'
 import { teamsQueryOptions } from '@/lib/query-options/teams-query-options'
+import type { ProjectTeamsSelectSearchParams } from '../teams'
 
 interface ProjectTeamsSelectTableProps {
   selectedIds?: number[]
@@ -22,6 +23,7 @@ export default function ProjectTeamsSelectTable({
   const { page, per_page, name, sort, direction } = useSearch({
     from: '/_main/projects/$projectId/teams',
   })
+  const navigate = useNavigate({ from: '/_main/projects/$projectId/teams' })
   const { data, isFetching } = useQuery(
     teamsQueryOptions({
       page: page ?? 1,
@@ -31,6 +33,22 @@ export default function ProjectTeamsSelectTable({
       direction: direction,
     }),
   )
+
+  const handlePerPageChange = (perPage: number) => {
+    navigate({
+      to: '.',
+      search: (prev: ProjectTeamsSelectSearchParams) => ({
+        ...prev,
+        per_page: perPage,
+        page: 1,
+      }),
+    })
+  }
+
+  const getPageSearchParams = (page: number) => (prev: ProjectTeamsSelectSearchParams) => ({
+    ...prev,
+    page,
+  })
 
   const columns: ColumnDef<Team>[] = useMemo(() => {
     return [
@@ -83,7 +101,12 @@ export default function ProjectTeamsSelectTable({
         isFetching={isFetching}
       />
       {data?.meta && (
-        <PaginationBar className="mt-2" pagination={data?.meta!} />
+        <PaginationBar
+          className="mt-2"
+          pagination={data?.meta!}
+          onPerPageChange={handlePerPageChange}
+          getPageSearchParams={getPageSearchParams}
+        />
       )}
     </div>
   )
