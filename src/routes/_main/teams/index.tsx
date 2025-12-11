@@ -106,8 +106,8 @@ function DeletedTeams() {
   const handlePerPageChange = (perPage: number) => {
     navigate({
       to: '.',
-      search: (prev: TeamsIndexSearchParams) => ({
-        ...prev,
+      search: (prev) => ({
+        ...(prev as TeamsIndexSearchParams),
         per_page: perPage,
         page: 1,
       }),
@@ -155,8 +155,8 @@ function ActiveTeams() {
   const handlePerPageChange = (perPage: number) => {
     navigate({
       to: '.',
-      search: (prev: TeamsIndexSearchParams) => ({
-        ...prev,
+      search: (prev) => ({
+        ...(prev as TeamsIndexSearchParams),
         per_page: perPage,
         page: 1,
       }),

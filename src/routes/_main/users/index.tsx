@@ -113,8 +113,8 @@ function DeletedUsers() {
   const handlePerPageChange = (perPage: number) => {
     navigate({
       to: '.',
-      search: (prev: UsersIndexSearchParams) => ({
-        ...prev,
+      search: (prev) => ({
+        ...(prev as UsersIndexSearchParams),
         per_page: perPage,
         page: 1,
       }),
@@ -165,8 +165,8 @@ function ActiveUsers() {
   const handlePerPageChange = (perPage: number) => {
     navigate({
       to: '.',
-      search: (prev: UsersIndexSearchParams) => ({
-        ...prev,
+      search: (prev) => ({
+        ...(prev as UsersIndexSearchParams),
         per_page: perPage,
         page: 1,
       }),

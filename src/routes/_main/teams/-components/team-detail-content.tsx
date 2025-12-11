@@ -19,7 +19,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { usePermissions } from '@/hooks/use-permissions'
 import PageHeader from '@/components/page-header'
 import UserAvatar from '@/components/user-avatar'
-import dayjs from 'dayjs'
+import dayjs from '@/lib/dayjs'
 import type { Team } from '@/lib/types/team'
 
 interface TeamDetailContentProps {

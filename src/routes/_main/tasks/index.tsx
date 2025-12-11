@@ -107,8 +107,8 @@ function DeletedTasks() {
   const handlePerPageChange = (perPage: number) => {
     navigate({
       to: '.',
-      search: (prev: TasksIndexSearchParams) => ({
-        ...prev,
+      search: (prev) => ({
+        ...(prev as TasksIndexSearchParams),
         per_page: perPage,
         page: 1,
       }),
@@ -159,8 +159,8 @@ function ActiveTasks() {
   const handlePerPageChange = (perPage: number) => {
     navigate({
       to: '.',
-      search: (prev: TasksIndexSearchParams) => ({
-        ...prev,
+      search: (prev) => ({
+        ...(prev as TasksIndexSearchParams),
         per_page: perPage,
         page: 1,
       }),

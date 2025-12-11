@@ -1,4 +1,4 @@
-import dayjs from 'dayjs'
+import dayjs from '@/lib/dayjs'
 import type { ApiResponse } from './response'
 import type { ProgressStatus } from './status'
 import type { Team } from './team'

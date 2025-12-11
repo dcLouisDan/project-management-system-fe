@@ -24,7 +24,7 @@ import { Separator } from '@/components/ui/separator'
 import TaskAssigneeDialog from '../../projects/$projectId/tasks/$taskId/-components/task-assignee-dialog'
 import TaskReviewerDialog from '../../projects/$projectId/tasks/$taskId/-components/task-reviewer-dialog'
 import { usePermissions } from '@/hooks/use-permissions'
-import dayjs from 'dayjs'
+import dayjs from '@/lib/dayjs'
 import { cn } from '@/lib/utils'
 import UserAvatar from '@/components/user-avatar'
 import type { Task } from '@/lib/types/task'
@@ -40,7 +40,7 @@ export default function TaskDetailContent({
   task,
   projectId,
   taskId,
-  breadcrumbItems,
+  breadcrumbItems: _breadcrumbItems,
 }: TaskDetailContentProps) {
   const { destroy } = useManageTasks()
   const { canEditTasks, canDeleteTasks, canReassignTasks, canEdit, canDelete } =

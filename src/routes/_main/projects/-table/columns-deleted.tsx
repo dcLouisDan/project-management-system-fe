@@ -2,7 +2,7 @@ import { truncateText } from '@/lib/string-utils'
 import type { Project } from '@/lib/types/project'
 import { Link } from '@tanstack/react-router'
 import { type ColumnDef } from '@tanstack/react-table'
-import dayjs from 'dayjs'
+import dayjs from '@/lib/dayjs'
 
 export const columnsDeleted: ColumnDef<Project>[] = [
   {

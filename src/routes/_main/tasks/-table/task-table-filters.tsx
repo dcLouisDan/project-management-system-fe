@@ -34,8 +34,8 @@ export default function TaskTableFilters() {
     navigate({
       to: '.',
       replace: true,
-      search: (prev: TasksIndexSearchParams) => ({
-        ...prev,
+      search: (prev) => ({
+        ...(prev as TasksIndexSearchParams),
         title: newTitle.toString(),
         page: 1,
       }),
@@ -53,12 +53,15 @@ export default function TaskTableFilters() {
     navigate({
       to: '.',
       replace: true,
-      search: (prev: TasksIndexSearchParams) => ({
-        ...prev,
-        status: popoverFilterValues.status?.[0],
-        priority: popoverFilterValues.priority?.[0],
-        page: 1,
-      }),
+      search: (prev) => {
+        const params = prev as TasksIndexSearchParams
+        return {
+          ...params,
+          status: popoverFilterValues.status?.[0],
+          priority: popoverFilterValues.priority?.[0],
+          page: 1,
+        } as TasksIndexSearchParams
+      },
     })
   }
 
@@ -67,7 +70,7 @@ export default function TaskTableFilters() {
     navigate({
       to: '.',
       replace: true,
-      search: (prev: TasksIndexSearchParams) => {
+      search: (prev) => {
         const { status, priority, ...rest } = prev
         return {
           ...rest,
@@ -97,8 +100,8 @@ export default function TaskTableFilters() {
     navigate({
       to: '.',
       replace: true,
-      search: (prev: TasksIndexSearchParams) => ({
-        ...prev,
+      search: (prev) => ({
+        ...(prev as TasksIndexSearchParams),
         sort,
         direction,
         page: 1,
@@ -110,7 +113,7 @@ export default function TaskTableFilters() {
     navigate({
       to: '.',
       replace: true,
-      search: (prev: TasksIndexSearchParams) => {
+      search: (prev) => {
         const { sort, direction, ...rest } = prev
         return {
           ...rest,

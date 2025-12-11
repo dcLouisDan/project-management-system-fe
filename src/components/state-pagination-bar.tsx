@@ -29,8 +29,8 @@ export default function StatePaginationBar({
   const handlePerPageValueChange = (value: string) => {
     navigate({
       to: '.',
-      search: (prev: UsersIndexSearchParams) => ({
-        ...prev,
+      search: (prev) => ({
+        ...(prev as UsersIndexSearchParams),
         per_page: Number(value),
         page: 1, // Reset to first page when per_page changes
       }),

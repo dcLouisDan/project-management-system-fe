@@ -110,8 +110,8 @@ function AssignedToMeTasks() {
   const handlePerPageChange = (perPage: number) => {
     navigate({
       to: '.',
-      search: (prev: MyTasksIndexSearchParams) => ({
-        ...prev,
+      search: (prev) => ({
+        ...(prev as MyTasksIndexSearchParams),
         per_page: perPage,
         page: 1,
       }),
@@ -165,8 +165,8 @@ function AssignedByMeTasks() {
   const handlePerPageChange = (perPage: number) => {
     navigate({
       to: '.',
-      search: (prev: MyTasksIndexSearchParams) => ({
-        ...prev,
+      search: (prev) => ({
+        ...(prev as MyTasksIndexSearchParams),
         per_page: perPage,
         page: 1,
       }),

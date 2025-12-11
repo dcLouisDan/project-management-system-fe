@@ -28,8 +28,8 @@ export default function UsersTableFilters() {
     navigate({
       to: '.',
       replace: true,
-      search: (prev: UsersIndexSearchParams) => ({
-        ...prev,
+      search: (prev) => ({
+        ...(prev as UsersIndexSearchParams),
         name: newName.toString(),
         page: 1, // Reset to first page when name filter changes
       }),
@@ -46,8 +46,8 @@ export default function UsersTableFilters() {
     navigate({
       to: '.',
       replace: true,
-      search: (prev: UsersIndexSearchParams) => ({
-        ...prev,
+      search: (prev) => ({
+        ...(prev as UsersIndexSearchParams),
         roles: popoverFilterValues.role,
         page: 1, // Reset to first page when popover filters change
       }),
@@ -59,7 +59,7 @@ export default function UsersTableFilters() {
     navigate({
       to: '.',
       replace: true,
-      search: (prev: UsersIndexSearchParams) => {
+      search: (prev) => {
         const { roles, ...rest } = prev
         return {
           ...rest,
@@ -89,8 +89,8 @@ export default function UsersTableFilters() {
     navigate({
       to: '.',
       replace: true,
-      search: (prev: UsersIndexSearchParams) => ({
-        ...prev,
+      search: (prev) => ({
+        ...(prev as UsersIndexSearchParams),
         sort,
         direction,
         page: 1, // Reset to first page when popover filters change
@@ -102,7 +102,7 @@ export default function UsersTableFilters() {
     navigate({
       to: '.',
       replace: true,
-      search: (prev: UsersIndexSearchParams) => {
+      search: (prev) => {
         const { sort, direction, ...rest } = prev
         return {
           ...rest,

@@ -1,16 +1,14 @@
 import { useEffect } from 'react'
-import type { FormApi } from '@tanstack/react-form'
 import type { RequestProgress } from '@/lib/types/response'
 
-interface UseFormResetOptions<
-  TFormData,
-  TFormValidator extends object | undefined,
-> {
+interface UseFormResetOptions {
   /**
    * The TanStack Form instance to reset when request completes.
    * If not provided, only the requestProgress state will be reset.
    */
-  form?: FormApi<TFormData, TFormValidator>
+  form?: {
+    reset: () => void
+  }
   /**
    * The current request progress state from a use-manage-* hook.
    */
@@ -41,14 +39,11 @@ interface UseFormResetOptions<
  *
  * useFormReset({ requestProgress, setRequestProgress })
  */
-export default function useFormReset<
-  TFormData,
-  TFormValidator extends object | undefined = undefined,
->({
+export default function useFormReset({
   form,
   requestProgress,
   setRequestProgress,
-}: UseFormResetOptions<TFormData, TFormValidator>) {
+}: UseFormResetOptions) {
   useEffect(() => {
     if (requestProgress === 'completed') {
       form?.reset()

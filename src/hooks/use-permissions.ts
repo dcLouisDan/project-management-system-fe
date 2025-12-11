@@ -92,13 +92,15 @@ export function usePermissions() {
     return currentUser?.id === assignedToId
   }
 
+  const { role: _, ...permissionsWithoutRole } = permissions
+
   return {
-    // Current role
+    // All permissions spread (without role)
+    ...permissionsWithoutRole,
+
+    // Current role (overwrite the role from permissions with current uiMode)
     role: uiMode,
     currentUserId: currentUser?.id,
-
-    // All permissions spread
-    ...permissions,
 
     // Contextual permission functions
     canEdit,

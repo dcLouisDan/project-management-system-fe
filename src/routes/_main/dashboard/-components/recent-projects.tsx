@@ -5,7 +5,7 @@ import { AlertCircle, ArrowRight } from 'lucide-react'
 import { Progress } from '@/components/ui/progress'
 import { cn } from '@/lib/utils'
 import type { Project } from '@/lib/types/project'
-import dayjs from 'dayjs'
+import dayjs from '@/lib/dayjs'
 
 const statusColors: Record<string, string> = {
   not_started: 'bg-[oklch(var(--chart-3))]',

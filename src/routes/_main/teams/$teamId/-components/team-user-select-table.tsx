@@ -22,9 +22,9 @@ export default function TeamUserSelectTable({
   onUserSelect = () => {},
 }: TeamUserSelectTableProps) {
   const { page, per_page, name, role, roles, sort, direction } = useSearch({
-    from: '/_main/teams/$teamId/members',
+    from: '/_main/teams/$teamId/members' as any,
   })
-  const navigate = useNavigate({ from: '/_main/teams/$teamId/members' })
+  const navigate = useNavigate({ from: '/_main/teams/$teamId/members' as any })
   const { data, isFetching } = useQuery(
     usersQueryOptions({
       page: page ?? 1,
@@ -40,11 +40,14 @@ export default function TeamUserSelectTable({
   const handlePerPageChange = (perPage: number) => {
     navigate({
       to: '.',
-      search: (prev: TeamUsersSelectSearchParams) => ({
-        ...prev,
-        per_page: perPage,
-        page: 1,
-      }),
+      search: (prev) => {
+        const params = prev as TeamUsersSelectSearchParams
+        return {
+          ...params,
+          per_page: perPage,
+          page: 1,
+        } as TeamUsersSelectSearchParams
+      },
     })
   }
 

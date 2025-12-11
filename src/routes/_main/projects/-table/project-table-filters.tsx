@@ -16,8 +16,8 @@ export default function ProjectsTableFilters() {
     navigate({
       to: '.',
       replace: true,
-      search: (prev: ProjectsIndexSearchParams) => ({
-        ...prev,
+      search: (prev) => ({
+        ...(prev as ProjectsIndexSearchParams),
         name: newName.toString(),
         page: 1, // Reset to first page when name filter changes
       }),
@@ -44,8 +44,8 @@ export default function ProjectsTableFilters() {
     navigate({
       to: '.',
       replace: true,
-      search: (prev: ProjectsIndexSearchParams) => ({
-        ...prev,
+      search: (prev) => ({
+        ...(prev as ProjectsIndexSearchParams),
         sort,
         direction,
         page: 1, // Reset to first page when popover filters change
@@ -57,8 +57,8 @@ export default function ProjectsTableFilters() {
     navigate({
       to: '.',
       replace: true,
-      search: (prev: ProjectsIndexSearchParams) => {
-        const { sort, direction, ...rest } = prev
+      search: (prev) => {
+        const { sort, direction, ...rest } = prev as ProjectsIndexSearchParams
         return {
           ...rest,
           page: 1, // Reset to first page when popover filters change

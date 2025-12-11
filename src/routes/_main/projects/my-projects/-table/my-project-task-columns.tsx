@@ -5,7 +5,7 @@ import type { Task } from '@/lib/types/task'
 import { cn } from '@/lib/utils'
 import { Link } from '@tanstack/react-router'
 import { type ColumnDef } from '@tanstack/react-table'
-import dayjs from 'dayjs'
+import dayjs from '@/lib/dayjs'
 
 export const myProjectTaskColumns: ColumnDef<Task>[] = [
   {

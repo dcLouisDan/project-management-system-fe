@@ -21,9 +21,9 @@ export default function ProjectTeamsSelectTable({
   onTeamSelect = () => {},
 }: ProjectTeamsSelectTableProps) {
   const { page, per_page, name, sort, direction } = useSearch({
-    from: '/_main/projects/$projectId/teams',
+    from: '/projects/$projectId/teams' as any,
   })
-  const navigate = useNavigate({ from: '/_main/projects/$projectId/teams' })
+  const navigate = useNavigate({ from: '/projects/$projectId/teams' as any })
   const { data, isFetching } = useQuery(
     teamsQueryOptions({
       page: page ?? 1,
@@ -37,16 +37,16 @@ export default function ProjectTeamsSelectTable({
   const handlePerPageChange = (perPage: number) => {
     navigate({
       to: '.',
-      search: (prev: ProjectTeamsSelectSearchParams) => ({
-        ...prev,
+      search: (prev) => ({
+        ...(prev as ProjectTeamsSelectSearchParams),
         per_page: perPage,
         page: 1,
       }),
     })
   }
 
-  const getPageSearchParams = (page: number) => (prev: ProjectTeamsSelectSearchParams) => ({
-    ...prev,
+  const getPageSearchParams = (page: number) => (prev: any) => ({
+    ...(prev as ProjectTeamsSelectSearchParams),
     page,
   })
 

@@ -4,7 +4,6 @@ import useManageTasks from '@/hooks/use-manage-tasks'
 import useAppStore from '@/integrations/zustand/app-store'
 import { showTaskQueryOptions } from '@/lib/query-options/show-task-query-options'
 import { useQuery } from '@tanstack/react-query'
-import { useParams } from '@tanstack/react-router'
 import {
   Hourglass,
   NotebookPen,
@@ -37,7 +36,7 @@ import useFormReset from '@/hooks/use-form-reset'
 import IconRadioGroup, {
   type IconSelectItem,
 } from '@/components/icon-radio-group'
-import dayjs from 'dayjs'
+import dayjs from '@/lib/dayjs'
 import { Separator } from '@/components/ui/separator'
 import TaskReviewDialog from './task-review-dialog'
 import { ValidationErrorsAlert } from '@/components/validation-errors-alert'

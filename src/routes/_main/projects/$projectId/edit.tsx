@@ -27,7 +27,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { ValidationErrorsAlert } from '@/components/validation-errors-alert'
 import { BadgePlus } from 'lucide-react'
 import type { CheckedState } from '@radix-ui/react-checkbox'
-import dayjs from 'dayjs'
+import dayjs from '@/lib/dayjs'
 import { BasicSelect } from '@/components/basic-select'
 import {
   getProgressStatusOptions,

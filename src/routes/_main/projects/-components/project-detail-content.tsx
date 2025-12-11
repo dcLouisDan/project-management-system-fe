@@ -23,7 +23,7 @@ import { usePermissions } from '@/hooks/use-permissions'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import StatusBadge from '@/components/status-badge'
 import { statusColorMap } from '@/lib/types/status'
-import dayjs from 'dayjs'
+import dayjs from '@/lib/dayjs'
 import { cn } from '@/lib/utils'
 import { Progress } from '@/components/ui/progress'
 import type { Project } from '@/lib/types/project'
@@ -37,7 +37,7 @@ interface ProjectDetailContentProps {
 export default function ProjectDetailContent({
   project,
   projectId,
-  breadcrumbItems,
+  breadcrumbItems: _breadcrumbItems,
 }: ProjectDetailContentProps) {
   const { destroy, restore } = useManageProjects()
   const {
@@ -69,7 +69,10 @@ export default function ProjectDetailContent({
   return (
     <>
       {project.deleted_at && canDeleteProjects && <RestoreAlert />}
-      <PageHeader title={project.name} description="Show project information and other related data">
+      <PageHeader
+        title={project.name}
+        description="Show project information and other related data"
+      >
         {canEditThisProject && (
           <Link
             to="/projects/$projectId/edit"
@@ -376,4 +379,3 @@ export default function ProjectDetailContent({
     </>
   )
 }
-

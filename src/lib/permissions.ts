@@ -143,20 +143,20 @@ const PROJECT_MANAGER_PERMISSIONS: Permissions = {
   canEditProjects: false,
   canEditOwnProjects: true,
   canDeleteProjects: false,
-  canAssignTeamsToProjects: false,
+  canAssignTeamsToProjects: true,
   canAssignTeamsToOwnProjects: true,
   // Tasks - Full control within managed projects
   canViewAllTasks: false,
   canViewProjectTasks: true,
   canViewTeamTasks: true,
   canViewAssignedTasks: true,
-  canCreateTasks: false,
+  canCreateTasks: true,
   canCreateProjectTasks: true,
-  canEditTasks: false,
+  canEditTasks: true,
   canEditProjectTasks: true,
   canEditTeamTasks: true,
   canEditOwnTasks: true,
-  canDeleteTasks: false,
+  canDeleteTasks: true,
   canDeleteOwnTasks: true,
   canReassignTasks: true,
   canReassignProjectTasks: true,
@@ -196,16 +196,16 @@ const TEAM_LEAD_PERMISSIONS: Permissions = {
   canViewProjectTasks: false,
   canViewTeamTasks: true,
   canViewAssignedTasks: true,
-  canCreateTasks: false,
+  canCreateTasks: true,
   canCreateProjectTasks: true,
-  canEditTasks: false,
-  canEditProjectTasks: false,
+  canEditTasks: true,
+  canEditProjectTasks: true,
   canEditTeamTasks: true,
   canEditOwnTasks: true,
-  canDeleteTasks: false,
-  canDeleteOwnTasks: false,
+  canDeleteTasks: true,
+  canDeleteOwnTasks: true,
   canReassignTasks: true,
-  canReassignProjectTasks: false,
+  canReassignProjectTasks: true,
   canReassignTeamTasks: true,
 }
 
@@ -305,7 +305,7 @@ export function canEditResource(
   context: OwnershipContext = {},
 ): boolean {
   const permissions = getPermissionsForRole(role)
-  const { currentUserId, ownerId, managerId, createdById } = context
+  const { currentUserId, managerId, createdById } = context
 
   switch (resourceType) {
     case 'user':

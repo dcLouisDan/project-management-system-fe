@@ -1,6 +1,6 @@
 import type { ActivityLog } from '@/lib/types/activity-log'
 import { type ColumnDef } from '@tanstack/react-table'
-import dayjs from 'dayjs'
+import dayjs from '@/lib/dayjs'
 
 export const columns: ColumnDef<ActivityLog>[] = [
   {

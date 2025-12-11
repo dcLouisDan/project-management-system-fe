@@ -12,7 +12,7 @@ import { useForm } from '@tanstack/react-form'
 import { useState } from 'react'
 import type { CheckedState } from '@radix-ui/react-checkbox'
 import useFormReset from '@/hooks/use-form-reset'
-import dayjs from 'dayjs'
+import dayjs from '@/lib/dayjs'
 import { Card, CardContent } from '@/components/ui/card'
 import {
   Field,

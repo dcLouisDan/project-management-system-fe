@@ -3,7 +3,7 @@ import { Badge } from '@/components/ui/badge'
 import { Link } from '@tanstack/react-router'
 import { AlertCircle, ArrowRight, User } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import dayjs from 'dayjs'
+import dayjs from '@/lib/dayjs'
 import type { Task } from '@/lib/types/task'
 
 const priorityColors: Record<string, string> = {

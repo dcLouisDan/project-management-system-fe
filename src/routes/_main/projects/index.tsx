@@ -108,8 +108,8 @@ function DeletedProjects() {
   const handlePerPageChange = (perPage: number) => {
     navigate({
       to: '.',
-      search: (prev: ProjectsIndexSearchParams) => ({
-        ...prev,
+      search: (prev) => ({
+        ...(prev as ProjectsIndexSearchParams),
         per_page: perPage,
         page: 1,
       }),
@@ -157,8 +157,8 @@ function ActiveProjects() {
   const handlePerPageChange = (perPage: number) => {
     navigate({
       to: '.',
-      search: (prev: ProjectsIndexSearchParams) => ({
-        ...prev,
+      search: (prev) => ({
+        ...(prev as ProjectsIndexSearchParams),
         per_page: perPage,
         page: 1,
       }),

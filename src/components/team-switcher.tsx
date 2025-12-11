@@ -1,13 +1,12 @@
 'use client'
 
-import { ChevronsUpDown, Plus } from 'lucide-react'
+import { ChevronsUpDown } from 'lucide-react'
 
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
@@ -21,7 +20,6 @@ import useAppStore from '@/integrations/zustand/app-store'
 import {
   RoleDisplayNames,
   validateRoleString,
-  type Role,
 } from '@/lib/types/role'
 import AppLogo from './app-logo'
 import { APP_NAME } from '@/lib/constants'

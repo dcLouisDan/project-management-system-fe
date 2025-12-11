@@ -31,7 +31,7 @@ import { BasicSelect } from '@/components/basic-select'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
 import type { CheckedState } from '@radix-ui/react-checkbox'
-import dayjs from 'dayjs'
+import dayjs from '@/lib/dayjs'
 
 const PAGE_TITLE = 'Add New Project'
 const PAGE_DESCRIPTION = "Add a new project and describe what it's all about."

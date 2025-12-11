@@ -2,7 +2,7 @@ import { truncateText } from '@/lib/string-utils'
 import type { Team } from '@/lib/types/team'
 import { Link } from '@tanstack/react-router'
 import { type ColumnDef } from '@tanstack/react-table'
-import dayjs from 'dayjs'
+import dayjs from '@/lib/dayjs'
 
 export const columns: ColumnDef<Team>[] = [
   {
@@ -46,4 +46,3 @@ export const columns: ColumnDef<Team>[] = [
     },
   },
 ]
-

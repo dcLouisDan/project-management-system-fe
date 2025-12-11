@@ -2,7 +2,7 @@ import { snakeCaseToTitleCase, truncateText } from '@/lib/string-utils'
 import type { Project } from '@/lib/types/project'
 import { Link } from '@tanstack/react-router'
 import { type ColumnDef } from '@tanstack/react-table'
-import dayjs from 'dayjs'
+import dayjs from '@/lib/dayjs'
 
 export const columns: ColumnDef<Project>[] = [
   {
@@ -58,4 +58,3 @@ export const columns: ColumnDef<Project>[] = [
         : 'No Due Date',
   },
 ]
-

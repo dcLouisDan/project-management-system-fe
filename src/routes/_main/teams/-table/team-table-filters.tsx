@@ -16,8 +16,8 @@ export default function TeamsTableFilters() {
     navigate({
       to: '.',
       replace: true,
-      search: (prev: TeamsIndexSearchParams) => ({
-        ...prev,
+      search: (prev) => ({
+        ...(prev as TeamsIndexSearchParams),
         name: newName.toString(),
         page: 1, // Reset to first page when name filter changes
       }),
@@ -44,8 +44,8 @@ export default function TeamsTableFilters() {
     navigate({
       to: '.',
       replace: true,
-      search: (prev: TeamsIndexSearchParams) => ({
-        ...prev,
+      search: (prev) => ({
+        ...(prev as TeamsIndexSearchParams),
         sort,
         direction,
         page: 1, // Reset to first page when popover filters change
@@ -57,7 +57,7 @@ export default function TeamsTableFilters() {
     navigate({
       to: '.',
       replace: true,
-      search: (prev: TeamsIndexSearchParams) => {
+      search: (prev) => {
         const { sort, direction, ...rest } = prev
         return {
           ...rest,

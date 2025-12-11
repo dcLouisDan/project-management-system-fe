@@ -2,7 +2,7 @@ import { RoleDisplayNames, validateRoleString } from '@/lib/types/role'
 import type { User } from '@/lib/types/user'
 import { Link } from '@tanstack/react-router'
 import { type ColumnDef } from '@tanstack/react-table'
-import dayjs from 'dayjs'
+import dayjs from '@/lib/dayjs'
 
 export const columnsDeleted: ColumnDef<User>[] = [
   {
