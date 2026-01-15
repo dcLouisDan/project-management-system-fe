@@ -2,53 +2,30 @@ import { createFileRoute } from '@tanstack/react-router'
 import {
   ReactFlow,
   addEdge,
-  applyNodeChanges,
-  applyEdgeChanges,
-  type Node,
-  type Edge,
   type FitViewOptions,
   type OnConnect,
-  type OnNodesChange,
-  type OnEdgesChange,
   type OnNodeDrag,
   type DefaultEdgeOptions,
   Background,
   Controls,
-  MiniMap
+  MiniMap,
+  useNodesState,
+  useEdgesState,
+  Panel,
+  ReactFlowProvider,
+  useReactFlow
 } from '@xyflow/react';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import '@xyflow/react/dist/style.css'
 import { useAppearance } from '@/hooks/use-appearance';
 import { mockProjectGraphData } from '@/lib/mock/project-graph-data';
-import { projectRelationsGraphToNodesAndEdges } from '@/lib/utils/project-relation-utils';
+import { getLayoutedElements, projectRelationsGraphToNodesAndEdges } from '@/lib/utils/project-relation-utils';
+import { Button } from '@/components/ui/button';
 
 export const Route = createFileRoute('/_main/tree')({
   component: RouteComponent,
 })
 
-const initialNodes: Node[] = [
-  {
-    id: '1',
-    type: 'input',
-    position: { x: 250, y: 5 },
-    data: { label: 'Input' },
-  },
-  {
-    id: '2',
-    position: { x: 100, y: 100 },
-    data: { label: 'Node 2' },
-  },
-  {
-    id: '3',
-    position: { x: 400, y: 100 },
-    data: { label: 'Node 3' },
-  },
-]
-
-const initialEdges: Edge[] = [
-  { id: 'e1-2', source: '1', target: '2' },
-  { id: 'e2-3', source: '2', target: '3' },
-]
 const fitViewOptions: FitViewOptions = {
   padding: 0.2,
 };
@@ -61,25 +38,29 @@ const onNodeDrag: OnNodeDrag = (_, node) => {
   console.log('drag event', node.data);
 };
 
-function RouteComponent() {
+function LayoutFlow() {
   const { appearance } = useAppearance()
+  const { fitView } = useReactFlow()
   const { nodes: mockNodes, edges: mockEdges } = projectRelationsGraphToNodesAndEdges(mockProjectGraphData)
+  const [nodes, setNodes, onNodesChange] = useNodesState(mockNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(mockEdges);
 
-  const [nodes, setNodes] = useState<Node[]>(mockNodes);
-  const [edges, setEdges] = useState<Edge[]>(mockEdges);
 
-  const onNodesChange: OnNodesChange = useCallback(
-    (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
-    [setNodes],
-  );
-  const onEdgesChange: OnEdgesChange = useCallback(
-    (changes) => setEdges((eds) => applyEdgeChanges(changes, eds)),
-    [setEdges],
-  );
   const onConnect: OnConnect = useCallback(
     (connection) => setEdges((eds) => addEdge(connection, eds)),
     [setEdges],
   );
+
+  const onLayout = useCallback((direction: 'LR' | 'TB') => {
+    const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(nodes, edges, { direction });
+    setNodes(layoutedNodes);
+    setEdges(layoutedEdges);
+    fitView()
+  }, [nodes, edges]);
+
+  useEffect(() => {
+    onLayout('TB')
+  }, [])
 
   return (
     <div className="h-screen w-full">
@@ -95,10 +76,22 @@ function RouteComponent() {
         defaultEdgeOptions={defaultEdgeOptions}
         colorMode={appearance}
       >
+        <Panel position="top-right" className='flex gap-2'>
+          <Button onClick={() => onLayout('TB')}>vertical</Button>
+          <Button onClick={() => onLayout('LR')}>horizontal</Button>
+        </Panel>
         <Controls />
         <MiniMap />
         <Background color="#aaa" gap={16} size={1} />
       </ReactFlow>
     </div>
+  )
+}
+
+function RouteComponent() {
+  return (
+    <ReactFlowProvider>
+      <LayoutFlow />
+    </ReactFlowProvider>
   )
 }
