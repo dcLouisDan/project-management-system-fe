@@ -1,5 +1,6 @@
 import type { BasicSelectItem } from '@/components/basic-select'
 import { snakeCaseToTitleCase } from '../string-utils'
+import type { ProgressStatus } from './status'
 
 export type ProjectRelation =
   | 'blocks'
@@ -23,3 +24,21 @@ export const projectRelationOptions: BasicSelectItem[] =
     value: relation,
     label: snakeCaseToTitleCase(relation),
   }))
+
+export interface ProjectRelationsSyncItem {
+  id: number
+  relation_type: ProjectRelation
+}
+
+export interface ProjectRelationsSync {
+  tasks: ProjectRelationsSyncItem[]
+  milestones: ProjectRelationsSyncItem[]
+}
+
+export interface ProjectRelationsGraphItem {
+  target: string //Ex: "\App\Models\Task_1"
+  target_status: ProgressStatus
+  type: ProjectRelation
+}
+
+export type ProjectRelationsGraph = Record<string, ProjectRelationsGraphItem[]>

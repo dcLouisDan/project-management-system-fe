@@ -14,6 +14,7 @@ import { Route as MainRouteRouteImport } from './routes/_main/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthRegisterRouteImport } from './routes/auth/register'
 import { Route as AuthLoginRouteImport } from './routes/auth/login'
+import { Route as MainTreeRouteImport } from './routes/_main/tree'
 import { Route as MainSettingsRouteRouteImport } from './routes/_main/settings/route'
 import { Route as MainUsersIndexRouteImport } from './routes/_main/users/index'
 import { Route as MainTeamsIndexRouteImport } from './routes/_main/teams/index'
@@ -66,6 +67,11 @@ const AuthLoginRoute = AuthLoginRouteImport.update({
   id: '/login',
   path: '/login',
   getParentRoute: () => AuthRouteRoute,
+} as any)
+const MainTreeRoute = MainTreeRouteImport.update({
+  id: '/tree',
+  path: '/tree',
+  getParentRoute: () => MainRouteRoute,
 } as any)
 const MainSettingsRouteRoute = MainSettingsRouteRouteImport.update({
   id: '/settings',
@@ -222,6 +228,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteRouteWithChildren
   '/settings': typeof MainSettingsRouteRouteWithChildren
+  '/tree': typeof MainTreeRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/projects/create': typeof MainProjectsCreateRoute
@@ -256,6 +263,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteRouteWithChildren
   '/settings': typeof MainSettingsRouteRouteWithChildren
+  '/tree': typeof MainTreeRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/projects/create': typeof MainProjectsCreateRoute
@@ -292,6 +300,7 @@ export interface FileRoutesById {
   '/_main': typeof MainRouteRouteWithChildren
   '/auth': typeof AuthRouteRouteWithChildren
   '/_main/settings': typeof MainSettingsRouteRouteWithChildren
+  '/_main/tree': typeof MainTreeRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/_main/projects/create': typeof MainProjectsCreateRoute
@@ -328,6 +337,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/settings'
+    | '/tree'
     | '/auth/login'
     | '/auth/register'
     | '/projects/create'
@@ -362,6 +372,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/settings'
+    | '/tree'
     | '/auth/login'
     | '/auth/register'
     | '/projects/create'
@@ -397,6 +408,7 @@ export interface FileRouteTypes {
     | '/_main'
     | '/auth'
     | '/_main/settings'
+    | '/_main/tree'
     | '/auth/login'
     | '/auth/register'
     | '/_main/projects/create'
@@ -470,6 +482,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/auth/login'
       preLoaderRoute: typeof AuthLoginRouteImport
       parentRoute: typeof AuthRouteRoute
+    }
+    '/_main/tree': {
+      id: '/_main/tree'
+      path: '/tree'
+      fullPath: '/tree'
+      preLoaderRoute: typeof MainTreeRouteImport
+      parentRoute: typeof MainRouteRoute
     }
     '/_main/settings': {
       id: '/_main/settings'
@@ -683,6 +702,7 @@ const MainSettingsRouteRouteWithChildren =
 
 interface MainRouteRouteChildren {
   MainSettingsRouteRoute: typeof MainSettingsRouteRouteWithChildren
+  MainTreeRoute: typeof MainTreeRoute
   MainProjectsCreateRoute: typeof MainProjectsCreateRoute
   MainTeamsCreateRoute: typeof MainTeamsCreateRoute
   MainUsersCreateRoute: typeof MainUsersCreateRoute
@@ -713,6 +733,7 @@ interface MainRouteRouteChildren {
 
 const MainRouteRouteChildren: MainRouteRouteChildren = {
   MainSettingsRouteRoute: MainSettingsRouteRouteWithChildren,
+  MainTreeRoute: MainTreeRoute,
   MainProjectsCreateRoute: MainProjectsCreateRoute,
   MainTeamsCreateRoute: MainTeamsCreateRoute,
   MainUsersCreateRoute: MainUsersCreateRoute,
