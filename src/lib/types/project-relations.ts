@@ -35,6 +35,11 @@ export interface ProjectRelationsSync {
   milestones: ProjectRelationsSyncItem[]
 }
 
+export const DEFAULT_PROJECT_RELATIONS_SYNC: ProjectRelationsSync = {
+  tasks: [],
+  milestones: []
+}
+
 export interface ProjectRelationsGraphItem {
   target: string //Ex: "\App\Models\Task_1"
   target_status: ProgressStatus

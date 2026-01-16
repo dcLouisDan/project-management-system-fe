@@ -217,8 +217,8 @@ export default function TaskDetailContent({
                     className={cn(
                       'text-sm font-medium',
                       task.is_overdue &&
-                        task.status !== 'completed' &&
-                        'text-destructive',
+                      task.status !== 'completed' &&
+                      'text-destructive',
                     )}
                   >
                     {dayjs(task.due_date).format('MMM D, YYYY')}
@@ -304,7 +304,16 @@ export default function TaskDetailContent({
         </div>
 
         {/* Main Content - Description */}
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-2 space-y-4">
+          <Card>
+            <CardHeader className='flex flex-row items-center justify-between'>
+              <CardTitle>Related Items</CardTitle>
+              <Link to="/tasks/my-tasks/$taskId/relations" params={{ taskId: task.id.toString() }} className={buttonVariants()}>Manage</Link>
+            </CardHeader>
+            <CardContent>
+
+            </CardContent>
+          </Card>
           <Card className="h-full">
             <CardHeader className="pb-3">
               <CardTitle className="text-base font-medium">

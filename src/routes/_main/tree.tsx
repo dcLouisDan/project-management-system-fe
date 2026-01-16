@@ -21,6 +21,7 @@ import { useAppearance } from '@/hooks/use-appearance';
 import { mockProjectGraphData } from '@/lib/mock/project-graph-data';
 import { getLayoutedElements, projectRelationsGraphToNodesAndEdges } from '@/lib/utils/project-relation-utils';
 import { Button } from '@/components/ui/button';
+import GraphItemNode from '@/components/react-flow/graph-item-node';
 
 export const Route = createFileRoute('/_main/tree')({
   component: RouteComponent,
@@ -37,6 +38,10 @@ const defaultEdgeOptions: DefaultEdgeOptions = {
 const onNodeDrag: OnNodeDrag = (_, node) => {
   console.log('drag event', node.data);
 };
+
+const nodeTypes = {
+  graphItemNode: GraphItemNode,
+}
 
 function LayoutFlow() {
   const { appearance } = useAppearance()
@@ -70,6 +75,7 @@ function LayoutFlow() {
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
+        nodeTypes={nodeTypes}
         onNodeDrag={onNodeDrag}
         fitView
         fitViewOptions={fitViewOptions}

@@ -2,7 +2,10 @@ import { type Node, type Edge } from "@xyflow/react";
 import type { ProjectRelationsGraph } from "../types/project-relations";
 import Dagre from '@dagrejs/dagre';
 
-export function projectRelationsGraphToNodesAndEdges(graph: ProjectRelationsGraph): { nodes: Node[], edges: Edge[] } {
+const NODE_TYPE = 'graphItemNode'
+
+export function projectRelationsGraphToNodesAndEdges(graph: ProjectRelationsGraph
+): { nodes: Node[], edges: Edge[] } {
     const nodes: Node[] = [];
     const edges: Edge[] = [];
     const nodePositions: Record<string, { x: number, y: number }> = {};
@@ -14,6 +17,7 @@ export function projectRelationsGraphToNodesAndEdges(graph: ProjectRelationsGrap
         }
         nodes.push({
             id: source,
+            type: NODE_TYPE,
             position: { x, y },
             data: { label: source },
         });
@@ -31,6 +35,7 @@ export function projectRelationsGraphToNodesAndEdges(graph: ProjectRelationsGrap
                 const xPosition = computeXPosition(relations.length, x, index);
                 nodes.push({
                     id: relation.target,
+                    type: NODE_TYPE,
                     position: { x: xPosition, y },
                     data: { label: relation.target },
                 });

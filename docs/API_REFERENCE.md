@@ -991,6 +991,36 @@ Submit a task review.
 
 ---
 
+### Sync Task Relations
+
+**POST** `/tasks/:taskId/sync-relations`
+
+Synchronyze defined related tasks and milestones to a specific task
+
+**Request Body**
+```typescript
+{
+  tasks?: Array<{
+    id: number
+    relation_type: ProjectRelation
+  }>
+  milestones?: Array<{
+    id: number
+    relation_type: ProjectRelation
+  }>
+}
+```
+
+**Response:** `200 OK`
+```typescript
+{
+  data: Task
+}
+```
+
+
+---
+
 ## Dashboard
 
 > **✅ IMPLEMENTED:** Dashboard endpoints are fully implemented and integrated in the frontend.
